@@ -1,0 +1,20 @@
+# Normalização automática de fim de linha
+* text=auto
+
+# Arquivos texto sempre LF (Markdown, HTML, JSON, YAML)
+*.md   text eol=lf
+*.html text eol=lf
+*.json text eol=lf
+*.yml  text eol=lf
+*.yaml text eol=lf
+
+# Shell scripts precisam de LF para rodar em Linux/macOS
+*.sh   text eol=lf
+
+# PowerShell pode ser CRLF
+*.ps1  text eol=crlf
+
+# Binários (sem normalização)
+*.png  binary
+*.jpg  binary
+*.pdf  binary
