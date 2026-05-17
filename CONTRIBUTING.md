@@ -19,10 +19,10 @@ Packs aceitos são exemplos genéricos que outras pessoas podem adaptar. Packs m
 
 ## Adicionar um adaptador para outro agente
 
-Cada agente tem sua convenção de arquivo de contexto. Para adicionar suporte a Cursor, Windsurf, Codex, Gemini ou outro:
+Cada agente tem sua convenção de arquivo de contexto. Para adicionar suporte a Cursor, Windsurf, Codex, Antigravity, Gemini ou outro:
 
 1. Crie uma subpasta em `template/40-agent-adapters/[nome-do-agente]/`
-2. Adicione o arquivo no formato que o agente espera (ex: `cursor/.cursorrules`, `codex/codex.md`)
+2. Adicione o arquivo no formato que o agente espera (ex: `cursor/.cursorrules`, `codex/codex.md`, `antigravity/AGENTS.md`)
 3. O adaptador deve apenas apontar para `00-global/AGENT.md`, não substituí-lo
 4. Atualize `template/40-agent-adapters/README.md` listando o novo adaptador
 

@@ -31,6 +31,7 @@ Ambos partem da mesma tese: memória de agente acoplada ao agente é um anti-pat
 | Adaptador Cursor | ⏳ Aceita contribuição |
 | Adaptador Codex | ⏳ Aceita contribuição |
 | Adaptador Windsurf | ⏳ Aceita contribuição |
+| Adaptador Antigravity | ⏳ Aceita contribuição |
 | Context Packs adicionais | ⏳ Aceita contribuição |
 
 Veja [CONTRIBUTING.md](CONTRIBUTING.md) para como contribuir.
