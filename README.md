@@ -17,6 +17,26 @@ Ambos partem da mesma tese: memória de agente acoplada ao agente é um anti-pat
 
 ---
 
+## Status do projeto
+
+| Componente | Status |
+|---|---|
+| Whitepaper (PT-BR) | ✅ Publicado — v1.0 |
+| Whitepaper (EN) | ✅ Publicado — v1.0 |
+| Guia de implementação | ✅ Publicado — v2.0 com seção de deployment remoto |
+| Template de vault clonável | ✅ Disponível em `/template/` |
+| Script de setup (Linux/macOS) | ✅ `setup.sh` |
+| Script de setup (Windows) | ✅ `setup.ps1` |
+| Adaptador Claude Code | ✅ Disponível |
+| Adaptador Cursor | ⏳ Aceita contribuição |
+| Adaptador Codex | ⏳ Aceita contribuição |
+| Adaptador Windsurf | ⏳ Aceita contribuição |
+| Context Packs adicionais | ⏳ Aceita contribuição |
+
+Veja [CONTRIBUTING.md](CONTRIBUTING.md) para como contribuir.
+
+---
+
 ## O problema
 
 A maioria das implementações de memória para agentes cai em um destes padrões ruins:
@@ -54,23 +74,83 @@ Memória federada separa três responsabilidades:
 ```
 /
 ├── whitepaper/
-│   └── whitepaper-ptbr.html       # Argumento arquitetural completo
+│   ├── whitepaper-memoria-federada-ptbr.html
+│   └── whitepaper-federated-memory-en.html
 ├── guia/
-│   └── guia-implementacao-v2.html # Passo a passo executável com diagramas
+│   └── memoria-federada-v2.html
 ├── template/
-│   ├── 00-global/AGENT.md         # Contrato neutro para qualquer agente
-│   ├── 10-domains/                # Domínios isolados (trabalho, pessoal, etc.)
-│   ├── 20-projects/               # Projetos ativos com contexto próprio
-│   ├── 30-context-packs/          # Pacotes de contexto por tarefa
+│   ├── 00-global/AGENT.md
+│   ├── 10-domains/
+│   ├── 20-projects/
+│   ├── 30-context-packs/
 │   │   └── exemplo-linkedin-writing.md
-│   ├── 40-agent-adapters/         # Adaptadores por agente
+│   ├── 40-agent-adapters/
 │   │   └── claude/CLAUDE.md
-│   └── 50-inbox/                  # Sugestões pendentes de aprovação humana
-│       └── suggested-memory.md
+│   └── 50-inbox/suggested-memory.md
+├── setup.sh
+├── setup.ps1
+├── CONTRIBUTING.md
+├── LICENSE
 └── README.md
 ```
 
 O diretório `/template/` é um vault clonável. Copie, adapte os domínios para sua realidade e conecte ao agente de sua escolha via adaptador.
+
+---
+
+## Como visualizar os documentos
+
+Os artefatos são arquivos HTML estilizados. Como o GitHub mostra apenas o código-fonte de HTML, use os links abaixo via **raw.githack.com**, que renderiza o HTML diretamente no navegador:
+
+- 📄 [Whitepaper (PT-BR)](https://raw.githack.com/AndreAlmeidaDC/federated-memory/master/whitepaper/whitepaper-memoria-federada-ptbr.html)
+- 📄 [Whitepaper (EN)](https://raw.githack.com/AndreAlmeidaDC/federated-memory/master/whitepaper/whitepaper-federated-memory-en.html)
+- 📘 [Guia de implementação](https://raw.githack.com/AndreAlmeidaDC/federated-memory/master/guia/memoria-federada-v2.html)
+
+Alternativa local: clone o repositório e abra os arquivos `.html` direto no navegador.
+
+```bash
+git clone https://github.com/AndreAlmeidaDC/federated-memory.git
+cd federated-memory
+# Abra qualquer .html no seu navegador
+```
+
+---
+
+## Setup rápido
+
+Para montar um vault funcional em poucos minutos, use o script de setup. Ele faz:
+
+1. Verifica dependências (`git`, `python`, `node`, `npm`)
+2. Cria o vault em `~/federated-memory` a partir do `/template/`
+3. Inicializa Git no vault
+4. Clona e instala o Hermes Agent em `~/.hermes-agent`
+5. Instala o MCP server filesystem via npm
+6. Gera o `settings.json` do Claude Code apontando para o vault
+7. Mostra próximos passos
+
+### Linux / macOS
+
+```bash
+git clone https://github.com/AndreAlmeidaDC/federated-memory.git
+cd federated-memory
+bash setup.sh
+
+# Ou com caminho customizado:
+bash setup.sh /outro/caminho/para/vault
+```
+
+### Windows (PowerShell)
+
+```powershell
+git clone https://github.com/AndreAlmeidaDC/federated-memory.git
+cd federated-memory
+.\setup.ps1
+
+# Ou com caminho customizado:
+.\setup.ps1 -VaultDir "D:\meu-vault"
+```
+
+Os scripts são idempotentes: rodam várias vezes sem quebrar nada já instalado.
 
 ---
 
@@ -90,18 +170,23 @@ A arquitetura é agnóstica de ferramenta. Obsidian pode ser substituído por qu
 
 ## Por onde começar
 
-1. Leia o [whitepaper](whitepaper/whitepaper-ptbr.html) para entender a tese
-2. Leia o [guia de implementação](guia/guia-implementacao-v2.html) para montar o seu vault
-3. Clone o `/template/` como ponto de partida
+1. Leia o [whitepaper](https://raw.githack.com/AndreAlmeidaDC/federated-memory/master/whitepaper/whitepaper-memoria-federada-ptbr.html) para entender a tese
+2. Leia o [guia de implementação](https://raw.githack.com/AndreAlmeidaDC/federated-memory/master/guia/memoria-federada-v2.html) para montar o seu vault
+3. Rode `setup.sh` ou `setup.ps1` para criar o vault automaticamente
 4. Adapte o `00-global/AGENT.md` para descrever seu contexto pessoal
 5. Configure o adaptador do seu agente em `/40-agent-adapters/`
 
 ---
 
-## Idiomas
+## Contribuindo
 
-- Português (este documento e os artefatos atuais)
-- Inglês — em breve
+Veja [CONTRIBUTING.md](CONTRIBUTING.md). Contribuições mais valiosas: novos Context Packs e adaptadores para outros agentes.
+
+---
+
+## Licença
+
+[CC BY 4.0](LICENSE) — uso livre com atribuição.
 
 ---
 
