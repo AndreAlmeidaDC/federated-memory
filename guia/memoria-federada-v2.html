@@ -1186,6 +1186,208 @@ Before responding to any task:
 <p>O agente nunca grava memória permanente. Quando identifica algo que merece virar verdade, escreve uma sugestão no inbox. O humano revisa, aprova, edita ou rejeita. Só depois disso a memória entra na base estável.</p>
 
 <!-- ============================================== -->
+<!-- 12b - DEPLOYMENT REMOTO -->
+<!-- ============================================== -->
+
+<h2><span class="num">12b / Remoto</span>Deployment remoto: acessando a memória de qualquer lugar</h2>
+
+<p>Até aqui tudo roda local. Isso funciona bem para uma máquina. Quando você precisa que dois ou mais agentes — em máquinas diferentes — acessem o mesmo vault, a arquitetura precisa de um ponto central. Esse ponto é uma VPS.</p>
+
+<p>A boa notícia: a separação de responsabilidades da memória federada já resolve metade do problema. O vault é só arquivos. O MCP server é só um processo. Mover para um servidor remoto não muda os contratos — só muda onde os processos rodam.</p>
+
+<h3>Onde cada componente fica</h3>
+
+<figure>
+<svg viewBox="0 0 760 420" xmlns="http://www.w3.org/2000/svg" style="max-width:100%;display:block;margin:0 auto;">
+  <defs>
+    <marker id="arr-r" markerWidth="10" markerHeight="10" refX="8" refY="3" orient="auto">
+      <polygon points="0 0, 8 3, 0 6" fill="#14110F"/>
+    </marker>
+    <marker id="arr-r2" markerWidth="10" markerHeight="10" refX="8" refY="3" orient="auto">
+      <polygon points="0 0, 8 3, 0 6" fill="#0A4F4A"/>
+    </marker>
+    <marker id="arr-r3" markerWidth="10" markerHeight="10" refX="8" refY="3" orient="auto">
+      <polygon points="0 0, 8 3, 0 6" fill="#C24A2A"/>
+    </marker>
+  </defs>
+
+  <!-- VPS box -->
+  <rect x="260" y="30" width="240" height="340" rx="6" fill="#F4EFE6" stroke="#14110F" stroke-width="2"/>
+  <rect x="260" y="30" width="240" height="36" rx="6" fill="#14110F"/>
+  <rect x="260" y="54" width="240" height="12" fill="#14110F"/>
+  <text x="380" y="53" text-anchor="middle" font-family="JetBrains Mono, monospace" font-size="12" font-weight="600" fill="#F4EFE6">VPS (servidor remoto)</text>
+
+  <!-- Obsidian vault -->
+  <rect x="285" y="90" width="190" height="50" fill="#0A4F4A" stroke="#14110F" stroke-width="1.5"/>
+  <text x="380" y="111" text-anchor="middle" font-family="Manrope, sans-serif" font-size="13" font-weight="700" fill="#F4EFE6">Vault (Obsidian)</text>
+  <text x="380" y="128" text-anchor="middle" font-family="JetBrains Mono, monospace" font-size="9" fill="#B89455">/vault/ — arquivos markdown</text>
+
+  <!-- MCP server -->
+  <rect x="285" y="165" width="190" height="50" fill="#6B7A4F" stroke="#14110F" stroke-width="1.5"/>
+  <text x="380" y="186" text-anchor="middle" font-family="Manrope, sans-serif" font-size="13" font-weight="700" fill="#F4EFE6">MCP Server</text>
+  <text x="380" y="203" text-anchor="middle" font-family="JetBrains Mono, monospace" font-size="9" fill="#F4EFE6">porta 3000 (localhost)</text>
+
+  <!-- Hermes -->
+  <rect x="285" y="240" width="190" height="50" fill="#B89455" stroke="#14110F" stroke-width="1.5"/>
+  <text x="380" y="261" text-anchor="middle" font-family="Manrope, sans-serif" font-size="13" font-weight="700" fill="#14110F">Hermes Agent</text>
+  <text x="380" y="278" text-anchor="middle" font-family="JetBrains Mono, monospace" font-size="9" fill="#14110F">opcional — se rodar na VPS</text>
+
+  <!-- Git sync -->
+  <rect x="285" y="315" width="190" height="40" fill="#F4EFE6" stroke="#6B7A4F" stroke-width="1.5" stroke-dasharray="4 3"/>
+  <text x="380" y="335" text-anchor="middle" font-family="JetBrains Mono, monospace" font-size="10" fill="#6B7A4F">git pull / git push</text>
+  <text x="380" y="350" text-anchor="middle" font-family="JetBrains Mono, monospace" font-size="9" fill="#6B6258">sincronização entre máquinas</text>
+
+  <!-- Máquina local esquerda -->
+  <rect x="30" y="160" width="180" height="80" rx="4" fill="#F4EFE6" stroke="#14110F" stroke-width="1.5"/>
+  <rect x="30" y="160" width="180" height="28" rx="4" fill="#14110F"/>
+  <rect x="30" y="176" width="180" height="12" fill="#14110F"/>
+  <text x="120" y="176" text-anchor="middle" font-family="JetBrains Mono, monospace" font-size="11" fill="#F4EFE6">máquina local</text>
+  <text x="120" y="210" text-anchor="middle" font-family="Manrope, sans-serif" font-size="12" font-weight="600" fill="#14110F">Claude Code</text>
+  <text x="120" y="228" text-anchor="middle" font-family="JetBrains Mono, monospace" font-size="9" fill="#6B6258">aponta pro MCP remoto</text>
+
+  <!-- Claude Code → MCP (SSH tunnel) -->
+  <path d="M 210 200 L 285 200" stroke="#0A4F4A" stroke-width="1.5" marker-end="url(#arr-r2)"/>
+  <text x="247" y="193" text-anchor="middle" font-family="JetBrains Mono, monospace" font-size="9" fill="#0A4F4A">SSH tunnel</text>
+
+  <!-- Máquina local direita -->
+  <rect x="550" y="160" width="180" height="80" rx="4" fill="#F4EFE6" stroke="#14110F" stroke-width="1.5"/>
+  <rect x="550" y="160" width="180" height="28" rx="4" fill="#14110F"/>
+  <rect x="550" y="176" width="180" height="12" fill="#14110F"/>
+  <text x="640" y="176" text-anchor="middle" font-family="JetBrains Mono, monospace" font-size="11" fill="#F4EFE6">outro agente / CI</text>
+  <text x="640" y="210" text-anchor="middle" font-family="Manrope, sans-serif" font-size="12" font-weight="600" fill="#14110F">Hermes / script</text>
+  <text x="640" y="228" text-anchor="middle" font-family="JetBrains Mono, monospace" font-size="9" fill="#6B6258">acessa MCP via API HTTP</text>
+
+  <!-- Outro agente → MCP (HTTP) -->
+  <path d="M 550 200 L 475 200" stroke="#C24A2A" stroke-width="1.5" marker-end="url(#arr-r3)"/>
+  <text x="512" y="193" text-anchor="middle" font-family="JetBrains Mono, monospace" font-size="9" fill="#C24A2A">HTTPS</text>
+
+  <!-- GitHub -->
+  <rect x="310" y="390" width="140" height="30" rx="4" fill="#14110F"/>
+  <text x="380" y="410" text-anchor="middle" font-family="JetBrains Mono, monospace" font-size="11" fill="#F4EFE6">GitHub (bare repo)</text>
+
+  <!-- sync arrows -->
+  <path d="M 380 355 L 380 390" stroke="#6B7A4F" stroke-width="1" stroke-dasharray="3 3" marker-end="url(#arr-r)"/>
+</svg>
+<figcaption>Figura 5b — Arquitetura remota: vault e MCP na VPS, agentes acessando de fora</figcaption>
+</figure>
+
+<table>
+<thead><tr><th>Componente</th><th>Onde roda</th><th>Motivo</th></tr></thead>
+<tbody>
+<tr><td>Vault (arquivos markdown)</td><td>VPS</td><td>Fonte única de verdade. Sem conflito de versão.</td></tr>
+<tr><td>MCP Server</td><td>VPS (porta local)</td><td>Nunca exposto diretamente. Acesso via tunnel.</td></tr>
+<tr><td>Hermes Agent</td><td>VPS ou local</td><td>Se rodar na VPS, sem latência de transferência.</td></tr>
+<tr><td>Claude Code</td><td>Máquina local</td><td>Interface do humano. Conecta via SSH tunnel.</td></tr>
+<tr><td>Git remote</td><td>GitHub</td><td>Sincronização e histórico. Não é o vault primário.</td></tr>
+</tbody>
+</table>
+
+<h3>Sincronização via Git</h3>
+
+<p>O vault é um repositório Git normal. Cada máquina que precisa de uma cópia local faz clone e pull. A VPS é o origin.</p>
+
+<pre><code># Na VPS — configuração inicial
+git init --bare /vault-remote.git
+
+# No vault local — apontar para a VPS como origin
+git remote add origin ssh://usuario@sua-vps:/vault-remote.git
+git push -u origin main
+
+# Em outra máquina — clonar o vault
+git clone ssh://usuario@sua-vps:/vault-remote.git ~/vault
+
+# Rotina de sincronização (antes de trabalhar)
+git pull origin main
+
+# Depois de aprovações no inbox
+git add 00-global/ 10-domains/ 20-projects/ 30-context-packs/
+git commit -m "feat: memória aprovada — [domínio]"
+git push origin main</code></pre>
+
+<div class="callout tip">
+<div class="label">Critério de conclusão</div>
+<p>Rode <code>git log --oneline -5</code> na VPS e em outra máquina. Os hashes devem ser idênticos. Se não forem, tem divergência — resolva antes de continuar.</p>
+</div>
+
+<h3>Acesso remoto ao MCP server</h3>
+
+<p>O MCP server não deve ser exposto diretamente na internet. Duas opções:</p>
+
+<h4>Opção A — SSH tunnel (recomendado para uso pessoal)</h4>
+
+<p>O MCP roda em localhost na VPS. Você cria um tunnel que mapeia a porta local para a sua máquina.</p>
+
+<pre><code># Cria tunnel: porta 3000 da VPS aparece como localhost:3000 na sua máquina
+ssh -L 3000:localhost:3000 usuario@sua-vps -N
+
+# Para manter em background
+ssh -L 3000:localhost:3000 usuario@sua-vps -fN
+
+# Para fechar
+kill $(lsof -t -i:3000)</code></pre>
+
+<p>Com o tunnel ativo, o Claude Code enxerga o MCP remoto como se fosse local. Nenhuma configuração adicional.</p>
+
+<h4>Opção B — HTTPS com autenticação (para múltiplos agentes)</h4>
+
+<p>Se mais de uma máquina precisa acessar o MCP simultaneamente, coloque um reverse proxy (nginx ou Caddy) na frente com TLS e autenticação básica.</p>
+
+<pre><code># Caddy — configuração mínima (~/.caddy/Caddyfile)
+mcp.seudominio.com {
+    basicauth /* {
+        agente $2a$14$HASH_GERADO_COM_caddy_hash
+    }
+    reverse_proxy localhost:3000
+}</code></pre>
+
+<div class="callout warn">
+<div class="label">Não faça isso</div>
+<p>Não exponha o MCP server diretamente na porta pública sem autenticação. O MCP tem acesso de leitura (e escrita no inbox) ao vault inteiro. Um endpoint aberto é um vault aberto.</p>
+</div>
+
+<h3>Claude Code conectando ao MCP remoto</h3>
+
+<p>Com o SSH tunnel ativo, o Claude Code não sabe que está falando com um servidor remoto. Configure normalmente apontando para localhost.</p>
+
+<pre><code># .claude/settings.json (na máquina local)
+{
+  "mcpServers": {
+    "obsidian-vault": {
+      "command": "npx",
+      "args": ["-y", "mcp-obsidian"],
+      "env": {
+        "OBSIDIAN_API_URL": "http://localhost:3000",
+        "OBSIDIAN_API_KEY": "seu-token-aqui"
+      }
+    }
+  }
+}</code></pre>
+
+<p>Critério de conclusão: rode <code>/mcp</code> no Claude Code e veja o servidor listado como conectado. Peça para o agente ler um arquivo do vault. Se vier, o tunnel está funcionando.</p>
+
+<h3>Considerações de segurança</h3>
+
+<table>
+<thead><tr><th>O que proteger</th><th>Como</th></tr></thead>
+<tbody>
+<tr><td>Acesso SSH à VPS</td><td>Chave SSH obrigatória. Desabilitar login por senha (<code>PasswordAuthentication no</code> no sshd_config).</td></tr>
+<tr><td>Token do MCP server</td><td>Variável de ambiente, nunca hardcoded. Usar <code>.env</code> fora do vault.</td></tr>
+<tr><td>Escrita no vault</td><td>MCP server com permissão de escrita restrita a <code>/50-inbox/</code>. Vault principal read-only para o agente.</td></tr>
+<tr><td>Vault no Git</td><td>Repositório privado. Checar <code>.gitignore</code> para não commitar <code>.env</code> ou tokens.</td></tr>
+<tr><td>Porta do MCP</td><td>Nunca aberta no firewall da VPS. Só acessível via tunnel ou proxy autenticado.</td></tr>
+</tbody>
+</table>
+
+<pre><code># Verificar que a porta 3000 NÃO está exposta publicamente
+# Na VPS:
+ss -tlnp | grep 3000
+# Deve mostrar: 127.0.0.1:3000 — se mostrar 0.0.0.0:3000, feche no firewall
+
+# UFW (Ubuntu)
+ufw deny 3000
+ufw allow 22  # SSH continua aberto</code></pre>
+
+<!-- ============================================== -->
 <!-- 13 - GRAPHITI -->
 <!-- ============================================== -->
 
