@@ -1,0 +1,1559 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<title>Memória Federada para Agentes de IA — v2.0</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,300;9..144,400;9..144,500;9..144,600;9..144,700;9..144,900&family=Manrope:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+:root {
+  --paper: #F4EFE6;
+  --paper-2: #ECE5D6;
+  --ink: #14110F;
+  --ink-soft: #3A332D;
+  --ink-mute: #6B6258;
+  --accent: #0A4F4A;
+  --accent-2: #C24A2A;
+  --accent-3: #B89455;
+  --line: #2A2520;
+  --line-soft: #C8BFAF;
+  --highlight: #F7E199;
+}
+
+* { box-sizing: border-box; margin: 0; padding: 0; }
+
+html { -webkit-font-smoothing: antialiased; -moz-osx-font-smoothing: grayscale; }
+
+body {
+  font-family: 'Manrope', sans-serif;
+  background: var(--paper);
+  color: var(--ink);
+  font-size: 16px;
+  line-height: 1.65;
+  font-weight: 400;
+}
+
+.page {
+  max-width: 820px;
+  margin: 0 auto;
+  padding: 80px 60px;
+  background: var(--paper);
+}
+
+/* ---------- TYPOGRAPHY ---------- */
+
+h1, h2, h3, h4 {
+  font-family: 'Fraunces', serif;
+  font-weight: 600;
+  color: var(--ink);
+  letter-spacing: -0.02em;
+  line-height: 1.15;
+}
+
+h1 {
+  font-size: 64px;
+  font-weight: 500;
+  font-variation-settings: "opsz" 144;
+  margin-bottom: 16px;
+}
+
+h2 {
+  font-size: 36px;
+  margin-top: 72px;
+  margin-bottom: 24px;
+  padding-bottom: 14px;
+  border-bottom: 1px solid var(--line);
+  font-variation-settings: "opsz" 96;
+}
+
+h2 .num {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 18px;
+  color: var(--accent-2);
+  font-weight: 500;
+  display: block;
+  margin-bottom: 8px;
+  letter-spacing: 0.05em;
+}
+
+h3 {
+  font-size: 24px;
+  margin-top: 42px;
+  margin-bottom: 14px;
+  color: var(--accent);
+  font-style: italic;
+  font-variation-settings: "opsz" 48;
+}
+
+h4 {
+  font-size: 18px;
+  font-family: 'Manrope', sans-serif;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  margin-top: 32px;
+  margin-bottom: 12px;
+  color: var(--ink-soft);
+}
+
+p { margin-bottom: 16px; color: var(--ink-soft); }
+
+p strong { color: var(--ink); font-weight: 700; }
+
+ul, ol { margin: 16px 0 20px 24px; }
+li { margin-bottom: 10px; color: var(--ink-soft); }
+li::marker { color: var(--accent-2); }
+
+a { color: var(--accent); text-decoration: underline; text-decoration-thickness: 1px; text-underline-offset: 3px; }
+
+code {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 0.88em;
+  background: var(--paper-2);
+  padding: 2px 6px;
+  border-radius: 3px;
+  color: var(--ink);
+}
+
+pre {
+  font-family: 'JetBrains Mono', monospace;
+  background: var(--ink);
+  color: #E8E2D4;
+  padding: 24px;
+  border-radius: 4px;
+  font-size: 13px;
+  line-height: 1.6;
+  overflow-x: auto;
+  margin: 20px 0;
+}
+pre code { background: transparent; color: inherit; padding: 0; }
+
+/* ---------- COVER ---------- */
+
+.cover {
+  min-height: 90vh;
+  padding: 100px 60px;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  border-bottom: 2px solid var(--line);
+  position: relative;
+}
+
+.cover .eyebrow {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 12px;
+  text-transform: uppercase;
+  letter-spacing: 0.2em;
+  color: var(--accent-2);
+  margin-bottom: 60px;
+}
+
+.cover h1 {
+  font-size: 88px;
+  font-weight: 400;
+  font-variation-settings: "opsz" 144;
+  line-height: 0.95;
+  margin-bottom: 24px;
+}
+
+.cover h1 em {
+  font-style: italic;
+  color: var(--accent);
+  font-weight: 500;
+}
+
+.cover .subtitle {
+  font-size: 22px;
+  color: var(--ink-soft);
+  line-height: 1.4;
+  max-width: 600px;
+  font-weight: 300;
+  margin-bottom: 80px;
+}
+
+.cover-footer {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-end;
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 12px;
+  text-transform: uppercase;
+  letter-spacing: 0.12em;
+  color: var(--ink-mute);
+}
+
+.cover-footer .right { text-align: right; }
+
+.cover-bigtext {
+  position: absolute;
+  bottom: 100px;
+  right: -40px;
+  font-family: 'Fraunces', serif;
+  font-size: 220px;
+  font-weight: 300;
+  font-style: italic;
+  font-variation-settings: "opsz" 144;
+  color: var(--paper-2);
+  letter-spacing: -0.05em;
+  line-height: 1;
+  z-index: 0;
+  pointer-events: none;
+}
+
+.cover > * { position: relative; z-index: 1; }
+
+/* ---------- CALLOUTS ---------- */
+
+.callout {
+  background: var(--paper-2);
+  border-left: 3px solid var(--accent);
+  padding: 20px 24px;
+  margin: 24px 0;
+  font-size: 15px;
+}
+
+.callout.warn { border-color: var(--accent-2); }
+.callout.tip { border-color: var(--accent-3); }
+
+.callout .label {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 11px;
+  text-transform: uppercase;
+  letter-spacing: 0.15em;
+  color: var(--accent);
+  margin-bottom: 8px;
+  font-weight: 600;
+}
+.callout.warn .label { color: var(--accent-2); }
+.callout.tip .label { color: #6B7A4F; }
+
+.callout p:last-child { margin-bottom: 0; }
+
+/* ---------- FIGURE ---------- */
+
+figure {
+  margin: 40px 0 36px;
+}
+
+figure svg {
+  display: block;
+  width: 100%;
+  height: auto;
+}
+
+figcaption {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 11px;
+  text-align: center;
+  margin-top: 16px;
+  color: var(--ink-mute);
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+}
+
+/* ---------- TABLES ---------- */
+
+table {
+  width: 100%;
+  border-collapse: collapse;
+  margin: 24px 0;
+  font-size: 14px;
+}
+
+th, td {
+  text-align: left;
+  padding: 12px 16px;
+  border-bottom: 1px solid var(--line-soft);
+  vertical-align: top;
+}
+
+th {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 11px;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: var(--ink-mute);
+  font-weight: 600;
+  border-bottom: 2px solid var(--ink);
+}
+
+td { color: var(--ink-soft); }
+td strong { color: var(--ink); }
+
+/* ---------- SECTION DIVIDER ---------- */
+
+.divider {
+  text-align: center;
+  margin: 80px 0 40px;
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 11px;
+  letter-spacing: 0.3em;
+  color: var(--ink-mute);
+}
+
+.divider::before, .divider::after {
+  content: "—";
+  margin: 0 16px;
+  color: var(--line-soft);
+}
+
+/* ---------- INTRO LARGE TEXT ---------- */
+
+.lead {
+  font-family: 'Fraunces', serif;
+  font-size: 26px;
+  line-height: 1.4;
+  font-weight: 300;
+  font-style: italic;
+  color: var(--ink);
+  margin: 32px 0;
+  padding-left: 20px;
+  border-left: 2px solid var(--accent-2);
+  font-variation-settings: "opsz" 96;
+}
+
+/* ---------- TOC ---------- */
+
+.toc {
+  margin: 48px 0;
+  padding: 32px;
+  background: var(--paper-2);
+  border: 1px solid var(--line-soft);
+}
+
+.toc h3 {
+  margin-top: 0;
+  margin-bottom: 20px;
+  color: var(--ink);
+  font-style: normal;
+  font-size: 20px;
+}
+
+.toc ol {
+  list-style: none;
+  margin-left: 0;
+  column-count: 2;
+  column-gap: 32px;
+}
+
+.toc li {
+  margin-bottom: 8px;
+  font-size: 14px;
+  break-inside: avoid;
+}
+
+.toc .num {
+  font-family: 'JetBrains Mono', monospace;
+  color: var(--accent-2);
+  margin-right: 8px;
+  font-size: 12px;
+}
+
+/* ---------- INLINE EMPHASIS ---------- */
+
+.tag {
+  display: inline-block;
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 11px;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  padding: 2px 8px;
+  background: var(--ink);
+  color: var(--paper);
+  margin: 0 2px;
+}
+
+/* ---------- DECISION TABLE ---------- */
+
+.decision-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 16px;
+  margin: 28px 0;
+}
+
+.decision-card {
+  padding: 20px;
+  border: 1px solid var(--line-soft);
+  background: var(--paper-2);
+}
+
+.decision-card h4 {
+  margin-top: 0;
+  margin-bottom: 8px;
+  font-size: 13px;
+  letter-spacing: 0.1em;
+}
+
+.decision-card.go { border-left: 4px solid var(--accent); }
+.decision-card.stop { border-left: 4px solid var(--accent-2); }
+
+.decision-card.go h4 { color: var(--accent); }
+.decision-card.stop h4 { color: var(--accent-2); }
+
+.decision-card p {
+  margin: 0;
+  font-size: 14px;
+}
+
+/* ---------- CHECKLIST ---------- */
+
+.checklist {
+  list-style: none;
+  margin-left: 0;
+}
+
+.checklist li {
+  padding-left: 32px;
+  position: relative;
+  margin-bottom: 12px;
+}
+
+.checklist li::before {
+  content: "☐";
+  position: absolute;
+  left: 0;
+  top: -2px;
+  color: var(--accent);
+  font-size: 18px;
+  font-weight: bold;
+}
+
+/* ---------- PRINT ---------- */
+
+@media print {
+  body { background: white; }
+  .page { padding: 40px; }
+  h2 { page-break-before: auto; }
+  figure { page-break-inside: avoid; }
+  pre { page-break-inside: avoid; }
+  .callout { page-break-inside: avoid; }
+}
+</style>
+</head>
+<body>
+
+<!-- ============================================== -->
+<!-- COVER -->
+<!-- ============================================== -->
+
+<div class="page cover">
+  <div class="cover-bigtext">memória</div>
+  <div>
+    <div class="eyebrow">Guia comunitário · Versão 2.0 · Edição revisada e implementável</div>
+    <h1>Memória<br>Federada para<br><em>Agentes de IA</em></h1>
+    <p class="subtitle">Uma arquitetura aberta, portátil e governada para criar uma base de contexto que qualquer agente possa consultar, sem virar dono dela.</p>
+  </div>
+  <div class="cover-footer">
+    <div>
+      Por André Almeida<br>
+      andrealmeidadc.com
+    </div>
+    <div class="right">
+      Implementação:<br>
+      Obsidian + Hermes + MCP
+    </div>
+  </div>
+</div>
+
+<!-- ============================================== -->
+<!-- ACKNOWLEDGMENTS + TOC -->
+<!-- ============================================== -->
+
+<div class="page">
+
+<h3 style="margin-top: 0;">Agradecimentos</h3>
+<p>Ao Jean Duarte pela ideia geral, ao Gabriel Menegat pela ideia de orquestração com o Hermes, ao Francisco Brasil pela provocação sobre banco de dados, e à comunidade do Miners pelas discussões que ajudaram a amadurecer este guia. A v2.0 incorpora correções técnicas, exemplos concretos de implementação e o reconhecimento do padrão blackboard como espinha dorsal arquitetural.</p>
+
+<div class="callout">
+<div class="label">O que mudou na v2.0</div>
+<p>A v1.0 era um framework conceitual. A v2.0 vira guia de implementação: instalação real do Hermes Agent, MCP server para Obsidian com instruções concretas, Context Pack preenchido como referência, critério objetivo de governança de domínios e exemplo do padrão blackboard como coordenação assíncrona entre agentes.</p>
+</div>
+
+<div class="toc">
+<h3>Sumário</h3>
+<ol>
+<li><span class="num">01</span> O problema não é IA, é memória</li>
+<li><span class="num">02</span> O que este guia constrói</li>
+<li><span class="num">03</span> Princípios arquiteturais</li>
+<li><span class="num">04</span> O padrão blackboard</li>
+<li><span class="num">05</span> Componentes da implementação</li>
+<li><span class="num">06</span> Estrutura no Obsidian</li>
+<li><span class="num">07</span> AGENT.md: o contrato neutro</li>
+<li><span class="num">08</span> Adaptadores por ferramenta</li>
+<li><span class="num">09</span> Context Packs com exemplo real</li>
+<li><span class="num">10</span> Hermes: instalação e configuração</li>
+<li><span class="num">11</span> Obsidian via MCP na prática</li>
+<li><span class="num">12</span> Fluxo operacional</li>
+<li><span class="num">13</span> Graphiti: quando entra</li>
+<li><span class="num">14</span> Passo a passo executável</li>
+<li><span class="num">15</span> Governança mínima</li>
+<li><span class="num">16</span> Anti-patterns</li>
+<li><span class="num">17</span> Substituições possíveis</li>
+<li><span class="num">18</span> Templates prontos</li>
+<li><span class="num">19</span> Checklist de validação</li>
+<li><span class="num">20</span> Referências e fechamento</li>
+</ol>
+</div>
+
+<!-- ============================================== -->
+<!-- 01 - PROBLEM -->
+<!-- ============================================== -->
+
+<h2><span class="num">01 / Storytelling</span>O problema não é falta de IA, é falta de memória confiável</h2>
+
+<p>Toda ferramenta de IA parece brilhante nos primeiros minutos. Entende o pedido, escreve código, sugere campanha, resume reunião e até parece que acompanhou o projeto desde o começo. O problema aparece na segunda, terceira ou décima sessão: a IA esquece decisões, mistura contexto, repete perguntas e precisa ser reeducada o tempo inteiro.</p>
+
+<p>A reação natural é construir um "super cérebro": jogar tudo num lugar só e mandar o agente ler. No começo, isso parece resolver. Depois, o sistema degrada. Uma tarefa de marketing puxa vício de programação. Um projeto contamina outro. Memórias antigas entram como se ainda fossem verdade. O agente sabe demais e, justamente por isso, começa a errar melhor.</p>
+
+<p class="lead">Este guia propõe outro caminho: memória federada. Domínios separados, arquivos legíveis, contrato neutro, pacotes de contexto e roteamento controlado. Não é fazer um agente dominar a casa. É criar uma base que qualquer agente possa consultar sem bagunçar o ambiente.</p>
+
+<div class="callout tip">
+<div class="label">Resumo em uma frase</div>
+<p>Obsidian guarda a memória revisada. Context Packs entregam o menor contexto suficiente. Hermes roteia. MCP expõe. Graphiti adiciona tempo. E os agentes executam, sem precisar conversar entre si.</p>
+</div>
+
+<!-- ============================================== -->
+<!-- 02 - WHAT THE GUIDE BUILDS -->
+<!-- ============================================== -->
+
+<h2><span class="num">02 / Escopo</span>O que este guia constrói</h2>
+
+<p>Implementação de referência usando Obsidian + Hermes + MCP. A arquitetura, porém, não fica presa a essas ferramentas. O objetivo é uma camada de memória portátil para qualquer agente atual ou futuro.</p>
+
+<ul>
+<li>Base de conhecimento em Markdown, legível por humanos e versionável em Git.</li>
+<li>Vaults ou pastas separadas por domínio, projeto ou área de trabalho.</li>
+<li><code>AGENT.md</code> como contrato neutro, sem dependência de Claude Code, Codex, Cursor ou qualquer executor.</li>
+<li>Context Packs desde o início, porque memória só vira útil quando entra como contexto enxuto.</li>
+<li>Adaptadores curtos por ferramenta (<code>CLAUDE.md</code>, <code>codex.md</code>, regras de Cursor).</li>
+<li>Hermes como roteador e orquestrador local com plugins de memória.</li>
+<li>MCP server para Obsidian, expondo o vault de forma padronizada para múltiplos agentes.</li>
+<li>Graphiti como upgrade temporal quando relações e mudanças ao longo do tempo importarem.</li>
+</ul>
+
+<div class="callout warn">
+<div class="label">O que este guia NÃO é</div>
+<p>Não é um produto fechado. Não é um framework que precisa controlar todos os projetos. Não é uma proposta de memória automática sem revisão. A memória permanente precisa passar por curadoria humana.</p>
+</div>
+
+<!-- ============================================== -->
+<!-- 03 - PRINCIPLES -->
+<!-- ============================================== -->
+
+<h2><span class="num">03 / Fundação</span>Princípios arquiteturais</h2>
+
+<p><strong>Memória soberana.</strong> A base pertence ao usuário. Agentes entram e saem; o contexto continua portátil.</p>
+
+<p><strong>Domínios isolados.</strong> Marketing, programação, clientes, produtos e pesquisa não devem viver no mesmo caldo semântico.</p>
+
+<p><strong>Contrato neutro.</strong> O <code>AGENT.md</code> descreve como qualquer agente deve consumir a memória. Adaptadores apenas traduzem para ferramentas específicas.</p>
+
+<p><strong>Contexto mínimo suficiente.</strong> O agente deve receber o necessário para a tarefa, não a história inteira da sua vida digital.</p>
+
+<p><strong>Humano aprova memória permanente.</strong> Conversa bruta, hipótese e rascunho não viram verdade automática.</p>
+
+<p><strong>Orquestração sem sequestro.</strong> Hermes pode rotear e sugerir, mas não deve alterar tudo sozinho nem criar automações invisíveis.</p>
+
+<!-- ============================================== -->
+<!-- 04 - BLACKBOARD PATTERN (NEW) -->
+<!-- ============================================== -->
+
+<h2><span class="num">04 / Insight central</span>O padrão blackboard: por que os agentes não precisam conversar</h2>
+
+<p>Uma confusão comum em arquiteturas multi-agente é assumir que os agentes precisam falar entre si. Não precisam. Numa memória federada bem desenhada, a coordenação é <strong>assíncrona via estado compartilhado</strong>. Esse padrão tem nome: <em>blackboard architecture</em>.</p>
+
+<p>Pense no quadro-negro de uma sala de aula. Diferentes pessoas escrevem nele em momentos diferentes. Quem entra depois lê o que está lá. Ninguém precisa estar presente quando outro escreveu. A coordenação acontece através do quadro.</p>
+
+<figure>
+<svg viewBox="0 0 760 480" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <pattern id="dots1" patternUnits="userSpaceOnUse" width="6" height="6">
+      <circle cx="1" cy="1" r="0.8" fill="#6B6258" opacity="0.3"/>
+    </pattern>
+  </defs>
+
+  <!-- Title -->
+  <text x="380" y="32" text-anchor="middle" font-family="Fraunces, serif" font-size="22" font-style="italic" fill="#14110F">Coordenação por quadro compartilhado</text>
+  <text x="380" y="54" text-anchor="middle" font-family="JetBrains Mono, monospace" font-size="11" fill="#6B6258" letter-spacing="1">NENHUM AGENTE PRECISA FALAR COM OUTRO</text>
+
+  <!-- The central blackboard -->
+  <rect x="240" y="180" width="280" height="120" fill="#14110F" stroke="#0A4F4A" stroke-width="2"/>
+  <rect x="248" y="188" width="264" height="104" fill="url(#dots1)" opacity="0.4"/>
+  <text x="380" y="220" text-anchor="middle" font-family="Fraunces, serif" font-size="22" fill="#F4EFE6">Memória Federada</text>
+  <text x="380" y="245" text-anchor="middle" font-family="JetBrains Mono, monospace" font-size="10" fill="#B89455" letter-spacing="1">OBSIDIAN VAULT · MARKDOWN</text>
+  <text x="380" y="270" text-anchor="middle" font-family="Manrope, sans-serif" font-size="12" fill="#ECE5D6" opacity="0.7">contexto curado · domínios isolados · histórico governado</text>
+
+  <!-- Agent A - Claude Code -->
+  <rect x="40" y="100" width="140" height="60" fill="#F4EFE6" stroke="#0A4F4A" stroke-width="1.5"/>
+  <text x="110" y="125" text-anchor="middle" font-family="Manrope, sans-serif" font-size="13" font-weight="600" fill="#14110F">Claude Code</text>
+  <text x="110" y="143" text-anchor="middle" font-family="JetBrains Mono, monospace" font-size="9" fill="#6B6258">segunda · 10h</text>
+
+  <!-- Agent B - Codex -->
+  <rect x="40" y="320" width="140" height="60" fill="#F4EFE6" stroke="#0A4F4A" stroke-width="1.5"/>
+  <text x="110" y="345" text-anchor="middle" font-family="Manrope, sans-serif" font-size="13" font-weight="600" fill="#14110F">Codex</text>
+  <text x="110" y="363" text-anchor="middle" font-family="JetBrains Mono, monospace" font-size="9" fill="#6B6258">quarta · 15h</text>
+
+  <!-- Agent C - Cursor -->
+  <rect x="580" y="100" width="140" height="60" fill="#F4EFE6" stroke="#0A4F4A" stroke-width="1.5"/>
+  <text x="650" y="125" text-anchor="middle" font-family="Manrope, sans-serif" font-size="13" font-weight="600" fill="#14110F">Cursor</text>
+  <text x="650" y="143" text-anchor="middle" font-family="JetBrains Mono, monospace" font-size="9" fill="#6B6258">sexta · 09h</text>
+
+  <!-- Agent D - Antigravity -->
+  <rect x="580" y="320" width="140" height="60" fill="#F4EFE6" stroke="#0A4F4A" stroke-width="1.5"/>
+  <text x="650" y="345" text-anchor="middle" font-family="Manrope, sans-serif" font-size="13" font-weight="600" fill="#14110F">Antigravity</text>
+  <text x="650" y="363" text-anchor="middle" font-family="JetBrains Mono, monospace" font-size="9" fill="#6B6258">sábado · 14h</text>
+
+  <!-- Arrows from agents to blackboard -->
+  <line x1="180" y1="130" x2="240" y2="200" stroke="#0A4F4A" stroke-width="1.5" stroke-dasharray="4 3"/>
+  <line x1="240" y1="240" x2="180" y2="350" stroke="#C24A2A" stroke-width="1.5" stroke-dasharray="4 3"/>
+  <line x1="580" y1="130" x2="520" y2="200" stroke="#C24A2A" stroke-width="1.5" stroke-dasharray="4 3"/>
+  <line x1="520" y1="240" x2="580" y2="350" stroke="#0A4F4A" stroke-width="1.5" stroke-dasharray="4 3"/>
+
+  <!-- Labels on arrows -->
+  <text x="195" y="175" font-family="JetBrains Mono, monospace" font-size="9" fill="#0A4F4A">lê</text>
+  <text x="200" y="305" font-family="JetBrains Mono, monospace" font-size="9" fill="#C24A2A">sugere</text>
+  <text x="545" y="175" font-family="JetBrains Mono, monospace" font-size="9" fill="#C24A2A">sugere</text>
+  <text x="555" y="305" font-family="JetBrains Mono, monospace" font-size="9" fill="#0A4F4A">lê</text>
+
+  <!-- Bottom caption -->
+  <text x="380" y="440" text-anchor="middle" font-family="Manrope, sans-serif" font-size="12" fill="#6B6258" font-style="italic">Cada agente acessa em seu próprio tempo. O quadro é a única fonte de verdade compartilhada.</text>
+</svg>
+<figcaption>Figura 1 — Coordenação assíncrona via blackboard</figcaption>
+</figure>
+
+<p>Implicações práticas dessa escolha:</p>
+
+<ul>
+<li>Não há protocolo de comunicação entre agentes para projetar, debugar ou manter.</li>
+<li>Nenhum agente precisa estar ligado quando outro consulta a memória.</li>
+<li>Trocar um agente por outro não quebra o sistema: o novo lê o mesmo quadro.</li>
+<li>Conflitos são resolvidos por humano via inbox, não por consenso automático.</li>
+<li>O risco de cascata de erros entre agentes desaparece porque não existe propagação direta.</li>
+</ul>
+
+<div class="callout">
+<div class="label">Tradução prática</div>
+<p>Quando você usar Claude Code de manhã e Codex à noite, o que muda é só o executor. A memória curada é a mesma. O agente da noite lê o que ficou aprovado pela manhã. Sem orquestração em tempo real. Sem fila de mensagens. Sem broker.</p>
+</div>
+
+<!-- ============================================== -->
+<!-- 05 - COMPONENTS -->
+<!-- ============================================== -->
+
+<h2><span class="num">05 / Anatomia</span>Componentes da implementação</h2>
+
+<figure>
+<svg viewBox="0 0 760 540" xmlns="http://www.w3.org/2000/svg">
+  <text x="380" y="32" text-anchor="middle" font-family="Fraunces, serif" font-size="22" font-style="italic" fill="#14110F">Arquitetura alvo</text>
+  <text x="380" y="54" text-anchor="middle" font-family="JetBrains Mono, monospace" font-size="11" fill="#6B6258" letter-spacing="1">A MEMÓRIA É SOBERANA · OS AGENTES SÃO CONSUMIDORES</text>
+
+  <!-- Layer 1: Obsidian -->
+  <rect x="120" y="90" width="520" height="60" fill="#0A4F4A" stroke="#14110F" stroke-width="1"/>
+  <text x="380" y="115" text-anchor="middle" font-family="Manrope, sans-serif" font-size="15" font-weight="700" fill="#F4EFE6">Obsidian</text>
+  <text x="380" y="135" text-anchor="middle" font-family="JetBrains Mono, monospace" font-size="10" fill="#B89455">MEMÓRIA REVISADA EM MARKDOWN</text>
+
+  <!-- Layer 2: AGENT.md -->
+  <rect x="120" y="160" width="520" height="50" fill="#14110F" stroke="#14110F" stroke-width="1"/>
+  <text x="380" y="180" text-anchor="middle" font-family="Manrope, sans-serif" font-size="14" font-weight="700" fill="#F4EFE6">AGENT.md</text>
+  <text x="380" y="198" text-anchor="middle" font-family="JetBrains Mono, monospace" font-size="10" fill="#B89455">CONTRATO NEUTRO DE CONSUMO</text>
+
+  <!-- Layer 3: Context Packs -->
+  <rect x="120" y="220" width="520" height="50" fill="#C24A2A" stroke="#14110F" stroke-width="1"/>
+  <text x="380" y="240" text-anchor="middle" font-family="Manrope, sans-serif" font-size="14" font-weight="700" fill="#F4EFE6">Context Packs</text>
+  <text x="380" y="258" text-anchor="middle" font-family="JetBrains Mono, monospace" font-size="10" fill="#F4EFE6" opacity="0.8">CONTEXTO MÍNIMO POR TAREFA</text>
+
+  <!-- Side: Graphiti -->
+  <rect x="20" y="280" width="90" height="80" fill="#6B7A4F" stroke="#14110F" stroke-width="1"/>
+  <text x="65" y="312" text-anchor="middle" font-family="Manrope, sans-serif" font-size="13" font-weight="700" fill="#F4EFE6">Graphiti</text>
+  <text x="65" y="332" text-anchor="middle" font-family="JetBrains Mono, monospace" font-size="9" fill="#F4EFE6" opacity="0.85">UPGRADE</text>
+  <text x="65" y="348" text-anchor="middle" font-family="JetBrains Mono, monospace" font-size="9" fill="#F4EFE6" opacity="0.85">TEMPORAL</text>
+
+  <!-- Side: Governança -->
+  <rect x="650" y="280" width="90" height="80" fill="#B89455" stroke="#14110F" stroke-width="1"/>
+  <text x="695" y="312" text-anchor="middle" font-family="Manrope, sans-serif" font-size="13" font-weight="700" fill="#14110F">Governança</text>
+  <text x="695" y="332" text-anchor="middle" font-family="JetBrains Mono, monospace" font-size="9" fill="#14110F">APROVAÇÃO</text>
+  <text x="695" y="348" text-anchor="middle" font-family="JetBrains Mono, monospace" font-size="9" fill="#14110F">HUMANA</text>
+
+  <!-- Layer 4: Hermes -->
+  <rect x="120" y="290" width="520" height="60" fill="#5C4A3A" stroke="#14110F" stroke-width="1"/>
+  <text x="380" y="315" text-anchor="middle" font-family="Manrope, sans-serif" font-size="15" font-weight="700" fill="#F4EFE6">Hermes Agent</text>
+  <text x="380" y="335" text-anchor="middle" font-family="JetBrains Mono, monospace" font-size="10" fill="#B89455">ROTEADOR E ORQUESTRADOR LOCAL</text>
+
+  <!-- Layer 5: MCP -->
+  <rect x="120" y="360" width="520" height="50" fill="#14110F" stroke="#14110F" stroke-width="1"/>
+  <text x="380" y="380" text-anchor="middle" font-family="Manrope, sans-serif" font-size="14" font-weight="700" fill="#F4EFE6">MCP Server</text>
+  <text x="380" y="398" text-anchor="middle" font-family="JetBrains Mono, monospace" font-size="10" fill="#B89455">ACESSO PADRONIZADO PARA AGENTES EXTERNOS</text>
+
+  <!-- Layer 6: Agents -->
+  <rect x="120" y="420" width="520" height="60" fill="#0A4F4A" stroke="#14110F" stroke-width="1"/>
+  <text x="380" y="445" text-anchor="middle" font-family="Manrope, sans-serif" font-size="15" font-weight="700" fill="#F4EFE6">Agentes Executores</text>
+  <text x="380" y="465" text-anchor="middle" font-family="JetBrains Mono, monospace" font-size="10" fill="#B89455">CLAUDE CODE · CODEX · CURSOR · ANTIGRAVITY</text>
+
+  <!-- Caption -->
+  <text x="380" y="510" text-anchor="middle" font-family="Manrope, sans-serif" font-size="12" fill="#6B6258" font-style="italic">Cada camada tem uma responsabilidade clara. Nenhuma é dona da memória.</text>
+</svg>
+<figcaption>Figura 2 — Camadas da arquitetura de referência</figcaption>
+</figure>
+
+<table>
+<thead><tr><th>Componente</th><th>Função</th><th>Substituível por</th></tr></thead>
+<tbody>
+<tr><td><strong>Obsidian</strong></td><td>Base revisada por humano em Markdown</td><td>Logseq, Foam, repositório Git puro</td></tr>
+<tr><td><strong>Vaults / pastas</strong></td><td>Isolam domínios e reduzem contaminação</td><td>Subpastas no mesmo vault</td></tr>
+<tr><td><strong>AGENT.md</strong></td><td>Contrato neutro de consumo</td><td>Não. É o núcleo da portabilidade.</td></tr>
+<tr><td><strong>Context Packs</strong></td><td>Contexto mínimo por tarefa</td><td>RAG curado, prompts modulares</td></tr>
+<tr><td><strong>Adaptadores</strong></td><td>Tradução do contrato para a ferramenta</td><td>Específicos de cada agente</td></tr>
+<tr><td><strong>Hermes</strong></td><td>Roteador e orquestrador local</td><td>LangGraph, CrewAI, Letta, AutoGen</td></tr>
+<tr><td><strong>MCP server</strong></td><td>Acesso padronizado multi-agente</td><td>Leitura direta, CLI, API REST</td></tr>
+<tr><td><strong>Graphiti</strong></td><td>Memória temporal e relações</td><td>Adicionar apenas quando doer</td></tr>
+</tbody>
+</table>
+
+<!-- ============================================== -->
+<!-- 06 - OBSIDIAN STRUCTURE -->
+<!-- ============================================== -->
+
+<h2><span class="num">06 / Estrutura</span>Como organizar o Obsidian</h2>
+
+<p>Obsidian é a base porque trabalha bem com Markdown, links, backlinks, tags e navegação humana. A estrutura abaixo pode ser um único vault com pastas fortes ou múltiplos vaults. Para começar, vault único com pastas bem separadas costuma ser mais simples.</p>
+
+<pre><code>/federated-memory
+├── 00-global/
+│   ├── AGENT.md              # contrato neutro
+│   ├── MEMORY_RULES.md       # regras de captura e revisão
+│   └── STYLE_GUIDE.md        # estilo de escrita do usuário
+│
+├── 10-domains/
+│   ├── marketing/
+│   ├── engineering/
+│   ├── automation/
+│   ├── writing/
+│   └── research/
+│
+├── 20-projects/
+│   └── project-a/
+│       ├── PROJECT_CONTEXT.md
+│       ├── DECISIONS.md
+│       └── RISKS.md
+│
+├── 30-context-packs/
+│   ├── linkedin-writing.md
+│   ├── code-refactor.md
+│   └── architecture-review.md
+│
+├── 40-agent-adapters/
+│   ├── claude/CLAUDE.md
+│   ├── codex/codex.md
+│   └── cursor/rules.md
+│
+├── 50-inbox/
+│   ├── raw-notes.md
+│   └── suggested-memory.md
+│
+└── 90-archive/</code></pre>
+
+<h3>Critério para criar um domínio novo</h3>
+
+<p>A v1 dizia "crie domínios reais, não categorias bonitas". Vago demais. Critério objetivo: <strong>crie um domínio quando houver vocabulário, decisões ou estilo de saída que NÃO devem aparecer na resposta de outro domínio</strong>. Se "marketing" usa "ICP, funil, CTA" e "engineering" usa "stack, latency, deploy", e cruzar isso confunde o agente, são dois domínios. Se "automation" e "engineering" usam o mesmo vocabulário e tomam decisões compatíveis, é uma pasta dentro de engineering, não um domínio novo.</p>
+
+<div class="decision-grid">
+<div class="decision-card go">
+<h4>Vault separado faz sentido</h4>
+<p>Quando o domínio tem ciclo de vida próprio (cliente externo), exige confidencialidade, ou precisa ser sincronizado em outro dispositivo independentemente.</p>
+</div>
+<div class="decision-card stop">
+<h4>Vault separado é exagero</h4>
+<p>Quando você ainda está começando, quando os domínios trocam contexto frequentemente, ou quando você é uma pessoa só usando uma máquina só.</p>
+</div>
+</div>
+
+<!-- ============================================== -->
+<!-- 07 - AGENT.MD -->
+<!-- ============================================== -->
+
+<h2><span class="num">07 / Contrato</span>AGENT.md: a peça mais importante</h2>
+
+<p>O <code>AGENT.md</code> não é um prompt gigante. É o contrato que ensina qualquer agente a consumir a memória sem bagunçar tudo. Fica em <code>00-global/AGENT.md</code>.</p>
+
+<pre><code># AGENT.md
+
+Purpose:
+This repository contains the federated memory used by AI agents.
+The memory is owned by the human user. Agents are consumers,
+not owners.
+
+Rules:
+1. Do not load the entire memory base.
+2. Start from the relevant Context Pack.
+3. If no Context Pack exists, read the domain index first.
+4. Never write permanent memory without human approval.
+5. Keep project context isolated from other domains unless
+   explicitly requested.
+6. When unsure, ask for clarification or create a suggested
+   memory entry in /50-inbox/suggested-memory.md.
+
+Domains:
+- marketing
+- engineering
+- automation
+- writing
+- research
+- projects
+
+Permanent memory format:
+- decision
+- source
+- date
+- scope
+- status
+- related context packs</code></pre>
+
+<div class="callout tip">
+<div class="label">Por que isso funciona</div>
+<p>O Hermes Agent carrega arquivos de contexto como <code>AGENTS.md</code> e <code>.hermes.md</code> ao montar o system prompt. Se você coloca seu <code>AGENT.md</code> no caminho que o Hermes lê, ou o referencia a partir do <code>AGENTS.md</code> dele, suas regras passam a valer automaticamente.</p>
+</div>
+
+<!-- ============================================== -->
+<!-- 08 - ADAPTERS -->
+<!-- ============================================== -->
+
+<h2><span class="num">08 / Adaptadores</span>Tradução por ferramenta</h2>
+
+<p>Cada agente tem sua própria convenção de arquivo de contexto. O adaptador é curto. Ele não substitui o <code>AGENT.md</code>. Ele apenas aponta.</p>
+
+<figure>
+<svg viewBox="0 0 760 360" xmlns="http://www.w3.org/2000/svg">
+  <text x="380" y="32" text-anchor="middle" font-family="Fraunces, serif" font-size="22" font-style="italic" fill="#14110F">Um contrato, vários adaptadores</text>
+  <text x="380" y="54" text-anchor="middle" font-family="JetBrains Mono, monospace" font-size="11" fill="#6B6258" letter-spacing="1">A FONTE NUNCA MUDA · APENAS A TRADUÇÃO</text>
+
+  <!-- AGENT.md -->
+  <rect x="280" y="100" width="200" height="70" fill="#14110F" stroke="#14110F" stroke-width="2"/>
+  <text x="380" y="130" text-anchor="middle" font-family="JetBrains Mono, monospace" font-size="16" font-weight="600" fill="#F4EFE6">AGENT.md</text>
+  <text x="380" y="152" text-anchor="middle" font-family="JetBrains Mono, monospace" font-size="10" fill="#B89455">FONTE NEUTRA</text>
+
+  <!-- Lines -->
+  <line x1="320" y1="170" x2="120" y2="240" stroke="#5C4A3A" stroke-width="1.5"/>
+  <line x1="360" y1="170" x2="290" y2="240" stroke="#5C4A3A" stroke-width="1.5"/>
+  <line x1="400" y1="170" x2="470" y2="240" stroke="#5C4A3A" stroke-width="1.5"/>
+  <line x1="440" y1="170" x2="640" y2="240" stroke="#5C4A3A" stroke-width="1.5"/>
+
+  <!-- Adapter boxes -->
+  <rect x="50" y="240" width="140" height="60" fill="#F4EFE6" stroke="#0A4F4A" stroke-width="1.5"/>
+  <text x="120" y="265" text-anchor="middle" font-family="JetBrains Mono, monospace" font-size="13" font-weight="600" fill="#14110F">CLAUDE.md</text>
+  <text x="120" y="283" text-anchor="middle" font-family="Manrope, sans-serif" font-size="11" fill="#6B6258">Claude Code</text>
+
+  <rect x="220" y="240" width="140" height="60" fill="#F4EFE6" stroke="#0A4F4A" stroke-width="1.5"/>
+  <text x="290" y="265" text-anchor="middle" font-family="JetBrains Mono, monospace" font-size="13" font-weight="600" fill="#14110F">codex.md</text>
+  <text x="290" y="283" text-anchor="middle" font-family="Manrope, sans-serif" font-size="11" fill="#6B6258">Codex</text>
+
+  <rect x="390" y="240" width="140" height="60" fill="#F4EFE6" stroke="#0A4F4A" stroke-width="1.5"/>
+  <text x="460" y="265" text-anchor="middle" font-family="JetBrains Mono, monospace" font-size="13" font-weight="600" fill="#14110F">.cursor/rules</text>
+  <text x="460" y="283" text-anchor="middle" font-family="Manrope, sans-serif" font-size="11" fill="#6B6258">Cursor</text>
+
+  <rect x="560" y="240" width="140" height="60" fill="#F4EFE6" stroke="#0A4F4A" stroke-width="1.5"/>
+  <text x="630" y="265" text-anchor="middle" font-family="JetBrains Mono, monospace" font-size="13" font-weight="600" fill="#14110F">AGENTS.md</text>
+  <text x="630" y="283" text-anchor="middle" font-family="Manrope, sans-serif" font-size="11" fill="#6B6258">Hermes / Antigravity</text>
+
+  <text x="380" y="340" text-anchor="middle" font-family="Manrope, sans-serif" font-size="12" fill="#6B6258" font-style="italic">Regra: adaptadores só traduzem. O AGENT.md é sempre a fonte.</text>
+</svg>
+<figcaption>Figura 3 — Adaptadores por agente</figcaption>
+</figure>
+
+<p>Exemplo de adaptador para Claude Code:</p>
+
+<pre><code># CLAUDE.md
+
+Read the shared memory protocol at:
+../00-global/AGENT.md
+
+For this project, start with:
+../20-projects/project-a/PROJECT_CONTEXT.md
+
+Use Context Packs before reading raw notes:
+../30-context-packs/architecture-review.md
+
+Do not modify permanent memory directly.
+If a new memory seems useful, write a suggestion to:
+../50-inbox/suggested-memory.md</code></pre>
+
+<!-- ============================================== -->
+<!-- 09 - CONTEXT PACKS WITH REAL EXAMPLE -->
+<!-- ============================================== -->
+
+<h2><span class="num">09 / Pacotes</span>Context Packs com exemplo preenchido</h2>
+
+<p>Sem Context Pack, o agente precisa fuçar o vault. Com Context Pack, ele recebe um pacote enxuto, orientado à tarefa. Reduz ruído, melhora consistência, evita contaminação entre domínios.</p>
+
+<figure>
+<svg viewBox="0 0 760 380" xmlns="http://www.w3.org/2000/svg">
+  <text x="380" y="32" text-anchor="middle" font-family="Fraunces, serif" font-size="22" font-style="italic" fill="#14110F">Anatomia de um Context Pack</text>
+  <text x="380" y="54" text-anchor="middle" font-family="JetBrains Mono, monospace" font-size="11" fill="#6B6258" letter-spacing="1">UM ARQUIVO CURTO COM O MENOR CONTEXTO SUFICIENTE</text>
+
+  <!-- Input -->
+  <rect x="40" y="160" width="120" height="60" fill="#C24A2A" stroke="#14110F" stroke-width="1.5"/>
+  <text x="100" y="185" text-anchor="middle" font-family="Manrope, sans-serif" font-size="13" font-weight="700" fill="#F4EFE6">Entrada</text>
+  <text x="100" y="203" text-anchor="middle" font-family="JetBrains Mono, monospace" font-size="9" fill="#F4EFE6" opacity="0.9">PEDIDO OU TAREFA</text>
+
+  <!-- Arrow -->
+  <path d="M 160 190 L 220 190" stroke="#14110F" stroke-width="1.5" marker-end="url(#arrowhead1)"/>
+  <defs>
+    <marker id="arrowhead1" markerWidth="10" markerHeight="10" refX="8" refY="3" orient="auto">
+      <polygon points="0 0, 8 3, 0 6" fill="#14110F"/>
+    </marker>
+    <marker id="arrowhead2" markerWidth="10" markerHeight="10" refX="8" refY="3" orient="auto">
+      <polygon points="0 0, 8 3, 0 6" fill="#14110F"/>
+    </marker>
+  </defs>
+
+  <!-- Pack body -->
+  <rect x="240" y="90" width="280" height="240" fill="#F4EFE6" stroke="#14110F" stroke-width="2"/>
+  <rect x="240" y="90" width="280" height="36" fill="#14110F"/>
+  <text x="380" y="113" text-anchor="middle" font-family="JetBrains Mono, monospace" font-size="12" font-weight="600" fill="#F4EFE6">context-pack: linkedin-writing</text>
+
+  <!-- Fields -->
+  <text x="260" y="148" font-family="JetBrains Mono, monospace" font-size="11" font-weight="600" fill="#0A4F4A">Objetivo</text>
+  <text x="500" y="148" text-anchor="end" font-family="Manrope, sans-serif" font-size="11" fill="#6B6258">qual tarefa resolver</text>
+
+  <text x="260" y="178" font-family="JetBrains Mono, monospace" font-size="11" font-weight="600" fill="#0A4F4A">Usar</text>
+  <text x="500" y="178" text-anchor="end" font-family="Manrope, sans-serif" font-size="11" fill="#6B6258">notas, decisões, padrões</text>
+
+  <text x="260" y="208" font-family="JetBrains Mono, monospace" font-size="11" font-weight="600" fill="#C24A2A">Evitar</text>
+  <text x="500" y="208" text-anchor="end" font-family="Manrope, sans-serif" font-size="11" fill="#6B6258">contextos fora do domínio</text>
+
+  <text x="260" y="238" font-family="JetBrains Mono, monospace" font-size="11" font-weight="600" fill="#0A4F4A">Fontes</text>
+  <text x="500" y="238" text-anchor="end" font-family="Manrope, sans-serif" font-size="11" fill="#6B6258">links para notas originais</text>
+
+  <text x="260" y="268" font-family="JetBrains Mono, monospace" font-size="11" font-weight="600" fill="#0A4F4A">Saída</text>
+  <text x="500" y="268" text-anchor="end" font-family="Manrope, sans-serif" font-size="11" fill="#6B6258">formato esperado</text>
+
+  <text x="260" y="298" font-family="JetBrains Mono, monospace" font-size="11" font-weight="600" fill="#C24A2A">Confiança</text>
+  <text x="500" y="298" text-anchor="end" font-family="Manrope, sans-serif" font-size="11" fill="#6B6258">grau de validade temporal</text>
+
+  <!-- Arrow out -->
+  <path d="M 520 190 L 600 190" stroke="#14110F" stroke-width="1.5" marker-end="url(#arrowhead2)"/>
+
+  <!-- Output -->
+  <rect x="610" y="160" width="120" height="60" fill="#0A4F4A" stroke="#14110F" stroke-width="1.5"/>
+  <text x="670" y="185" text-anchor="middle" font-family="Manrope, sans-serif" font-size="13" font-weight="700" fill="#F4EFE6">Saída</text>
+  <text x="670" y="203" text-anchor="middle" font-family="JetBrains Mono, monospace" font-size="9" fill="#B89455">CONTEXTO PRONTO</text>
+
+  <text x="380" y="365" text-anchor="middle" font-family="Manrope, sans-serif" font-size="12" fill="#6B6258" font-style="italic">O Context Pack não copia o vault. Aponta, resume e limita.</text>
+</svg>
+<figcaption>Figura 4 — Anatomia de um Context Pack</figcaption>
+</figure>
+
+<h3>Exemplo preenchido: <code>linkedin-writing.md</code></h3>
+
+<pre><code># Context Pack: linkedin-writing
+
+Goal:
+Help an AI agent draft LinkedIn posts in André's voice for
+the technology and AI community.
+
+Use:
+- /10-domains/writing/STYLE_GUIDE.md
+- /10-domains/writing/voice-examples/*.md
+- /10-domains/writing/hooks-that-worked.md
+- Last 5 entries from /10-domains/writing/recent-posts.md
+
+Avoid:
+- /10-domains/engineering/*  (different vocabulary)
+- /20-projects/*  (unless explicitly mentioned)
+- Generic LinkedIn templates from external sources
+- Em dashes (—). Never. Forbidden.
+
+Sources of truth:
+- Voice: informal, irreverent, Brazilian Portuguese
+- Structure: strong opening hook, conclusion-first
+- Length: 800-1500 characters
+- Tone: critical, myth-busting, no flattery
+
+Output expected:
+- Single post, ready to publish
+- No subtitle or headers inside the post
+- No hashtag list at the end unless requested
+- No em dashes under any circumstance
+
+Confidence / validity:
+- Style guide reviewed monthly. Last update: see file metadata.
+- Voice examples should not be older than 90 days.
+
+Source notes:
+- /10-domains/writing/STYLE_GUIDE.md
+- /10-domains/writing/hooks-that-worked.md</code></pre>
+
+<div class="callout">
+<div class="label">O detalhe que muda tudo</div>
+<p>Esse Context Pack tem o campo <em>Confidence / validity</em>. Isso evita que estilo de seis meses atrás contamine o post de hoje. É a porta de entrada da temporalidade que justifica o Graphiti mais tarde.</p>
+</div>
+
+<!-- ============================================== -->
+<!-- 10 - HERMES INSTALATION -->
+<!-- ============================================== -->
+
+<h2><span class="num">10 / Orquestrador</span>Hermes: instalação e configuração</h2>
+
+<p>Hermes Agent é um framework do NousResearch com loop de conversação, chamada de ferramentas, memória persistente e deployment em CLI, Telegram, Discord, WhatsApp e integrações de editor via Agent Client Protocol. Ele já lê arquivos como <code>SOUL.md</code>, <code>MEMORY.md</code>, <code>USER.md</code> e <code>AGENTS.md</code> ao montar o prompt do sistema.</p>
+
+<p>Isso é importante porque significa que a sua arquitetura de memória federada pode ser carregada nativamente pelo Hermes sem código glue.</p>
+
+<h3>Instalação básica</h3>
+
+<pre><code># clone e setup
+git clone https://github.com/NousResearch/hermes-agent.git
+cd hermes-agent
+python -m venv .venv
+source .venv/bin/activate
+pip install -e .
+
+# rodar
+hermes</code></pre>
+
+<h3>Apontando o Hermes para a memória federada</h3>
+
+<p>O Hermes lê arquivos de contexto do diretório de trabalho. Dois caminhos:</p>
+
+<ol>
+<li><strong>Caminho simples.</strong> Rode o Hermes a partir do diretório <code>federated-memory/</code>. Ele vai ler o <code>AGENTS.md</code> e qualquer <code>.hermes.md</code> que estiver ali.</li>
+<li><strong>Caminho explícito.</strong> Crie um <code>AGENTS.md</code> na raiz do vault que referencia o seu <code>00-global/AGENT.md</code>:</li>
+</ol>
+
+<pre><code># AGENTS.md (raiz do vault, lido automaticamente pelo Hermes)
+
+This is a federated memory base. Read the consumption protocol
+before doing anything:
+
+  00-global/AGENT.md
+
+Before responding to any task:
+1. Identify the domain (writing, engineering, automation, etc).
+2. Load the corresponding Context Pack from /30-context-packs/.
+3. Never write to /00-global/ or /10-domains/ without explicit
+   human approval.
+4. New memory suggestions go to /50-inbox/suggested-memory.md.</code></pre>
+
+<h3>Configurando memória persistente</h3>
+
+<p>O Hermes tem sistema de plugins de memória com hooks de ciclo de vida (<code>sync_turn</code>, <code>prefetch</code>, <code>shutdown</code>). Para a memória federada, você não precisa do plugin completo no começo: basta deixar o Hermes ler a base como contexto e gravar sugestões no inbox via uma ferramenta CLI sua.</p>
+
+<div class="callout warn">
+<div class="label">Regra para o Hermes</div>
+<p>Hermes pode escolher contexto. Hermes não pode decidir sozinho o que é verdade permanente. Configure o plugin de memória em modo "sugestão", nunca em modo "gravação direta".</p>
+</div>
+
+<!-- ============================================== -->
+<!-- 11 - OBSIDIAN MCP -->
+<!-- ============================================== -->
+
+<h2><span class="num">11 / Acesso</span>Obsidian via MCP na prática</h2>
+
+<p>Para que agentes externos (Claude Desktop, Cursor, outros clientes MCP) consultem a mesma base sem cada um implementar seu próprio leitor, expomos o vault via MCP server. Existem duas abordagens prontas pela comunidade.</p>
+
+<h3>Opção A — Via Local REST API plugin</h3>
+
+<p>Instala o plugin "Local REST API" no Obsidian. O plugin sobe um endpoint HTTP local. Um MCP server se conecta a esse endpoint e expõe ferramentas padronizadas.</p>
+
+<p>Ferramentas típicas expostas:</p>
+<ul>
+<li><code>list_vault_files</code> — lista arquivos do vault</li>
+<li><code>search_vault</code> — busca por conteúdo</li>
+<li><code>create_vault_file</code> — cria arquivo (use com restrição em <code>/50-inbox/</code>)</li>
+<li><code>read_vault_file</code> — lê um arquivo específico</li>
+</ul>
+
+<p><strong>Vantagem.</strong> Mais confiável que apontar o agente direto pra um diretório, porque as ferramentas são pré-definidas. <strong>Desvantagem.</strong> Exige Obsidian aberto.</p>
+
+<h3>Opção B — MCP server com filesystem direto</h3>
+
+<p>Implementações como <code>obsidian-mcp-server</code> acessam o vault direto no filesystem, sem precisar do Obsidian rodando. Funciona com o app fechado, em servidor, ou via SSH.</p>
+
+<p><strong>Vantagem.</strong> Independente do app. <strong>Desvantagem.</strong> Não tem acesso a recursos do Obsidian (Dataview, plugins, links resolvidos), só ao Markdown puro.</p>
+
+<h3>Configuração no cliente MCP (exemplo Claude Desktop)</h3>
+
+<pre><code>{
+  "mcpServers": {
+    "obsidian-memory": {
+      "command": "node",
+      "args": [
+        "/caminho/para/obsidian-mcp-server/build/index.js",
+        "/caminho/para/federated-memory"
+      ]
+    }
+  }
+}</code></pre>
+
+<div class="callout warn">
+<div class="label">Cuidado com escopo</div>
+<p>Expor memória como ferramenta também expõe risco. Configure permissões de escrita apenas para <code>/50-inbox/</code>. As pastas <code>/00-global/</code>, <code>/10-domains/</code> e <code>/20-projects/</code> devem ser read-only para qualquer agente. Interoperabilidade sem governança vira superfície de ataque.</p>
+</div>
+
+<!-- ============================================== -->
+<!-- 12 - OPERATIONAL FLOW -->
+<!-- ============================================== -->
+
+<h2><span class="num">12 / Fluxo</span>Como um pedido vira execução</h2>
+
+<figure>
+<svg viewBox="0 0 760 460" xmlns="http://www.w3.org/2000/svg">
+  <text x="380" y="32" text-anchor="middle" font-family="Fraunces, serif" font-size="22" font-style="italic" fill="#14110F">Fluxo operacional</text>
+  <text x="380" y="54" text-anchor="middle" font-family="JetBrains Mono, monospace" font-size="11" fill="#6B6258" letter-spacing="1">DO PEDIDO À EXECUÇÃO COM GOVERNANÇA</text>
+
+  <!-- Top row -->
+  <g>
+    <rect x="40" y="110" width="110" height="60" fill="#0A4F4A" stroke="#14110F" stroke-width="1.5"/>
+    <text x="95" y="135" text-anchor="middle" font-family="Manrope, sans-serif" font-size="13" font-weight="700" fill="#F4EFE6">Pedido</text>
+    <text x="95" y="153" text-anchor="middle" font-family="JetBrains Mono, monospace" font-size="9" fill="#B89455">USUÁRIO</text>
+
+    <path d="M 150 140 L 195 140" stroke="#14110F" stroke-width="1.5" marker-end="url(#ah1)"/>
+    <defs>
+      <marker id="ah1" markerWidth="10" markerHeight="10" refX="8" refY="3" orient="auto">
+        <polygon points="0 0, 8 3, 0 6" fill="#14110F"/>
+      </marker>
+      <marker id="ah2" markerWidth="10" markerHeight="10" refX="8" refY="3" orient="auto">
+        <polygon points="0 0, 8 3, 0 6" fill="#14110F"/>
+      </marker>
+      <marker id="ah3" markerWidth="10" markerHeight="10" refX="8" refY="3" orient="auto">
+        <polygon points="0 0, 8 3, 0 6" fill="#14110F"/>
+      </marker>
+      <marker id="ah4" markerWidth="10" markerHeight="10" refX="8" refY="3" orient="auto">
+        <polygon points="0 0, 8 3, 0 6" fill="#14110F"/>
+      </marker>
+      <marker id="ah5" markerWidth="10" markerHeight="10" refX="8" refY="3" orient="auto">
+        <polygon points="0 0, 8 3, 0 6" fill="#14110F"/>
+      </marker>
+    </defs>
+
+    <rect x="200" y="110" width="110" height="60" fill="#5C4A3A" stroke="#14110F" stroke-width="1.5"/>
+    <text x="255" y="135" text-anchor="middle" font-family="Manrope, sans-serif" font-size="13" font-weight="700" fill="#F4EFE6">Hermes</text>
+    <text x="255" y="153" text-anchor="middle" font-family="JetBrains Mono, monospace" font-size="9" fill="#B89455">CLASSIFICA</text>
+
+    <path d="M 310 140 L 355 140" stroke="#14110F" stroke-width="1.5" marker-end="url(#ah2)"/>
+
+    <rect x="360" y="110" width="110" height="60" fill="#C24A2A" stroke="#14110F" stroke-width="1.5"/>
+    <text x="415" y="135" text-anchor="middle" font-family="Manrope, sans-serif" font-size="13" font-weight="700" fill="#F4EFE6">Context Pack</text>
+    <text x="415" y="153" text-anchor="middle" font-family="JetBrains Mono, monospace" font-size="9" fill="#F4EFE6" opacity="0.85">SELECIONA</text>
+
+    <path d="M 470 140 L 515 140" stroke="#14110F" stroke-width="1.5" marker-end="url(#ah3)"/>
+
+    <rect x="520" y="110" width="110" height="60" fill="#14110F" stroke="#14110F" stroke-width="1.5"/>
+    <text x="575" y="135" text-anchor="middle" font-family="Manrope, sans-serif" font-size="13" font-weight="700" fill="#F4EFE6">MCP</text>
+    <text x="575" y="153" text-anchor="middle" font-family="JetBrains Mono, monospace" font-size="9" fill="#B89455">ENTREGA</text>
+
+    <path d="M 630 140 L 675 140" stroke="#14110F" stroke-width="1.5" marker-end="url(#ah4)"/>
+
+    <rect x="680" y="110" width="60" height="60" fill="#0A4F4A" stroke="#14110F" stroke-width="1.5"/>
+    <text x="710" y="138" text-anchor="middle" font-family="Manrope, sans-serif" font-size="11" font-weight="700" fill="#F4EFE6">Agente</text>
+    <text x="710" y="153" text-anchor="middle" font-family="JetBrains Mono, monospace" font-size="9" fill="#B89455">EXEC</text>
+  </g>
+
+  <!-- Bottom data sources -->
+  <g>
+    <rect x="170" y="260" width="170" height="70" fill="#0A4F4A" stroke="#14110F" stroke-width="1.5"/>
+    <text x="255" y="285" text-anchor="middle" font-family="Manrope, sans-serif" font-size="13" font-weight="700" fill="#F4EFE6">Obsidian</text>
+    <text x="255" y="305" text-anchor="middle" font-family="JetBrains Mono, monospace" font-size="9" fill="#B89455">BASE REVISADA</text>
+    <text x="255" y="320" text-anchor="middle" font-family="JetBrains Mono, monospace" font-size="9" fill="#B89455">DECISÕES + DOMÍNIOS</text>
+
+    <rect x="460" y="260" width="170" height="70" fill="#6B7A4F" stroke="#14110F" stroke-width="1.5"/>
+    <text x="545" y="285" text-anchor="middle" font-family="Manrope, sans-serif" font-size="13" font-weight="700" fill="#F4EFE6">Graphiti</text>
+    <text x="545" y="305" text-anchor="middle" font-family="JetBrains Mono, monospace" font-size="9" fill="#F4EFE6" opacity="0.9">UPGRADE TEMPORAL</text>
+    <text x="545" y="320" text-anchor="middle" font-family="JetBrains Mono, monospace" font-size="9" fill="#F4EFE6" opacity="0.9">RELAÇÕES + HISTÓRICO</text>
+  </g>
+
+  <!-- Connecting lines -->
+  <path d="M 255 260 L 255 175" stroke="#0A4F4A" stroke-width="1" stroke-dasharray="3 3"/>
+  <text x="265" y="225" font-family="JetBrains Mono, monospace" font-size="9" fill="#0A4F4A">conhecimento curado</text>
+
+  <path d="M 545 260 L 575 175" stroke="#6B7A4F" stroke-width="1" stroke-dasharray="3 3"/>
+  <text x="555" y="225" font-family="JetBrains Mono, monospace" font-size="9" fill="#6B7A4F">histórico + relações</text>
+
+  <!-- Review loop -->
+  <rect x="280" y="380" width="200" height="50" fill="#B89455" stroke="#14110F" stroke-width="1.5"/>
+  <text x="380" y="405" text-anchor="middle" font-family="Manrope, sans-serif" font-size="13" font-weight="700" fill="#14110F">Revisão humana</text>
+  <text x="380" y="420" text-anchor="middle" font-family="JetBrains Mono, monospace" font-size="9" fill="#14110F">APROVA MEMÓRIA PERMANENTE</text>
+
+  <path d="M 710 170 Q 710 405 480 405" stroke="#C24A2A" stroke-width="1.5" stroke-dasharray="4 3" fill="none" marker-end="url(#ah5)"/>
+  <text x="640" y="395" font-family="JetBrains Mono, monospace" font-size="9" fill="#C24A2A">sugere via inbox</text>
+
+  <path d="M 280 405 Q 50 405 50 200 L 95 175" stroke="#0A4F4A" stroke-width="1.5" stroke-dasharray="4 3" fill="none"/>
+</svg>
+<figcaption>Figura 5 — Fluxo operacional completo com loop de governança</figcaption>
+</figure>
+
+<p>O agente nunca grava memória permanente. Quando identifica algo que merece virar verdade, escreve uma sugestão no inbox. O humano revisa, aprova, edita ou rejeita. Só depois disso a memória entra na base estável.</p>
+
+<!-- ============================================== -->
+<!-- 13 - GRAPHITI -->
+<!-- ============================================== -->
+
+<h2><span class="num">13 / Tempo</span>Graphiti: quando a memória precisa de história</h2>
+
+<p>Graphiti não substitui o Obsidian. Entra quando a memória deixa de ser apenas nota e passa a exigir histórico, relações, eventos e mudanças. Algumas memórias são fatos estáveis. Outras mudam com o tempo. Essa diferença é crítica.</p>
+
+<figure>
+<svg viewBox="0 0 760 320" xmlns="http://www.w3.org/2000/svg">
+  <text x="380" y="32" text-anchor="middle" font-family="Fraunces, serif" font-size="22" font-style="italic" fill="#14110F">Quando o Graphiti entra</text>
+  <text x="380" y="54" text-anchor="middle" font-family="JetBrains Mono, monospace" font-size="11" fill="#6B6258" letter-spacing="1">DECISÕES QUE EVOLUEM AO LONGO DO TEMPO</text>
+
+  <!-- Timeline -->
+  <line x1="80" y1="180" x2="680" y2="180" stroke="#14110F" stroke-width="2"/>
+
+  <!-- Decision A -->
+  <circle cx="140" cy="180" r="14" fill="#14110F"/>
+  <text x="140" y="186" text-anchor="middle" font-family="Manrope, sans-serif" font-size="13" font-weight="700" fill="#F4EFE6">A</text>
+  <text x="140" y="155" text-anchor="middle" font-family="JetBrains Mono, monospace" font-size="9" fill="#6B6258">JAN</text>
+  <text x="140" y="220" text-anchor="middle" font-family="Manrope, sans-serif" font-size="11" fill="#14110F" font-weight="600">Decisão A</text>
+  <text x="140" y="237" text-anchor="middle" font-family="Manrope, sans-serif" font-size="10" fill="#6B6258">usar vaults separados</text>
+
+  <!-- Decision B -->
+  <circle cx="320" cy="180" r="14" fill="#14110F"/>
+  <text x="320" y="186" text-anchor="middle" font-family="Manrope, sans-serif" font-size="13" font-weight="700" fill="#F4EFE6">B</text>
+  <text x="320" y="155" text-anchor="middle" font-family="JetBrains Mono, monospace" font-size="9" fill="#6B6258">MAR</text>
+  <text x="320" y="220" text-anchor="middle" font-family="Manrope, sans-serif" font-size="11" fill="#14110F" font-weight="600">Decisão B</text>
+  <text x="320" y="237" text-anchor="middle" font-family="Manrope, sans-serif" font-size="10" fill="#6B6258">AGENT.md vira contrato</text>
+
+  <!-- Decision C -->
+  <circle cx="500" cy="180" r="14" fill="#14110F"/>
+  <text x="500" y="186" text-anchor="middle" font-family="Manrope, sans-serif" font-size="13" font-weight="700" fill="#F4EFE6">C</text>
+  <text x="500" y="155" text-anchor="middle" font-family="JetBrains Mono, monospace" font-size="9" fill="#6B6258">JUN</text>
+  <text x="500" y="220" text-anchor="middle" font-family="Manrope, sans-serif" font-size="11" fill="#14110F" font-weight="600">Decisão C</text>
+  <text x="500" y="237" text-anchor="middle" font-family="Manrope, sans-serif" font-size="10" fill="#6B6258">Graphiti como upgrade</text>
+
+  <!-- Current state -->
+  <circle cx="660" cy="180" r="18" fill="#0A4F4A" stroke="#14110F" stroke-width="2"/>
+  <text x="660" y="186" text-anchor="middle" font-family="JetBrains Mono, monospace" font-size="10" font-weight="700" fill="#F4EFE6">NOW</text>
+  <text x="660" y="155" text-anchor="middle" font-family="JetBrains Mono, monospace" font-size="9" fill="#6B6258">ATUAL</text>
+  <text x="660" y="225" text-anchor="middle" font-family="Manrope, sans-serif" font-size="11" fill="#0A4F4A" font-weight="700">Estado vigente</text>
+  <text x="660" y="241" text-anchor="middle" font-family="Manrope, sans-serif" font-size="10" fill="#6B6258">C substitui parte de B</text>
+
+  <!-- Bottom what graphiti adds -->
+  <rect x="80" y="270" width="600" height="36" fill="#6B7A4F"/>
+  <text x="380" y="293" text-anchor="middle" font-family="JetBrains Mono, monospace" font-size="11" fill="#F4EFE6" letter-spacing="1">O QUE O GRAPHITI ADICIONA: ENTIDADES · RELAÇÕES · EVENTOS · VALIDADE TEMPORAL · HISTÓRICO</text>
+</svg>
+<figcaption>Figura 6 — Graphiti como camada temporal opcional</figcaption>
+</figure>
+
+<p>Casos em que Graphiti justifica o esforço:</p>
+
+<ul>
+<li>Decisões que substituem decisões anteriores e você precisa rastrear ambas.</li>
+<li>Relações entre pessoas, projetos, clientes, stacks e agentes.</li>
+<li>Preferências que mudam com o tempo (estilo de escrita evolui).</li>
+<li>Eventos de projeto, reuniões, alterações, compromissos.</li>
+<li>Consultas do tipo "o que mudou?" ou "qual é a versão mais recente da verdade?".</li>
+</ul>
+
+<div class="callout tip">
+<div class="label">Quando NÃO adicionar Graphiti</div>
+<p>Se sua memória é predominantemente fatos estáveis (estilo de escrita, princípios, padrões), Graphiti é overhead. Adicione quando perguntas temporais começarem a aparecer com frequência e você sentir que o Obsidian sozinho não responde.</p>
+</div>
+
+<h3>Antes do Graphiti: implementações menores que já resolvem parte do problema</h3>
+
+<p>Algumas features que você colocaria no Graphiti já existem em ferramentas focadas apenas em decisões. O <strong>DecisionNode</strong> (<a href="https://github.com/decisionnode/DecisionNode">github.com/decisionnode/DecisionNode</a>) é um exemplo: armazena decisões como JSON estruturado com embeddings vetoriais, expõe via CLI e MCP server, tem history tracking, soft-delete (deprecate/activate) e conflict detection automático por similaridade semântica.</p>
+
+<p>É um sub-sistema, não uma alternativa à arquitetura federada. Ele resolve o módulo de decisões com busca semântica; não cobre Context Packs, domains, style guides ou project context. Mas se a sua dor for especificamente "os agentes não lembram de decisões de arquitetura tomadas na semana passada", DecisionNode pode resolver isso antes de você precisar subir o Graphiti inteiro.</p>
+
+<div class="callout">
+<div class="label">Caminho pragmático</div>
+<p>Obsidian como base geral. DecisionNode para o sub-módulo de decisões estruturadas com busca semântica. Graphiti só quando você precisar de relações entre entidades e histórico de mudanças no nível de grafo temporal. Não precisa subir tudo de uma vez.</p>
+</div>
+
+<!-- ============================================== -->
+<!-- 14 - STEP BY STEP -->
+<!-- ============================================== -->
+
+<h2><span class="num">14 / Execução</span>Passo a passo executável</h2>
+
+<p>Os passos abaixo são sequenciais. Cada um tem critério de conclusão objetivo.</p>
+
+<h3>Passo 1 — Criar o vault</h3>
+
+<pre><code>mkdir federated-memory
+cd federated-memory
+mkdir -p 00-global 10-domains 20-projects 30-context-packs \
+         40-agent-adapters 50-inbox 90-archive
+git init</code></pre>
+
+<p><strong>Concluído quando:</strong> a estrutura de pastas existe e o repositório git está inicializado.</p>
+
+<h3>Passo 2 — Escrever o AGENT.md</h3>
+
+<p>Copie o template da seção 07 para <code>00-global/AGENT.md</code> e ajuste a lista de domínios para os seus.</p>
+
+<p><strong>Concluído quando:</strong> o arquivo existe, lista seus domínios reais, e você consegue explicar cada regra em voz alta.</p>
+
+<h3>Passo 3 — Definir domínios reais</h3>
+
+<p>Crie uma pasta para cada domínio em <code>10-domains/</code>. Use o critério da seção 06: vocabulário próprio + saídas que não devem se misturar com outros.</p>
+
+<p><strong>Concluído quando:</strong> você tem entre 3 e 6 domínios. Mais que 8 é overhead. Menos que 3 quase nunca justifica memória federada.</p>
+
+<h3>Passo 4 — Três Context Packs iniciais</h3>
+
+<p>Crie em <code>30-context-packs/</code>:</p>
+
+<ul>
+<li><code>writing-style.md</code> — tarefas de escrita no seu estilo</li>
+<li><code>code-work.md</code> — tarefas de código com convenções suas</li>
+<li><code>architecture-review.md</code> — análise de arquitetura</li>
+</ul>
+
+<p>Use o exemplo preenchido da seção 09 como modelo. Cada um deve caber em uma tela.</p>
+
+<p><strong>Concluído quando:</strong> os três packs existem, cada um tem objetivo, listas <em>Use</em> e <em>Avoid</em>, e o campo de validade temporal.</p>
+
+<h3>Passo 5 — Adaptador para o primeiro agente</h3>
+
+<p>Se for Claude Code, crie <code>40-agent-adapters/claude/CLAUDE.md</code> apontando para o <code>AGENT.md</code> e para um Context Pack default. Use o template da seção 08.</p>
+
+<p><strong>Concluído quando:</strong> você consegue rodar o Claude Code no diretório do vault e ele lê o adaptador automaticamente.</p>
+
+<h3>Passo 6 — Instalar Hermes</h3>
+
+<p>Use as instruções da seção 10. Adicione um <code>AGENTS.md</code> na raiz do vault que referencia o <code>00-global/AGENT.md</code>.</p>
+
+<p><strong>Concluído quando:</strong> ao rodar <code>hermes</code> dentro do diretório, ele responde respeitando a regra "não carregar tudo" e usando os Context Packs.</p>
+
+<h3>Passo 7 — Expor via MCP</h3>
+
+<p>Escolha entre Opção A (Local REST API) ou Opção B (filesystem direto) da seção 11. Configure no seu cliente MCP de preferência. Restrinja escrita a <code>/50-inbox/</code>.</p>
+
+<p><strong>Concluído quando:</strong> um agente externo (Claude Desktop, Cursor, ChatGPT com MCP) consulta seu vault e respeita os limites de escrita.</p>
+
+<h3>Passo 8 — Validar com dois agentes diferentes</h3>
+
+<p>Faça a mesma tarefa em dois agentes diferentes consumindo a mesma memória. Verifique três coisas:</p>
+
+<ol>
+<li>O resultado tem voz consistente entre os dois?</li>
+<li>Nenhum dos dois contaminou o domínio errado?</li>
+<li>Ambos respeitaram a regra de só sugerir memória no inbox?</li>
+</ol>
+
+<p><strong>Concluído quando:</strong> as três respostas são "sim". Se uma delas for "não", o problema está no Context Pack, não no agente.</p>
+
+<h3>Passo 9 — Adicionar Graphiti se necessário</h3>
+
+<p>Só execute este passo quando você sentir dor temporal: decisões substituindo decisões, perguntas sobre histórico, validade de informação. Antes disso, é over-engineering.</p>
+
+<!-- ============================================== -->
+<!-- 15 - GOVERNANCE -->
+<!-- ============================================== -->
+
+<h2><span class="num">15 / Disciplina</span>Governança mínima</h2>
+
+<p>O maior risco de memória persistente não é falta de informação. É excesso de informação com autoridade indevida. Toda arquitetura precisa separar conversa bruta, hipótese, rascunho e memória permanente.</p>
+
+<figure>
+<svg viewBox="0 0 760 420" xmlns="http://www.w3.org/2000/svg">
+  <text x="380" y="32" text-anchor="middle" font-family="Fraunces, serif" font-size="22" font-style="italic" fill="#14110F">Loop mínimo de governança</text>
+  <text x="380" y="54" text-anchor="middle" font-family="JetBrains Mono, monospace" font-size="11" fill="#6B6258" letter-spacing="1">SEM ISSO, MEMÓRIA VIRA LIXÃO COM AUTORIDADE</text>
+
+  <!-- Central principle -->
+  <circle cx="380" cy="220" r="50" fill="#14110F"/>
+  <text x="380" y="217" text-anchor="middle" font-family="Manrope, sans-serif" font-size="11" font-weight="700" fill="#F4EFE6">PRINCÍPIO</text>
+  <text x="380" y="234" text-anchor="middle" font-family="JetBrains Mono, monospace" font-size="9" fill="#B89455">nada vira verdade</text>
+  <text x="380" y="246" text-anchor="middle" font-family="JetBrains Mono, monospace" font-size="9" fill="#B89455">sem aprovação</text>
+
+  <!-- 5 nodes in pentagon -->
+  <!-- Capture -->
+  <rect x="320" y="100" width="120" height="50" fill="#0A4F4A" stroke="#14110F" stroke-width="1.5"/>
+  <text x="380" y="120" text-anchor="middle" font-family="Manrope, sans-serif" font-size="13" font-weight="700" fill="#F4EFE6">Captura</text>
+  <text x="380" y="138" text-anchor="middle" font-family="JetBrains Mono, monospace" font-size="9" fill="#B89455">CONVERSA, NOTA</text>
+
+  <!-- Triage -->
+  <rect x="550" y="170" width="120" height="50" fill="#5C4A3A" stroke="#14110F" stroke-width="1.5"/>
+  <text x="610" y="190" text-anchor="middle" font-family="Manrope, sans-serif" font-size="13" font-weight="700" fill="#F4EFE6">Triagem</text>
+  <text x="610" y="208" text-anchor="middle" font-family="JetBrains Mono, monospace" font-size="9" fill="#B89455">HERMES SUGERE</text>
+
+  <!-- Draft -->
+  <rect x="500" y="320" width="120" height="50" fill="#C24A2A" stroke="#14110F" stroke-width="1.5"/>
+  <text x="560" y="340" text-anchor="middle" font-family="Manrope, sans-serif" font-size="13" font-weight="700" fill="#F4EFE6">Rascunho</text>
+  <text x="560" y="358" text-anchor="middle" font-family="JetBrains Mono, monospace" font-size="9" fill="#F4EFE6" opacity="0.9">VAI PARA INBOX</text>
+
+  <!-- Review -->
+  <rect x="140" y="320" width="120" height="50" fill="#B89455" stroke="#14110F" stroke-width="1.5"/>
+  <text x="200" y="340" text-anchor="middle" font-family="Manrope, sans-serif" font-size="13" font-weight="700" fill="#14110F">Revisão</text>
+  <text x="200" y="358" text-anchor="middle" font-family="JetBrains Mono, monospace" font-size="9" fill="#14110F">HUMANO DECIDE</text>
+
+  <!-- Consolidate -->
+  <rect x="90" y="170" width="120" height="50" fill="#6B7A4F" stroke="#14110F" stroke-width="1.5"/>
+  <text x="150" y="190" text-anchor="middle" font-family="Manrope, sans-serif" font-size="13" font-weight="700" fill="#F4EFE6">Consolidação</text>
+  <text x="150" y="208" text-anchor="middle" font-family="JetBrains Mono, monospace" font-size="9" fill="#F4EFE6" opacity="0.9">VIRA MEMÓRIA</text>
+
+  <!-- Arrows (clockwise) -->
+  <path d="M 440 130 Q 530 130 580 175" stroke="#14110F" stroke-width="1.2" fill="none" marker-end="url(#g1)"/>
+  <path d="M 610 220 Q 610 290 580 320" stroke="#14110F" stroke-width="1.2" fill="none" marker-end="url(#g2)"/>
+  <path d="M 500 350 L 260 350" stroke="#14110F" stroke-width="1.2" marker-end="url(#g3)"/>
+  <path d="M 200 320 Q 130 290 150 220" stroke="#14110F" stroke-width="1.2" fill="none" marker-end="url(#g4)"/>
+  <path d="M 210 170 Q 280 130 320 130" stroke="#14110F" stroke-width="1.2" fill="none" marker-end="url(#g5)"/>
+
+  <defs>
+    <marker id="g1" markerWidth="8" markerHeight="8" refX="6" refY="2.5" orient="auto"><polygon points="0 0, 6 2.5, 0 5" fill="#14110F"/></marker>
+    <marker id="g2" markerWidth="8" markerHeight="8" refX="6" refY="2.5" orient="auto"><polygon points="0 0, 6 2.5, 0 5" fill="#14110F"/></marker>
+    <marker id="g3" markerWidth="8" markerHeight="8" refX="6" refY="2.5" orient="auto"><polygon points="0 0, 6 2.5, 0 5" fill="#14110F"/></marker>
+    <marker id="g4" markerWidth="8" markerHeight="8" refX="6" refY="2.5" orient="auto"><polygon points="0 0, 6 2.5, 0 5" fill="#14110F"/></marker>
+    <marker id="g5" markerWidth="8" markerHeight="8" refX="6" refY="2.5" orient="auto"><polygon points="0 0, 6 2.5, 0 5" fill="#14110F"/></marker>
+  </defs>
+</svg>
+<figcaption>Figura 7 — Loop de governança em cinco estágios</figcaption>
+</figure>
+
+<ul>
+<li>Toda nova memória começa como sugestão em <code>/50-inbox/</code>.</li>
+<li>Toda decisão permanente deve ter data, escopo, fonte, status e responsável pela aprovação.</li>
+<li>Memórias antigas precisam poder ser arquivadas, substituídas ou marcadas como obsoletas.</li>
+<li>Agentes consultam memória, mas não reescrevem princípios globais sem permissão.</li>
+<li>Logs simples bastam no começo: quem pediu, o que foi lido, o que foi alterado, por quê.</li>
+</ul>
+
+<!-- ============================================== -->
+<!-- 16 - ANTI-PATTERNS -->
+<!-- ============================================== -->
+
+<h2><span class="num">16 / Erros comuns</span>Anti-patterns a evitar</h2>
+
+<table>
+<thead><tr><th>Anti-pattern</th><th>Sintoma</th><th>Antídoto</th></tr></thead>
+<tbody>
+<tr><td><strong>Super cérebro único</strong></td><td>Marketing puxa código, código puxa pesquisa, tudo mistura</td><td>Domínios isolados desde o dia um</td></tr>
+<tr><td><strong>Contexto sempre ativo</strong></td><td>Agente lento, alucinação, respostas fora do escopo</td><td>Context Packs por tarefa</td></tr>
+<tr><td><strong>Memória automática sem revisão</strong></td><td>Hipóteses viram fato, base degrada em semanas</td><td>Inbox obrigatório, aprovação humana</td></tr>
+<tr><td><strong>Adaptador como fonte principal</strong></td><td>Trocar de ferramenta exige reescrever tudo</td><td>AGENT.md é a fonte, adaptador só traduz</td></tr>
+<tr><td><strong>Orquestrador poderoso cedo demais</strong></td><td>Hermes/LangGraph fazendo coisa que ninguém entende</td><td>Começar com leitura direta, adicionar orquestração quando doer</td></tr>
+<tr><td><strong>MCP/API sem escopo</strong></td><td>Qualquer agente escreve em qualquer pasta</td><td>Escrita apenas em /50-inbox/, resto read-only</td></tr>
+</tbody>
+</table>
+
+<!-- ============================================== -->
+<!-- 17 - SUBSTITUTIONS -->
+<!-- ============================================== -->
+
+<h2><span class="num">17 / Trocas</span>Substituições sem mudar a arquitetura</h2>
+
+<p>A implementação de referência usa Obsidian + Hermes + MCP. A arquitetura, porém, foi pensada para ser portátil.</p>
+
+<p><strong>Alternativas ao Obsidian.</strong> Logseq, Foam, Dendron, VSCode com pastas Markdown, repositório Git puro. O requisito é ser legível, versionável e fácil de revisar por humano.</p>
+
+<p><strong>Alternativas ao Hermes.</strong> LangGraph para fluxos stateful com grafos explícitos, CrewAI para equipes de agentes por papel, Letta para agentes persistentes, Microsoft Agent Framework / AutoGen para multi-agente. O requisito é classificar tarefa, escolher domínio, selecionar Context Pack e entregar contexto sem virar dono da memória.</p>
+
+<p><strong>Alternativas ao MCP.</strong> Leitura direta de arquivos, CLI local, API REST. MCP é recomendado quando vários agentes precisam consumir a memória de modo padronizado.</p>
+
+<p><strong>Para o sub-módulo de decisões: DecisionNode.</strong> Se você quiser trocar os arquivos <code>DECISION.md</code> por algo com busca semântica e histórico automático, o <strong>DecisionNode</strong> (<a href="https://github.com/decisionnode/DecisionNode">github.com/decisionnode/DecisionNode</a>) faz exatamente isso: decisões em JSON, embeddings via Gemini, busca por cosine similarity, MCP server pronto para Claude Code, Cursor e Windsurf, conflict detection, soft-delete reversível. O requisito para usar como substituto permanece o mesmo: não pode gravar memória permanente sem aprovação humana. No DecisionNode, isso se traduz em configurar o agente em modo "strict" e revisar o que entra antes de ativar.</p>
+
+<div class="callout">
+<div class="label">Critério de substituição</div>
+<p>Você pode trocar ferramentas. Não pode trocar os princípios: domínio separado, contrato neutro, contexto enxuto, aprovação humana, portabilidade.</p>
+</div>
+
+<!-- ============================================== -->
+<!-- 18 - TEMPLATES -->
+<!-- ============================================== -->
+
+<h2><span class="num">18 / Templates</span>Modelos prontos para copiar</h2>
+
+<h3>DECISION.md</h3>
+
+<pre><code># Decision: [título curto]
+
+Date: YYYY-MM-DD
+Scope: [domínio ou projeto]
+Status: proposed | approved | superseded | archived
+Source: [conversa, reunião, documento]
+Decision: [a decisão em uma frase]
+Reason: [por que decidiu isso]
+Impacts: [o que muda]
+Supersedes: [link para decisão anterior, se houver]
+Related context packs: [packs que devem refletir essa decisão]</code></pre>
+
+<h3>PROJECT_CONTEXT.md</h3>
+
+<pre><code># Project: [nome]
+
+Goal: [o que esse projeto deve resolver]
+Current status: [onde está agora]
+Stack: [tecnologias, ferramentas]
+Constraints: [limites técnicos, prazo, orçamento]
+Important files: [caminhos relevantes]
+Relevant domains: [quais domínios da memória se aplicam]
+Relevant context packs: [quais packs usar]
+Open questions: [o que ainda não foi decidido]
+Do not use: [o que NÃO trazer para esse projeto]</code></pre>
+
+<h3>MEMORY_UPDATE_PROPOSAL.md</h3>
+
+<pre><code># Memory Update Proposal
+
+Source: [conversa, agente, documento]
+Suggested domain: [domínio alvo]
+Suggested memory type: fact | decision | preference | workflow | risk
+Confidence: low | medium | high
+Why this should become memory: [justificativa]
+Proposed text: [o texto exato a virar memória]
+Human decision: approved | edited | rejected
+Reviewer: [nome]
+Decision date: YYYY-MM-DD</code></pre>
+
+<!-- ============================================== -->
+<!-- 19 - CHECKLIST -->
+<!-- ============================================== -->
+
+<h2><span class="num">19 / Validação</span>Checklist de implementação</h2>
+
+<ul class="checklist">
+<li>Existe um <code>AGENT.md</code> claro e neutro, sem referência a ferramentas específicas?</li>
+<li>Os domínios estão separados de verdade, com vocabulário próprio?</li>
+<li>Há pelo menos três Context Packs úteis, com objetivo, listas Use/Avoid e validade temporal?</li>
+<li>O primeiro adaptador (<code>CLAUDE.md</code>, <code>codex.md</code>, etc) está funcionando?</li>
+<li>O Hermes carrega o <code>AGENTS.md</code> da raiz do vault automaticamente?</li>
+<li>O Hermes só roteia e sugere, sem gravar memória permanente sozinho?</li>
+<li>Existe <code>/50-inbox/suggested-memory.md</code> recebendo sugestões dos agentes?</li>
+<li>Há regra explícita de aprovação humana antes de qualquer escrita em <code>/00-global/</code> ou <code>/10-domains/</code>?</li>
+<li>O MCP server foi configurado com escrita restrita a <code>/50-inbox/</code>?</li>
+<li>O sistema foi testado com pelo menos dois agentes diferentes consumindo a mesma base?</li>
+<li>Existe plano de quando adicionar Graphiti, e ele inclui "apenas quando a dor temporal aparecer"?</li>
+</ul>
+
+<!-- ============================================== -->
+<!-- 20 - REFERENCES + CLOSING -->
+<!-- ============================================== -->
+
+<h2><span class="num">20 / Fontes</span>Referências e fechamento</h2>
+
+<p>As referências abaixo ancoram os componentes técnicos. O guia não depende de uma ferramenta específica, mas usa conceitos e padrões desses ecossistemas.</p>
+
+<ul>
+<li><strong>Hermes Agent — NousResearch.</strong> <a href="https://github.com/NousResearch/hermes-agent">github.com/NousResearch/hermes-agent</a> e <a href="https://hermes-agent.nousresearch.com/docs/">hermes-agent.nousresearch.com/docs</a></li>
+<li><strong>Model Context Protocol.</strong> <a href="https://modelcontextprotocol.io">modelcontextprotocol.io</a></li>
+<li><strong>Obsidian MCP servers (comunidade).</strong> Implementações via Local REST API plugin ou via filesystem direto.</li>
+<li><strong>Claude Code Memory.</strong> <a href="https://docs.claude.com/en/docs/claude-code/memory">docs.claude.com/en/docs/claude-code/memory</a></li>
+<li><strong>Graphiti — Zep.</strong> <a href="https://help.getzep.com/graphiti/graphiti/overview">help.getzep.com/graphiti</a></li>
+<li><strong>DecisionNode.</strong> <a href="https://github.com/decisionnode/DecisionNode">github.com/decisionnode/DecisionNode</a> — implementação de referência para o sub-módulo de decisões com embeddings e busca semântica via MCP.</li>
+<li><strong>Letta — Stateful agents.</strong> <a href="https://docs.letta.com/guides/core-concepts/stateful-agents/">docs.letta.com</a></li>
+<li><strong>CrewAI.</strong> <a href="https://docs.crewai.com">docs.crewai.com</a></li>
+<li><strong>Microsoft Agent Framework.</strong> <a href="https://learn.microsoft.com/en-us/agent-framework/">learn.microsoft.com/agent-framework</a></li>
+</ul>
+
+<div class="divider">FECHAMENTO</div>
+
+<p class="lead">Memória persistente só é útil quando existe isolamento. Sem isolamento, o sistema fica grande, lento e confuso. Com domínios separados, contrato neutro, Context Packs e blackboard como padrão de coordenação, a memória vira infraestrutura. Não ruído acumulado.</p>
+
+<p><strong>Tese final.</strong> Não crie um super cérebro. Crie uma memória federada: humana na origem, segmentada por domínio, roteada por Hermes, exposta por MCP e consumida por qualquer agente. Os agentes não precisam conversar entre si. O quadro compartilhado já é a coordenação.</p>
+
+<p><strong>Uma nota sobre convergência.</strong> Ferramentas como o DecisionNode, desenvolvidas independentemente, chegaram a conclusões parecidas com as deste guia: decisões estruturadas, multi-agente via MCP, histórico auditável, padrão blackboard implícito. Isso não é coincidência. É sinal de que o problema é real e que a direção arquitetural está certa. O mercado está convergindo para memória federada. Este guia tenta nomear o padrão antes que ele vire apenas feature de produto.</p>
+
+<div style="margin-top: 80px; padding-top: 32px; border-top: 1px solid var(--line-soft); text-align: center;">
+<p style="font-family: 'JetBrains Mono', monospace; font-size: 11px; text-transform: uppercase; letter-spacing: 0.15em; color: var(--ink-mute); margin: 0;">
+Memória Federada para Agentes de IA · Guia v2.0<br>
+André Almeida · andrealmeidadc.com
+</p>
+</div>
+
+</div>
+
+</body>
+</html>

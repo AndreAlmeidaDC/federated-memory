@@ -1,0 +1,602 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<title>Memória Federada — Whitepaper</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Spectral:ital,wght@0,300;0,400;0,500;0,600;1,300;1,400;1,500&family=DM+Sans:ital,wght@0,300;0,400;0,500;0,600;1,300&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+:root {
+  --bg: #F7F4EE;
+  --bg2: #EDE9E0;
+  --ink: #1A1714;
+  --ink-2: #3D3830;
+  --ink-3: #6E665A;
+  --red: #B83232;
+  --teal: #1A5C56;
+  --gold: #9A7B3A;
+  --rule: #C4BAA8;
+}
+
+* { box-sizing: border-box; margin: 0; padding: 0; }
+html { -webkit-font-smoothing: antialiased; }
+
+body {
+  font-family: 'Spectral', serif;
+  background: var(--bg);
+  color: var(--ink);
+  font-size: 17px;
+  line-height: 1.75;
+}
+
+.page {
+  max-width: 740px;
+  margin: 0 auto;
+  padding: 100px 60px;
+}
+
+/* COVER */
+.cover {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  padding: 100px 60px;
+  border-bottom: 2px solid var(--ink);
+  position: relative;
+  overflow: hidden;
+}
+
+.cover::before {
+  content: "";
+  position: absolute;
+  top: 0; right: 0;
+  width: 340px;
+  height: 100%;
+  background: var(--bg2);
+  z-index: 0;
+}
+
+.cover > * { position: relative; z-index: 1; }
+
+.cover-top { max-width: 520px; }
+
+.cover-label {
+  font-family: 'DM Mono', monospace;
+  font-size: 11px;
+  text-transform: uppercase;
+  letter-spacing: 0.2em;
+  color: var(--red);
+  margin-bottom: 56px;
+}
+
+.cover h1 {
+  font-family: 'Spectral', serif;
+  font-size: 58px;
+  font-weight: 300;
+  line-height: 1.05;
+  color: var(--ink);
+  letter-spacing: -0.02em;
+  margin-bottom: 20px;
+}
+
+.cover h1 strong {
+  font-weight: 600;
+  font-style: italic;
+  color: var(--teal);
+}
+
+.cover .subtitle {
+  font-family: 'DM Sans', sans-serif;
+  font-size: 17px;
+  color: var(--ink-2);
+  font-weight: 300;
+  line-height: 1.5;
+  max-width: 440px;
+  margin-bottom: 60px;
+  border-left: 2px solid var(--red);
+  padding-left: 20px;
+}
+
+.cover-meta {
+  font-family: 'DM Mono', monospace;
+  font-size: 11px;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--ink-3);
+  line-height: 1.8;
+}
+
+.cover-right-text {
+  position: absolute;
+  right: 40px;
+  top: 50%;
+  transform: translateY(-50%) rotate(90deg);
+  transform-origin: center center;
+  font-family: 'DM Mono', monospace;
+  font-size: 10px;
+  letter-spacing: 0.25em;
+  text-transform: uppercase;
+  color: var(--ink-3);
+  white-space: nowrap;
+  z-index: 2;
+}
+
+/* ABSTRACT */
+.abstract-block {
+  border: 1px solid var(--ink);
+  padding: 40px;
+  margin: 60px 0;
+  background: var(--bg2);
+}
+
+.abstract-block .label {
+  font-family: 'DM Mono', monospace;
+  font-size: 10px;
+  text-transform: uppercase;
+  letter-spacing: 0.2em;
+  color: var(--ink-3);
+  margin-bottom: 20px;
+}
+
+.abstract-block p {
+  font-size: 16px;
+  line-height: 1.7;
+  color: var(--ink-2);
+  font-style: italic;
+}
+
+/* TYPOGRAPHY */
+h2 {
+  font-family: 'Spectral', serif;
+  font-size: 32px;
+  font-weight: 500;
+  color: var(--ink);
+  margin-top: 80px;
+  margin-bottom: 28px;
+  line-height: 1.2;
+  letter-spacing: -0.01em;
+}
+
+h2 .section-num {
+  display: block;
+  font-family: 'DM Mono', monospace;
+  font-size: 11px;
+  text-transform: uppercase;
+  letter-spacing: 0.2em;
+  color: var(--red);
+  margin-bottom: 10px;
+  font-weight: 400;
+}
+
+h3 {
+  font-family: 'DM Sans', sans-serif;
+  font-size: 19px;
+  font-weight: 600;
+  color: var(--ink);
+  margin-top: 48px;
+  margin-bottom: 16px;
+  letter-spacing: -0.01em;
+}
+
+p {
+  margin-bottom: 20px;
+  color: var(--ink-2);
+}
+
+p:last-child { margin-bottom: 0; }
+
+strong { color: var(--ink); font-weight: 600; }
+
+em { font-style: italic; color: var(--ink); }
+
+/* PULL QUOTE */
+.pull {
+  font-family: 'Spectral', serif;
+  font-size: 24px;
+  font-weight: 300;
+  font-style: italic;
+  color: var(--teal);
+  line-height: 1.4;
+  margin: 48px 0;
+  padding: 32px 40px;
+  border-top: 1px solid var(--teal);
+  border-bottom: 1px solid var(--teal);
+  letter-spacing: -0.01em;
+}
+
+/* CALLOUT */
+.callout {
+  background: var(--bg2);
+  border-left: 3px solid var(--teal);
+  padding: 20px 24px;
+  margin: 32px 0;
+}
+
+.callout.warn { border-color: var(--red); }
+
+.callout .label {
+  font-family: 'DM Mono', monospace;
+  font-size: 10px;
+  text-transform: uppercase;
+  letter-spacing: 0.15em;
+  color: var(--teal);
+  margin-bottom: 10px;
+}
+.callout.warn .label { color: var(--red); }
+
+.callout p { font-size: 15px; margin: 0; }
+
+/* COMPARISON TABLE */
+table {
+  width: 100%;
+  border-collapse: collapse;
+  margin: 32px 0;
+  font-size: 14px;
+  font-family: 'DM Sans', sans-serif;
+}
+
+th {
+  font-family: 'DM Mono', monospace;
+  font-size: 10px;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  color: var(--ink-3);
+  padding: 10px 14px;
+  border-bottom: 2px solid var(--ink);
+  text-align: left;
+}
+
+td {
+  padding: 12px 14px;
+  border-bottom: 1px solid var(--rule);
+  color: var(--ink-2);
+  vertical-align: top;
+}
+
+td strong { color: var(--ink); }
+td.yes { color: var(--teal); font-weight: 600; }
+td.no { color: var(--red); }
+td.partial { color: var(--gold); }
+
+/* RULE */
+hr {
+  border: none;
+  border-top: 1px solid var(--rule);
+  margin: 60px 0;
+}
+
+/* FOOTNOTES */
+.footnotes {
+  margin-top: 80px;
+  padding-top: 32px;
+  border-top: 1px solid var(--rule);
+  font-family: 'DM Sans', sans-serif;
+  font-size: 13px;
+  color: var(--ink-3);
+  line-height: 1.6;
+}
+
+.footnotes p { margin-bottom: 8px; font-size: 13px; color: var(--ink-3); }
+
+sup {
+  font-family: 'DM Mono', monospace;
+  font-size: 10px;
+  color: var(--red);
+  margin-left: 1px;
+}
+
+/* PRINCIPLES LIST */
+.principles {
+  list-style: none;
+  margin: 28px 0;
+  counter-reset: principles;
+}
+
+.principles li {
+  counter-increment: principles;
+  display: flex;
+  gap: 20px;
+  margin-bottom: 24px;
+  align-items: flex-start;
+}
+
+.principles li::before {
+  content: counter(principles, decimal-leading-zero);
+  font-family: 'DM Mono', monospace;
+  font-size: 12px;
+  color: var(--red);
+  min-width: 28px;
+  padding-top: 3px;
+}
+
+.principles li p {
+  margin: 0;
+  font-size: 16px;
+}
+
+.principles li strong {
+  display: block;
+  margin-bottom: 4px;
+  font-family: 'DM Sans', sans-serif;
+}
+
+/* COLOPHON */
+.colophon {
+  margin-top: 80px;
+  padding-top: 32px;
+  border-top: 2px solid var(--ink);
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-end;
+  font-family: 'DM Mono', monospace;
+  font-size: 10px;
+  text-transform: uppercase;
+  letter-spacing: 0.15em;
+  color: var(--ink-3);
+}
+
+/* PRINT */
+@media print {
+  body { background: white; font-size: 14px; }
+  .page { padding: 40px; }
+  .cover { min-height: auto; padding: 60px 40px; page-break-after: always; }
+  h2 { page-break-before: auto; }
+  .pull { page-break-inside: avoid; }
+  table { page-break-inside: avoid; }
+}
+</style>
+</head>
+<body>
+
+<!-- ========== COVER ========== -->
+
+<div class="cover">
+  <div class="cover-right-text">Memória Federada · Whitepaper · 2025</div>
+
+  <div class="cover-top">
+    <div class="cover-label">Whitepaper · Arquitetura de Agentes de IA</div>
+
+    <h1>Memória<br>
+    <strong>Federada</strong><br>
+    para Agentes<br>
+    de IA</h1>
+
+    <p class="subtitle">Por que agentes de IA não devem ser donos do contexto — e como uma arquitetura federada resolve o problema de memória que nenhuma ferramenta resolveu ainda.</p>
+  </div>
+
+  <div class="cover-meta">
+    André Almeida · andrealmeidadc.com<br>
+    Versão 1.0 · 2025<br>
+    Licença: CC BY 4.0
+  </div>
+</div>
+
+<!-- ========== BODY ========== -->
+
+<div class="page">
+
+<!-- ABSTRACT -->
+<div class="abstract-block">
+  <div class="label">Resumo</div>
+  <p>O problema de memória em agentes de IA não é falta de ferramentas. É ausência de separação entre quem guarda, quem roteia e quem executa o contexto. As soluções atuais centralizam memória no agente, criando dependência de ferramenta, contaminação semântica entre domínios e degradação inevitável com o tempo. Este paper propõe memória federada: uma arquitetura onde contexto pertence ao usuário, domínios são isolados, roteamento é explícito e aprovação humana governa o que vira verdade permanente. A implementação de referência usa Obsidian como base revisada, Context Packs como unidade mínima de contexto, Hermes como roteador e MCP como interface de acesso padronizado para múltiplos agentes.</p>
+</div>
+
+<!-- SECTION 1 -->
+<h2><span class="section-num">01 · O Problema</span>Agentes esquecem. E quando lembram, contaminam.</h2>
+
+<p>Toda ferramenta de IA parece brilhante nos primeiros minutos. Ela entende o pedido, produz resultado relevante, e por um momento parece que você finalmente tem um colaborador que acompanha o raciocínio. O problema aparece na segunda sessão. Ou na décima. A ferramenta esquece o que foi decidido, mistura contexto de projetos distintos, repete perguntas que já foram respondidas, e precisa ser reeducada continuamente.</p>
+
+<p>Isso não é bug. É consequência de uma escolha arquitetural: a memória, quando existe, pertence ao agente. Ela vive dentro da ferramenta, no formato da ferramenta, acessível apenas pela ferramenta. Quando você troca de ferramenta, perde a memória. Quando a ferramenta atualiza, a memória degrada. Quando você usa duas ferramentas em paralelo, cada uma tem uma versão diferente da realidade.</p>
+
+<p>A reação natural é tentar concentrar tudo em um lugar: um "super cérebro", um arquivo de contexto enorme, um sistema de memória centralizado que o agente lê inteiro antes de responder. No começo, isso parece resolver. Com o tempo, o sistema degrada de outra forma: uma tarefa de marketing puxa convenções de código; um projeto antigo contamina um projeto novo; memórias de meses atrás entram como se ainda fossem válidas. O agente sabe demais e, justamente por isso, começa a errar de formas mais sofisticadas.</p>
+
+<div class="pull">O problema não é que agentes esquecem. O problema é que a arquitetura atual não distingue entre lembrar e contaminar.</div>
+
+<p>O campo ainda não tem uma resposta estabelecida para isso. Ferramentas de memória existem — Mem0, Zep, Letta, sistemas nativos de ferramentas como Claude Code e Cursor — mas todas partem do mesmo pressuposto: a memória é um componente interno do sistema de agência. O agente gerencia a memória. O agente decide o que guardar. O agente decide o que trazer para o contexto.</p>
+
+<p>Este paper argumenta que esse pressuposto é o problema, não a solução.</p>
+
+<!-- SECTION 2 -->
+<h2><span class="section-num">02 · Por que as Soluções Atuais Falham</span>Ferramentas certas para o problema errado.</h2>
+
+<p>As soluções existentes de memória para agentes de IA são tecnicamente sofisticadas. Elas usam embeddings vetoriais, grafos de conhecimento, compressão de contexto, retrieval semântico. O problema não é a tecnologia. É o pressuposto arquitetural que governa onde a memória mora e quem a controla.</p>
+
+<h3>Memória nativa de ferramentas</h3>
+
+<p>Claude Code tem <code>CLAUDE.md</code> e um sistema de memória local. Cursor tem regras de projeto. Windsurf tem memória por workspace. Cada uma dessas implementações funciona bem dentro da ferramenta que a criou — e falha completamente fora dela. Se você usa Claude Code de manhã e Cursor à tarde para o mesmo projeto, as duas ferramentas têm memórias diferentes, possivelmente conflitantes, sem nenhum mecanismo de sincronização ou governança. A memória pertence à ferramenta, não ao projeto, não ao usuário.</p>
+
+<h3>Sistemas de memória como serviço</h3>
+
+<p>Mem0, Zep e similares resolvem o problema de portabilidade parcialmente: a memória vive em um serviço externo que múltiplas ferramentas podem consultar. Mas introduzem três novos problemas. Primeiro, dependência de infraestrutura externa — a memória agora está na nuvem de outra empresa. Segundo, ausência de governança explícita — o que entra na memória é decidido automaticamente, sem aprovação humana, e hipóteses viram fatos permanentes sem revisão. Terceiro, ausência de isolamento semântico — toda a memória vive em um espaço vetorial único, e projetos distintos contaminam uns aos outros por proximidade semântica.</p>
+
+<h3>Grafos de conhecimento temporais</h3>
+
+<p>Graphiti (Zep) e sistemas similares adicionam dimensão temporal e relacional à memória. São tecnicamente mais ricos, mas sofrem do mesmo problema de governança: quem decide o que entra no grafo? Com que critério uma informação de uma conversa vira um nó persistente? A automação sem curadoria humana produz grafos que crescem, mas não necessariamente melhoram.</p>
+
+<div class="callout warn">
+  <div class="label">O padrão comum</div>
+  <p>Em todas as abordagens existentes, a memória é um componente interno do sistema de agência. O agente guarda, o agente roteia, o agente executa. Essa concentração é a raiz do problema, não uma propriedade inevitável da arquitetura.</p>
+</div>
+
+<table>
+  <thead>
+    <tr>
+      <th>Solução</th>
+      <th>Portabilidade</th>
+      <th>Isolamento</th>
+      <th>Governança</th>
+      <th>Soberania</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td><strong>Memória nativa (Claude Code, Cursor)</strong></td>
+      <td class="no">Nenhuma</td>
+      <td class="partial">Parcial</td>
+      <td class="no">Nenhuma</td>
+      <td class="no">Ferramenta</td>
+    </tr>
+    <tr>
+      <td><strong>Mem0 / Zep</strong></td>
+      <td class="partial">Parcial</td>
+      <td class="no">Nenhuma</td>
+      <td class="no">Automática</td>
+      <td class="no">Serviço externo</td>
+    </tr>
+    <tr>
+      <td><strong>Graphiti</strong></td>
+      <td class="partial">Parcial</td>
+      <td class="partial">Parcial</td>
+      <td class="partial">Limitada</td>
+      <td class="no">Serviço externo</td>
+    </tr>
+    <tr>
+      <td><strong>Memória Federada</strong></td>
+      <td class="yes">Total</td>
+      <td class="yes">Por domínio</td>
+      <td class="yes">Humana</td>
+      <td class="yes">Usuário</td>
+    </tr>
+  </tbody>
+</table>
+
+<!-- SECTION 3 -->
+<h2><span class="section-num">03 · O Erro Arquitetural</span>Misturar armazenamento, roteamento e execução.</h2>
+
+<p>O problema fundamental das abordagens existentes é a ausência de separação entre três funções distintas: <em>guardar</em> contexto, <em>rotear</em> contexto para o agente certo, e <em>executar</em> com base nesse contexto. Quando essas três funções vivem no mesmo componente — o agente — qualquer falha em uma contamina as outras.</p>
+
+<p>Um agente que guarda sua própria memória tem incentivo estrutural para guardar demais: mais contexto parece mais seguro. Um agente que roteia seu próprio contexto não tem critério externo para decidir o que é relevante: traz tudo ou usa heurísticas opacas. Um agente que executa com base em memória que ele mesmo governou não tem mecanismo de auditoria: erros de memória viram erros de execução silenciosos.</p>
+
+<p>A solução não é um agente mais inteligente. É uma arquitetura que separa essas responsabilidades.</p>
+
+<div class="pull">Um agente que guarda, roteia e executa com sua própria memória não tem como saber o que não sabe. E não tem como ser corrigido sem ser reiniciado.</div>
+
+<p>Sistemas de software maduros resolveram esse problema há décadas com o princípio de separação de responsabilidades. Bancos de dados não executam lógica de negócio. Roteadores não armazenam conteúdo. Servidores de aplicação não gerenciam persistência diretamente. A arquitetura de agentes de IA ainda não internalizou esse princípio.</p>
+
+<p>O corolário importante: quando armazenamento, roteamento e execução estão separados, trocar qualquer um dos três não destrói o sistema. Você pode trocar o agente executor sem perder a memória. Pode trocar o roteador sem reescrever o contrato de acesso. Pode migrar o armazenamento sem que os agentes percebam. Isso é o que portabilidade real significa.</p>
+
+<!-- SECTION 4 -->
+<h2><span class="section-num">04 · A Proposta</span>Memória federada: princípios antes de ferramentas.</h2>
+
+<p>Memória federada é uma arquitetura onde o contexto pertence ao usuário, domínios são isolados semanticamente, o roteamento é explícito e governado, e agentes são consumidores temporários de contexto — não donos dele.</p>
+
+<p>A proposta tem cinco princípios que permanecem válidos independentemente das ferramentas escolhidas para implementá-los:</p>
+
+<ol class="principles">
+  <li>
+    <p><strong>Soberania do usuário.</strong> A base de memória pertence ao usuário. Agentes entram e saem; o contexto continua portátil, legível por humanos e versionável. Nenhuma ferramenta deve ser pré-requisito para acessar a própria memória.</p>
+  </li>
+  <li>
+    <p><strong>Isolamento por domínio.</strong> Contextos de domínios distintos — marketing, engenharia, escrita, pesquisa — não devem compartilhar o mesmo espaço semântico. Contaminação entre domínios é prevenida por estrutura, não por instrução ao agente.</p>
+  </li>
+  <li>
+    <p><strong>Contrato neutro de consumo.</strong> Um arquivo de contrato central descreve como qualquer agente deve consumir a memória. Adaptadores específicos por ferramenta traduzem esse contrato, mas não o substituem. Trocar de ferramenta é trocar o adaptador, não reescrever as regras.</p>
+  </li>
+  <li>
+    <p><strong>Contexto mínimo suficiente.</strong> O agente recebe o contexto necessário para a tarefa em execução, não o histórico completo da memória. Context Packs são a unidade de entrega: pacotes enxutos, orientados à tarefa, com escopo explícito do que usar e do que evitar.</p>
+  </li>
+  <li>
+    <p><strong>Aprovação humana para memória permanente.</strong> Nenhuma informação de uma conversa, hipótese ou rascunho vira memória permanente sem revisão humana explícita. A automação pode sugerir; o humano aprova. Essa distinção é o que impede a degradação inevitável dos sistemas de memória automática.</p>
+  </li>
+</ol>
+
+<h3>Coordenação sem comunicação direta</h3>
+
+<p>Um insight central da arquitetura federada é que agentes múltiplos não precisam comunicar-se entre si para serem coordenados. A coordenação acontece através da memória compartilhada — o que a literatura de sistemas distribuídos chama de <em>blackboard architecture</em>.</p>
+
+<p>Claude Code acessa a base de memória de manhã, produz um resultado, sugere uma atualização de memória. O humano aprova. À tarde, Cursor acessa a mesma base atualizada e trabalha com o estado mais recente — sem que os dois agentes jamais tenham trocado uma mensagem. O quadro compartilhado é a coordenação. Isso elimina a necessidade de protocolos de comunicação inter-agente, filas de mensagens, e a complexidade inerente de sistemas multi-agente acoplados.</p>
+
+<div class="callout">
+  <div class="label">Implicação prática</div>
+  <p>Trocar um agente por outro não quebra a coordenação. O novo agente lê o mesmo quadro. A memória não precisa ser migrada, reimportada ou reconfigurada. A portabilidade é consequência estrutural da arquitetura, não uma feature adicionada depois.</p>
+</div>
+
+<h3>A unidade mínima: o Context Pack</h3>
+
+<p>Context Packs são a peça mais subestimada da arquitetura. São arquivos curtos que definem, para uma tarefa específica: qual o objetivo, quais fontes da base de memória usar, quais fontes explicitamente evitar, qual o formato esperado da saída, e qual o grau de validade temporal do contexto.</p>
+
+<p>A lista de "evitar" é tão importante quanto a lista de "usar". Um Context Pack para escrita no LinkedIn que evita explicitamente notas de engenharia não depende do agente saber que notas de engenharia não são relevantes — isso está codificado no pacote. O isolamento semântico é estrutural, não instrucional.</p>
+
+<!-- SECTION 5 -->
+<h2><span class="section-num">05 · Comparação com Alternativas</span>Onde cada abordagem vence e onde perde.</h2>
+
+<p>Memória federada não é superior em todos os cenários. A comparação honesta exige reconhecer onde outras abordagens têm vantagem.</p>
+
+<h3>Onde memória nativa de ferramenta vence</h3>
+
+<p>Para usuários com uma única ferramenta, um único projeto e baixa necessidade de portabilidade, a memória nativa é a escolha certa. Tem fricção de setup zero, integração perfeita com o fluxo da ferramenta, e não exige nenhuma infraestrutura adicional. O custo — dependência de ferramenta, ausência de portabilidade — só aparece quando o contexto cresce além do que a ferramenta comporta.</p>
+
+<h3>Onde sistemas como Mem0 e Zep vencem</h3>
+
+<p>Para times que precisam de memória compartilhada entre múltiplos usuários, com retrieval semântico automático e sem curadoria manual, Mem0 e Zep são mais adequados. A memória federada proposta aqui exige disciplina de curadoria que não escala automaticamente para equipes grandes sem processos de governança adicionais.</p>
+
+<h3>Onde memória federada vence</h3>
+
+<p>Para usuários que trabalham com múltiplos agentes em paralelo, múltiplos domínios de trabalho, e que precisam de portabilidade real — onde a memória deve sobreviver à troca de ferramenta — a arquitetura federada é a única abordagem que resolve o problema estruturalmente. Também é a única que devolve soberania ao usuário: a memória é legível por humanos, versionável em Git, e não requer nenhuma ferramenta específica para ser acessada.</p>
+
+<h3>DecisionNode: convergência independente</h3>
+
+<p>O projeto DecisionNode<sup>1</sup>, desenvolvido independentemente, chegou a conclusões parcialmente sobrepostas: decisões como unidade estruturada, acesso via MCP por múltiplos agentes, histórico auditável, padrão blackboard implícito. Resolve especificamente o sub-módulo de decisões com busca semântica por embeddings — uma implementação concreta de parte dos princípios propostos aqui. A convergência independente de projetos distintos para conclusões similares é evidência de que o problema é real e a direção arquitetural é válida.</p>
+
+<!-- SECTION 6 -->
+<h2><span class="section-num">06 · Implementação de Referência</span>Obsidian + Hermes + MCP.</h2>
+
+<p>Os princípios da seção anterior são independentes de ferramentas. A implementação de referência descrita aqui usa escolhas específicas que podem ser substituídas desde que os princípios sejam preservados.</p>
+
+<p><strong>Obsidian</strong> como base de armazenamento: arquivos Markdown legíveis por humanos, versionáveis em Git, com suporte a links, backlinks e navegação. Substituível por qualquer sistema que preserve legibilidade humana e versionamento.</p>
+
+<p><strong>Hermes Agent</strong> (NousResearch) como roteador: classifica a tarefa, identifica o domínio, seleciona o Context Pack relevante, entrega o contexto no formato esperado pelo agente executor. Sua capacidade de ler arquivos de contexto como <code>AGENTS.md</code> nativamente permite integração direta com a base de memória sem código adicional.</p>
+
+<p><strong>MCP server para Obsidian</strong> como interface de acesso: expõe o vault de forma padronizada para qualquer cliente MCP — Claude Code, Cursor, Windsurf, Antigravity — com controle granular de permissões de leitura e escrita.</p>
+
+<p><strong>Context Packs</strong> como unidade de entrega: arquivos curtos por tarefa que definem escopo, fontes, restrições e formato esperado. São a peça que transforma uma base de memória em contexto utilizável.</p>
+
+<p><strong>Graphiti</strong> (Zep) como upgrade opcional: entra apenas quando a memória precisa de dimensão temporal — decisões que substituem decisões, relações entre entidades, histórico de mudanças. Não substitui o Obsidian; complementa com capacidades que Markdown puro não oferece.</p>
+
+<div class="callout">
+  <div class="label">Critério de substituição</div>
+  <p>Qualquer componente pode ser substituído. O critério não é a ferramenta — é o princípio que ela implementa. Obsidian pode ser Logseq. Hermes pode ser LangGraph. MCP pode ser uma CLI local. O que não pode mudar: soberania do usuário, isolamento por domínio, contrato neutro, contexto mínimo, aprovação humana.</p>
+</div>
+
+<!-- SECTION 7 -->
+<h2><span class="section-num">07 · Conclusão</span>A memória é infraestrutura. Não feature de produto.</h2>
+
+<p>O campo de agentes de IA amadureceu rapidamente na camada de capacidade — raciocínio, geração de código, análise de documentos. A camada de memória ficou para trás, e o gap está se tornando o principal limitador de uso contínuo. Não é falta de inteligência do agente. É falta de continuidade de contexto entre sessões, projetos e ferramentas.</p>
+
+<p>As soluções atuais tratam memória como feature de produto: algo que cada ferramenta implementa internamente, de forma proprietária, com o usuário como beneficiário passivo. A proposta deste paper inverte essa relação: memória é infraestrutura do usuário, não do produto. Agentes são consumidores temporários de um contexto que pertence a quem trabalha, não a quem fornece a ferramenta.</p>
+
+<p>A adoção dessa arquitetura não depende de nenhuma mudança nos agentes de IA. Depende de uma mudança de pressuposto sobre onde a memória mora. Quando a memória pertence ao usuário — legível, versionável, portátil, governada —, a troca de ferramenta deixa de ser uma perda. A melhora de um agente não depende mais da boa vontade de uma empresa. E a degradação por memória mal gerida deixa de ser inevitável.</p>
+
+<div class="pull">Quando a memória pertence ao usuário, a ferramenta se torna descartável. Isso é, exatamente, o que o mercado de agentes de IA precisa para amadurecer.</div>
+
+<p>Ferramentas como o DecisionNode, desenvolvidas independentemente e chegando a conclusões similares, são evidência de que o mercado está convergindo nessa direção. Este paper tenta nomear o padrão antes que ele vire apenas feature de produto de uma empresa específica — e estabelecer os princípios que qualquer implementação deve preservar para que a soberania do usuário seja real, não apenas declarada.</p>
+
+<hr>
+
+<!-- FOOTNOTES -->
+<div class="footnotes">
+  <p><sup>1</sup> DecisionNode — github.com/decisionnode/DecisionNode. Implementação de referência para o sub-módulo de decisões com embeddings vetoriais e acesso via MCP.</p>
+  <p><sup>2</sup> Hermes Agent — NousResearch. github.com/NousResearch/hermes-agent</p>
+  <p><sup>3</sup> Graphiti — Zep. help.getzep.com/graphiti/graphiti/overview</p>
+  <p><sup>4</sup> Model Context Protocol — modelcontextprotocol.io</p>
+  <p><sup>5</sup> Para a implementação completa com passo a passo, templates e estrutura de vault: ver o Guia de Implementação disponível no repositório.</p>
+</div>
+
+<!-- COLOPHON -->
+<div class="colophon">
+  <div>
+    Memória Federada para Agentes de IA<br>
+    Whitepaper v1.0 · André Almeida
+  </div>
+  <div style="text-align: right;">
+    andrealmeidadc.com<br>
+    CC BY 4.0
+  </div>
+</div>
+
+</div>
+
+</body>
+</html>
