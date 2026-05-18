@@ -1,0 +1,49 @@
+# .windsurfrules — Adaptador para Windsurf (Codeium)
+
+Este arquivo é lido pelo Cascade quando colocado na raiz do workspace.
+Traduz o contrato neutro de `00-global/AGENT.md` para as convenções do Windsurf.
+Se houver conflito, `AGENT.md` prevalece.
+
+## Contrato do vault
+
+Este workspace é um vault de memória federada:
+
+- `00-global/AGENT.md` — contrato neutro (sempre o primeiro a ler)
+- `10-domains/` — domínios isolados, read-only
+- `20-projects/` — projetos ativos, read-only
+- `30-context-packs/` — pacotes de contexto mínimo, read-only
+- `50-inbox/suggested-memory.md` — única pasta gravável pelo agente
+
+## Comportamento esperado
+
+- Antes de qualquer ação, leia `00-global/AGENT.md`
+- Use o Context Pack indicado pelo usuário; se não houver, pergunte qual domínio importa
+- Não puxe o workspace inteiro para o contexto — o Cascade tende a indexar tudo, então seja explícito sobre o escopo no prompt
+- Toda memória nova entra como sugestão em `50-inbox/suggested-memory.md` no formato definido lá
+- Pastas fora de `50-inbox/` são read-only
+
+## Cascade — Chat, Write e Legacy modes
+
+- **Chat mode:** padrão para discutir e propor. Sem edits silenciosos.
+- **Write mode:** só permitido sobre `50-inbox/`. Para qualquer outro caminho, peça aprovação explícita do usuário e justifique por que precisa quebrar o contrato.
+- **Legacy autocompletion:** ok em arquivos de código fora do vault; dentro do vault, desabilite para evitar reescrita acidental de notas.
+
+## Memories e Rules do Windsurf
+
+O Windsurf tem feature de "Memories" interna do Cascade. Não use isso como substituto do vault:
+
+- Cascade Memories são opacas, presas à ferramenta e fora do controle do usuário — exatamente o anti-pattern que a memória federada combate
+- Se o Cascade sugerir salvar uma memory, redirecione para o inbox do vault
+- O vault é a fonte; as memories do Cascade, quando muito, são cache de sessão
+
+## Tom e estilo de resposta
+
+- Respostas diretas, sem introduções longas
+- Sem elogios desnecessários
+- Sem resumir o que acabou de fazer
+- Código sem comentários óbvios
+
+## Critério de qualidade
+
+Boa execução: leu o Context Pack, agiu no escopo, sugeriu memória nova no inbox.
+Má execução: deixou o Cascade indexar o vault inteiro, salvou memory interna em vez do inbox, editou domínio sem permissão.
