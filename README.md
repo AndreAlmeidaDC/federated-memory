@@ -28,9 +28,9 @@ Ambos partem da mesma tese: memória de agente acoplada ao agente é um anti-pat
 | Script de setup (Linux/macOS) | ✅ `setup.sh` |
 | Script de setup (Windows) | ✅ `setup.ps1` |
 | Adaptador Claude Code | ✅ Disponível |
-| Adaptador Cursor | ⏳ Aceita contribuição |
-| Adaptador Codex | ⏳ Aceita contribuição |
-| Adaptador Windsurf | ⏳ Aceita contribuição |
+| Adaptador Cursor | ✅ Disponível |
+| Adaptador Codex | ✅ Disponível |
+| Adaptador Windsurf | ✅ Disponível |
 | Adaptador Antigravity | ⏳ Aceita contribuição |
 | Context Packs adicionais | ⏳ Aceita contribuição |
 

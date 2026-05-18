@@ -1,0 +1,43 @@
+# .cursorrules — Adaptador para Cursor
+
+Este arquivo é lido automaticamente pelo Cursor quando colocado na raiz do workspace.
+Traduz o contrato neutro de `00-global/AGENT.md` para as convenções do Cursor.
+Se houver conflito, `AGENT.md` prevalece.
+
+## Comportamento esperado
+
+- Antes de qualquer tarefa, leia `00-global/AGENT.md` para entender o contrato do vault
+- Não carregue contexto além do especificado no Context Pack da tarefa atual
+- Pastas `00-global/`, `10-domains/`, `20-projects/` e `30-context-packs/` são read-only
+- Toda nova memória vai como sugestão para `50-inbox/suggested-memory.md` — nunca grave direto em domínios
+- Quando o usuário não indicar Context Pack, pergunte qual domínio é relevante antes de agir
+
+## Uso de @-mentions e contexto
+
+- Prefira `@File` apontando para o Context Pack relevante em vez de `@Codebase` no vault inteiro
+- Não use `@Codebase` sobre o vault: isso viola o princípio de contexto mínimo
+- Para tarefas em um domínio, use `@Folder` apontando apenas para `10-domains/<dominio>/`
+- Composer e Chat seguem as mesmas regras de escopo
+
+## Edição de arquivos
+
+- Sugestões de edição em `50-inbox/suggested-memory.md` seguem o formato da seção "Formato de entrada" do próprio inbox
+- Não proponha edits em arquivos fora de `50-inbox/` sem confirmação explícita do usuário
+- Apply preserva o formato Markdown existente (sem reformatar listas ou headings)
+
+## Tom e estilo de resposta
+
+- Respostas diretas, sem introduções longas
+- Sem elogios desnecessários ("Ótima pergunta!")
+- Sem resumir o que acabou de fazer ao final da resposta
+- Código sem comentários óbvios
+
+## Memória entre sessões
+
+O vault é a memória persistente. O histórico de chat do Cursor é volátil.
+Se precisar de contexto de uma sessão anterior, procure no vault, não no chat.
+
+## Critério de qualidade
+
+Uma resposta boa usa o mínimo de contexto necessário e produz o resultado certo.
+Uma resposta ruim puxa `@Codebase` inteiro e produz resultado genérico.

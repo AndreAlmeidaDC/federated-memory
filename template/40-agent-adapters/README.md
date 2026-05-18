@@ -8,11 +8,13 @@ O adaptador traduz o contrato neutro do `AGENT.md` para as convenções do agent
 ```
 40-agent-adapters/
 ├── claude/
-│   └── CLAUDE.md       ← lido automaticamente pelo Claude Code
-├── hermes/
-│   └── system-prompt.md
-└── gpt/
-    └── system-prompt.md
+│   └── CLAUDE.md          ← lido automaticamente pelo Claude Code
+├── cursor/
+│   └── .cursorrules       ← copiar para a raiz do vault
+├── codex/
+│   └── AGENTS.md          ← copiar para a raiz do vault
+└── windsurf/
+    └── .windsurfrules     ← copiar para a raiz do vault
 ```
 
 ## Como criar um adaptador
@@ -28,4 +30,7 @@ Se houver conflito, o `AGENT.md` prevalece.
 
 ## Incluídos
 
-- `claude/CLAUDE.md` — adaptador para Claude Code (Anthropic)
+- `claude/CLAUDE.md` — Claude Code (Anthropic), lido automaticamente
+- `cursor/.cursorrules` — Cursor; copiar para a raiz do vault
+- `codex/AGENTS.md` — OpenAI Codex CLI; copiar para a raiz do vault
+- `windsurf/.windsurfrules` — Windsurf / Cascade (Codeium); copiar para a raiz do vault
