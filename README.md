@@ -31,6 +31,7 @@ Ambos partem da mesma tese: memória de agente acoplada ao agente é um anti-pat
 | Adaptador Codex | ✅ Disponível |
 | Adaptador Windsurf | ✅ Disponível |
 | Adaptador Antigravity | ⏳ Aceita contribuição |
+| Context Packs de exemplo | ✅ 4 disponíveis (linkedin-writing, code-review, research, planning) |
 | Context Packs adicionais | ⏳ Aceita contribuição |
 
 Veja [CONTRIBUTING.md](CONTRIBUTING.md) para como contribuir.
@@ -82,7 +83,10 @@ Memória federada separa três responsabilidades:
 │   ├── 10-domains/
 │   ├── 20-projects/
 │   ├── 30-context-packs/
-│   │   └── exemplo-linkedin-writing.md
+│   │   ├── exemplo-linkedin-writing.md
+│   │   ├── exemplo-code-review.md
+│   │   ├── exemplo-research.md
+│   │   └── exemplo-planning.md
 │   ├── 40-agent-adapters/
 │   │   └── claude/CLAUDE.md
 │   └── 50-inbox/suggested-memory.md
