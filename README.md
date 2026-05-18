@@ -22,7 +22,6 @@ Ambos partem da mesma tese: memória de agente acoplada ao agente é um anti-pat
 | Componente | Status |
 |---|---|
 | Whitepaper (PT-BR) | ✅ Publicado — v1.0 |
-| Whitepaper (EN) | ✅ Publicado — v1.0 |
 | Guia de implementação | ✅ Publicado — v2.0 com seção de deployment remoto |
 | Template de vault clonável | ✅ Disponível em `/template/` |
 | Script de setup (Linux/macOS) | ✅ `setup.sh` |
@@ -75,8 +74,7 @@ Memória federada separa três responsabilidades:
 ```
 /
 ├── whitepaper/
-│   ├── whitepaper-memoria-federada-ptbr.html
-│   └── whitepaper-federated-memory-en.html
+│   └── whitepaper-memoria-federada-ptbr.html
 ├── guia/
 │   └── memoria-federada-v2.html
 ├── template/
@@ -104,7 +102,6 @@ O diretório `/template/` é um vault clonável. Copie, adapte os domínios para
 Os artefatos são arquivos HTML estilizados. Como o GitHub mostra apenas o código-fonte de HTML, use os links abaixo via **raw.githack.com**, que renderiza o HTML diretamente no navegador:
 
 - 📄 [Whitepaper (PT-BR)](https://raw.githack.com/AndreAlmeidaDC/federated-memory/master/whitepaper/whitepaper-memoria-federada-ptbr.html)
-- 📄 [Whitepaper (EN)](https://raw.githack.com/AndreAlmeidaDC/federated-memory/master/whitepaper/whitepaper-federated-memory-en.html)
 - 📘 [Guia de implementação](https://raw.githack.com/AndreAlmeidaDC/federated-memory/master/guia/memoria-federada-v2.html)
 
 Alternativa local: clone o repositório e abra os arquivos `.html` direto no navegador.
