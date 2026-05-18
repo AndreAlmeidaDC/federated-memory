@@ -116,6 +116,15 @@ cd federated-memory
 # Abra qualquer .html no seu navegador
 ```
 
+### Versões em PDF
+
+Para leitura offline, impressão ou anotação, os artefatos também estão disponíveis em PDF como assets da [página de releases do GitHub](https://github.com/AndreAlmeidaDC/federated-memory/releases):
+
+- `whitepaper-memoria-federada-ptbr-v1.0.pdf`
+- `guia-implementacao-v2.0.pdf`
+
+Os PDFs são gerados a partir dos HTML via Chromium headless. Para regenerar localmente, veja `scripts/build-pdfs.sh` ou `scripts/build-pdfs.ps1`.
+
 ---
 
 ## Setup rápido
