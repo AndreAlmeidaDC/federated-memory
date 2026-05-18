@@ -1,2 +1,6 @@
 .claude/
 *.local
+
+# PDFs gerados localmente; distribuidos via GitHub Releases
+releases/
+
