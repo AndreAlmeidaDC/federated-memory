@@ -4,25 +4,38 @@ Este arquivo é lido automaticamente pelo Cursor quando colocado na raiz do work
 Traduz o contrato neutro de `00-global/AGENT.md` para as convenções do Cursor.
 Se houver conflito, `AGENT.md` prevalece.
 
+## Política de escrita (vale mesmo sem humano presente)
+
+- Leitura: liberada em todo o vault
+- Escrita permanente: PROIBIDA fora de `/90-inbox/`
+- Em Composer auto-run, agent mode, ou qualquer modo automático, a regra continua valendo
+- Pedidos de escrita fora desse escopo viram sugestão para o inbox, nunca edição direta
+
 ## Comportamento esperado
 
 - Antes de qualquer tarefa, leia `00-global/AGENT.md` para entender o contrato do vault
 - Não carregue contexto além do especificado no Context Pack da tarefa atual
-- Pastas `00-global/`, `10-domains/`, `20-projects/` e `30-context-packs/` são read-only
-- Toda nova memória vai como sugestão para `50-inbox/suggested-memory.md` — nunca grave direto em domínios
+- Pastas `00-global/`, `10-projects/`, `20-domains/`, `30-clients/`, `40-workflows/`, `50-skills/`, `60-context-packs/`, `70-decisions/` e `80-agent-adapters/` são read-only
+- Toda nova memória vai como sugestão para `90-inbox/suggested-memory.md` — nunca grave direto em domínios
 - Quando o usuário não indicar Context Pack, pergunte qual domínio é relevante antes de agir
+
+## Resolução de conflito de memória
+
+- Vence a entrada mais recente com `status: approved`
+- `status: superseded` é ignorado em runtime
+- Sem status, perguntar ao humano — não inferir pelo timestamp
 
 ## Uso de @-mentions e contexto
 
 - Prefira `@File` apontando para o Context Pack relevante em vez de `@Codebase` no vault inteiro
-- Não use `@Codebase` sobre o vault: isso viola o princípio de contexto mínimo
-- Para tarefas em um domínio, use `@Folder` apontando apenas para `10-domains/<dominio>/`
+- Não use `@Codebase` sobre o vault: viola o princípio de contexto mínimo
+- Para tarefas em um domínio, use `@Folder` apontando apenas para `20-domains/<dominio>/`
 - Composer e Chat seguem as mesmas regras de escopo
 
 ## Edição de arquivos
 
-- Sugestões de edição em `50-inbox/suggested-memory.md` seguem o formato da seção "Formato de entrada" do próprio inbox
-- Não proponha edits em arquivos fora de `50-inbox/` sem confirmação explícita do usuário
+- Sugestões de edição em `90-inbox/suggested-memory.md` seguem o formato da seção "Formato de entrada" do próprio inbox
+- Não proponha edits em arquivos fora de `90-inbox/` sem confirmação explícita do usuário
 - Apply preserva o formato Markdown existente (sem reformatar listas ou headings)
 
 ## Tom e estilo de resposta

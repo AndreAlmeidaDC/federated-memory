@@ -1,6 +1,6 @@
 # AGENTS.md — Adaptador para OpenAI Codex / Codex CLI
 
-Este arquivo segue a convenção `AGENTS.md` usada pelo Codex CLI e por outros agentes da OpenAI.
+Este arquivo segue a convenção `AGENTS.md` usada pelo Codex CLI.
 Traduz o contrato neutro de `00-global/AGENT.md` para as convenções do Codex.
 Se houver conflito, `00-global/AGENT.md` prevalece.
 
@@ -9,38 +9,36 @@ Se houver conflito, `00-global/AGENT.md` prevalece.
 Este workspace é um vault de memória federada, não um repositório de código:
 
 - `00-global/AGENT.md` — contrato neutro (leia primeiro)
-- `10-domains/` — domínios isolados (read-only para o agente)
-- `20-projects/` — projetos ativos (read-only para o agente)
-- `30-context-packs/` — pacotes de contexto mínimo por tarefa (read-only)
-- `40-agent-adapters/` — adaptadores por agente
-- `50-inbox/suggested-memory.md` — única pasta gravável pelo agente
-- `90-archive/` — log de decisões de revisão
+- `10-projects/` — projetos ativos (read-only)
+- `20-domains/` — domínios isolados (read-only)
+- `30-clients/` — contexto de clientes (read-only)
+- `40-workflows/` — fluxos de trabalho (read-only)
+- `50-skills/` — capacidades reutilizáveis (read-only)
+- `60-context-packs/` — pacotes de contexto mínimo por tarefa (read-only)
+- `70-decisions/` — decisões formais com status (read-only)
+- `80-agent-adapters/` — adaptadores por agente (read-only)
+- `90-inbox/suggested-memory.md` — único destino de escrita do agente
+- `99-archive/` — logs e arquivados
+
+## Política de escrita (vale mesmo sem humano presente)
+
+- **Leitura:** liberada em todo o vault
+- **Escrita permanente:** PROIBIDA fora de `/90-inbox/`
+- Em `suggest`, `auto-edit` ou `full-auto`, a regra continua valendo — o nível de aprovação altera a UX, não a política
+- Qualquer pedido que exija escrita em pasta read-only deve virar sugestão para o inbox, com explicação
 
 ## Comportamento esperado
 
 - Antes de agir, leia `00-global/AGENT.md`
-- Se o usuário citar um Context Pack, leia apenas esse arquivo e o domínio que ele referencia
+- Se o usuário citar um Context Pack, leia apenas esse arquivo e os caminhos listados em `Use:`
 - Se não houver Context Pack, pergunte qual domínio é relevante antes de assumir
-- Toda informação nova que valha a pena lembrar entra como sugestão em `50-inbox/suggested-memory.md`, no formato definido pelo próprio inbox
-- Nunca edite arquivos em `00-global/`, `10-domains/`, `20-projects/`, `30-context-packs/` sem confirmação explícita do usuário
+- Toda informação nova que valha a pena lembrar entra como sugestão em `90-inbox/suggested-memory.md`
 
-## Restrições de escrita
+## Resolução de conflito de memória
 
-| Pasta | Permissão para o agente |
-|---|---|
-| `00-global/` | read-only |
-| `10-domains/` | read-only |
-| `20-projects/` | read-only |
-| `30-context-packs/` | read-only |
-| `40-agent-adapters/` | read-only |
-| `50-inbox/` | **read-write** (append-only preferencial) |
-| `90-archive/` | read-only (só o script de revisão grava) |
-
-## Modo de execução (Codex CLI)
-
-- Em `suggest` mode: proponha diffs, nunca aplique direto fora de `50-inbox/`
-- Em `auto-edit`/`full-auto`: a regra acima continua valendo — o agente respeita o escopo mesmo com aprovação automática habilitada
-- Se o usuário pedir algo que exija escrita em pasta read-only, responda com a sugestão formatada para o inbox e explique por quê
+- Vence a entrada mais recente com `status: approved`
+- `status: superseded` é ignorado em runtime
+- Sem status, perguntar ao humano — não inferir pelo timestamp
 
 ## Tom e estilo de resposta
 
@@ -52,7 +50,7 @@ Este workspace é um vault de memória federada, não um repositório de código
 ## Memória entre sessões
 
 O vault é a memória persistente. O contexto da sessão Codex é volátil.
-Para retomar trabalho, consulte `20-projects/<projeto>/` e o Context Pack relevante.
+Para retomar trabalho, consulte `10-projects/<projeto>/` e o Context Pack relevante.
 
 ## Critério de qualidade
 

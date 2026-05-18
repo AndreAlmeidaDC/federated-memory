@@ -5,7 +5,7 @@
 Copie `.windsurfrules` para a raiz do vault:
 
 ```bash
-cp template/40-agent-adapters/windsurf/.windsurfrules /caminho/do/vault/.windsurfrules
+cp template/80-agent-adapters/windsurf/.windsurfrules /caminho/do/vault/.windsurfrules
 ```
 
 O Cascade lê o arquivo automaticamente ao abrir o workspace.
@@ -16,8 +16,8 @@ Se preferir aplicar as regras a todos os workspaces, cole o conteúdo em **Winds
 
 ## Cascade Memories
 
-O Windsurf oferece memórias internas do Cascade. Desligue ou mantenha vazias quando trabalhar sobre o vault — elas competem com o `50-inbox/` e violam o princípio de soberania do usuário.
+O Windsurf oferece memórias internas do Cascade. Desligue ou mantenha vazias quando trabalhar sobre o vault — elas competem com o `90-inbox/` e violam o princípio de soberania do usuário.
 
 ## MCP
 
-Windsurf suporta MCP servers via Settings → MCP. Configure o servidor de filesystem ou Obsidian Local REST API com escrita restrita a `50-inbox/`.
+Windsurf suporta MCP servers via Settings → MCP. Configure o servidor de filesystem ou Obsidian Local REST API com escrita restrita a `90-inbox/`.
