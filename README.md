@@ -34,7 +34,7 @@ Ambos partem da mesma tese: memória de agente acoplada ao agente é um anti-pat
 | Context Packs de exemplo | ✅ 4 disponíveis (linkedin-writing, code-review, research, planning) |
 | Context Packs adicionais | ⏳ Aceita contribuição |
 
-Veja [CONTRIBUTING.md](CONTRIBUTING.md) para como contribuir.
+Veja [CONTRIBUTING.md](CONTRIBUTING.md) para como contribuir e [ROADMAP.md](ROADMAP.md) para o que vem a seguir.
 
 ---
 
