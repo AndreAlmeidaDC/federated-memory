@@ -1613,6 +1613,30 @@ git init</code></pre>
 <li>Logs simples bastam no começo: quem pediu, o que foi lido, o que foi alterado, por quê.</li>
 </ul>
 
+<h3>Ritual semanal de revisão do inbox</h3>
+
+<p>Aprovação humana só funciona se houver um momento marcado para fazê-la. Sem ritual fixo, o <code>/50-inbox/</code> vira lixeira: sugestões acumulam, nada vira memória, e os agentes seguem repetindo as mesmas perguntas. Reserve um bloco curto por semana — 20 a 40 minutos costuma bastar — para processar o inbox até zerar.</p>
+
+<p>O repositório traz dois scripts equivalentes em <code>/scripts/</code> que conduzem a revisão entrada a entrada:</p>
+
+<pre><code># Linux / macOS
+VAULT_PATH=/caminho/do/vault ./scripts/review-inbox.sh
+
+# Windows (PowerShell)
+$env:VAULT_PATH = 'C:\caminho\do\vault'
+./scripts/review-inbox.ps1</code></pre>
+
+<p>Para cada sugestão pendente o script mostra o bloco e oferece quatro decisões:</p>
+
+<ul>
+<li><strong>Aprovar (a):</strong> anexa a entrada ao arquivo apontado em <code>Destino sugerido</code> e remove do inbox.</li>
+<li><strong>Editar (e):</strong> abre a entrada no editor (<code>$EDITOR</code> ou <code>notepad</code>), ajusta texto ou destino e volta a perguntar.</li>
+<li><strong>Rejeitar (r):</strong> descarta a sugestão. Hipótese fraca não vira memória.</li>
+<li><strong>Adiar (d):</strong> mantém no inbox para a próxima revisão. Útil quando falta contexto para decidir.</li>
+</ul>
+
+<p>Toda decisão — inclusive rejeições e adiamentos — é registrada em <code>/90-archive/review-log.md</code> com data, domínio, destino e resumo. Esse log é o que permite, semanas depois, ver quantas sugestões viraram memória, quantas foram descartadas e onde os agentes erram com mais frequência. Se a taxa de rejeição estiver alta, o problema não é o inbox: é a regra de captura do agente.</p>
+
 <!-- ============================================== -->
 <!-- 16 - ANTI-PATTERNS -->
 <!-- ============================================== -->
