@@ -209,11 +209,21 @@ A arquitetura é agnóstica de ferramenta. Obsidian pode ser substituído por qu
 
 ## Por onde começar
 
+**Primeiro passo para implementar agora:**
+
+👉 [QUICKSTART.md](QUICKSTART.md) — 8 etapas práticas com comandos prontos para rodar. Tempo: 30–60 minutos. Critério de conclusão em cada passo.
+
+**Se preferir mais contexto antes de implementar:**
+
 1. Leia o [whitepaper](https://raw.githack.com/AndreAlmeidaDC/federated-memory/master/whitepaper/whitepaper-memoria-federada-ptbr.html) para entender a tese
-2. Leia o [guia de implementação](https://raw.githack.com/AndreAlmeidaDC/federated-memory/master/guia/memoria-federada-v2.html) para montar o seu vault
-3. Rode `setup.sh` ou `setup.ps1` para criar o vault automaticamente
-4. Adapte o `00-global/AGENT.md` para descrever seu contexto pessoal
-5. Configure o adaptador do seu agente em `/80-agent-adapters/`
+2. Leia o [guia de implementação](https://raw.githack.com/AndreAlmeidaDC/federated-memory/master/guia/memoria-federada-v2.html) para ver a arquitetura em detalhe
+3. Volte ao QUICKSTART.md e execute as 8 etapas
+
+**Setup automático:**
+
+- Rode `setup.sh` (Linux/macOS) ou `setup.ps1` (Windows) para criar o vault automaticamente
+- Adapte o `00-global/AGENT.md` para seu contexto pessoal
+- Configure o adaptador do seu agente em `/80-agent-adapters/`
 
 ---
 
