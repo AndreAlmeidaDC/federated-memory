@@ -21,18 +21,19 @@ Ambos partem da mesma tese: memória de agente acoplada ao agente é um anti-pat
 
 | Componente | Status |
 |---|---|
-| Whitepaper (PT-BR) | ✅ Publicado — v1.0 |
-| Guia de implementação | ✅ Publicado — v2.0 com seção de deployment remoto |
-| Template de vault clonável | ✅ Disponível em `/template/` |
+| Whitepaper (PT-BR) | ✅ Publicado — v2.0 (Hermes núcleo ativo, 3 gaps, validade temporal) |
+| Guia de implementação | ✅ Publicado — v2.0 (Hermes núcleo ativo, nova estrutura de 11 pastas) |
+| Template de vault clonável | ✅ Disponível em `/template/` (estrutura v2 com 11 pastas) |
 | Script de setup (Linux/macOS) | ✅ `setup.sh` |
 | Script de setup (Windows) | ✅ `setup.ps1` |
-| Adaptador Claude Code | ✅ Disponível |
+| Adaptador Claude Code | ✅ `CLAUDE.md` + `AGENTS.md` (política neutra cross-tool) |
 | Adaptador Cursor | ✅ Disponível |
 | Adaptador Codex | ✅ Disponível |
 | Adaptador Windsurf | ✅ Disponível |
 | Adaptador Antigravity | ⏳ Aceita contribuição |
-| Context Packs de exemplo | ✅ 4 disponíveis (linkedin-writing, code-review, research, planning) |
+| Context Packs de exemplo | ✅ 4 disponíveis com campo `Validation` (linkedin-writing, code-review, research, planning) |
 | Context Packs adicionais | ⏳ Aceita contribuição |
+| Diferencial: validade temporal automática | ✅ Hermes verifica `mtime` dos arquivos de cada pack |
 
 Veja [CONTRIBUTING.md](CONTRIBUTING.md) para como contribuir e [ROADMAP.md](ROADMAP.md) para o que vem a seguir.
 
@@ -57,7 +58,7 @@ A maioria das implementações de memória para agentes cai em um destes padrõe
 Memória federada separa três responsabilidades:
 
 - **Quem guarda** — o vault do usuário (ex: Obsidian), estruturado por domínios isolados
-- **Quem roteia** — o agente lê apenas o Context Pack relevante para a tarefa, não o vault inteiro
+- **Quem roteia** — um **núcleo ativo** (Hermes na implementação de referência) classifica a tarefa, seleciona o Context Pack relevante, aplica política de escrita e resolve conflito de memória
 - **Quem executa** — o agente opera com contexto mínimo suficiente e sugere memória nova para aprovação humana
 
 ### Princípios que não mudam
@@ -67,6 +68,19 @@ Memória federada separa três responsabilidades:
 3. **Contrato neutro** — `AGENT.md` descreve consumo para qualquer agente
 4. **Contexto mínimo suficiente** — Context Packs, não dump do vault inteiro
 5. **Aprovação humana** — nada vira memória permanente sem revisão
+
+### Os quatro papéis do núcleo (v2.0)
+
+O Hermes deixou de ser "orquestrador leve" para ser núcleo ativo com quatro papéis:
+
+1. **Roteador de contexto** — escolhe e entrega o Context Pack relevante
+2. **Gerenciador de memória com feedback** — loga uso em `/99-archive/pack-usage.log`; pack com 3 marcações ruins é flaggeado
+3. **Controlador de escopo** — aplica regra de conflito (`status: approved` vence; `superseded` ignorado em runtime)
+4. **Policy engine declarativo** — escrita permanente proibida fora de `/90-inbox/`, em qualquer modo de execução
+
+### Diferencial sobre sistemas centralizadores
+
+O núcleo inspeciona o `mtime` dos arquivos listados em cada Context Pack. Se algum estiver com mais de 90 dias sem atualização (configurável por pack), o pack é entregue com aviso de validade temporal. Sistemas centralizadores não têm equivalente — memória vive como objeto opaco dentro do aplicativo.
 
 ---
 
@@ -80,22 +94,36 @@ Memória federada separa três responsabilidades:
 │   └── memoria-federada-v2.html
 ├── template/
 │   ├── 00-global/AGENT.md
-│   ├── 10-domains/
-│   ├── 20-projects/
-│   ├── 30-context-packs/
+│   ├── 10-projects/
+│   ├── 20-domains/
+│   ├── 30-clients/
+│   ├── 40-workflows/
+│   ├── 50-skills/
+│   ├── 60-context-packs/
 │   │   ├── exemplo-linkedin-writing.md
 │   │   ├── exemplo-code-review.md
 │   │   ├── exemplo-research.md
 │   │   └── exemplo-planning.md
-│   ├── 40-agent-adapters/
-│   │   └── claude/CLAUDE.md
-│   └── 50-inbox/suggested-memory.md
+│   ├── 70-decisions/
+│   ├── 80-agent-adapters/
+│   │   ├── claude/{CLAUDE.md, AGENTS.md}
+│   │   ├── cursor/.cursorrules
+│   │   ├── codex/AGENTS.md
+│   │   └── windsurf/.windsurfrules
+│   ├── 90-inbox/suggested-memory.md
+│   └── 99-archive/review-log.md
+├── scripts/
+│   ├── review-inbox.{sh,ps1}
+│   └── build-pdfs.{sh,ps1}
 ├── setup.sh
 ├── setup.ps1
+├── ROADMAP.md
 ├── CONTRIBUTING.md
 ├── LICENSE
 └── README.md
 ```
+
+> **Vault único, separação lógica por pastas.** A estrutura padrão é um único vault Obsidian com pastas segmentadas. Múltiplos vaults físicos só quando precisar de isolamento real (dados de cliente, sincronização separada, compartilhamento seletivo). Detalhes no guia.
 
 O diretório `/template/` é um vault clonável. Copie, adapte os domínios para sua realidade e conecte ao agente de sua escolha via adaptador.
 
@@ -170,12 +198,12 @@ Os scripts são idempotentes: rodam várias vezes sem quebrar nada já instalado
 | Componente | Ferramenta |
 |---|---|
 | Vault | [Obsidian](https://obsidian.md) |
-| Agente | [Hermes Agent](https://github.com/NousResearch/hermes-agent) (NousResearch) |
-| Protocolo | [Model Context Protocol](https://modelcontextprotocol.io) |
+| Núcleo ativo (roteamento + memória + escopo + policy) | [Hermes Agent](https://github.com/NousResearch/hermes-agent) (NousResearch) |
+| Protocolo de acesso | [Model Context Protocol](https://modelcontextprotocol.io) |
 | Memória estruturada (alternativa) | [Graphiti / Zep](https://help.getzep.com/graphiti/graphiti/overview) |
 | Acesso ao vault via MCP | Obsidian Local REST API plugin ou filesystem direto |
 
-A arquitetura é agnóstica de ferramenta. Obsidian pode ser substituído por qualquer sistema de arquivos estruturado. O agente pode ser Claude, GPT, Gemini ou local — o contrato é o `AGENT.md`.
+A arquitetura é agnóstica de ferramenta. Obsidian pode ser substituído por qualquer sistema de arquivos legível por humanos. O agente executor pode ser Claude, GPT, Gemini ou local — o contrato é o `AGENT.md`. O núcleo ativo pode ser Hermes, LangGraph, CrewAI ou outro framework com capacidade de aplicar política e medir qualidade — desde que preserve os quatro papéis e as regras de conflito e escrita.
 
 ---
 
@@ -185,7 +213,7 @@ A arquitetura é agnóstica de ferramenta. Obsidian pode ser substituído por qu
 2. Leia o [guia de implementação](https://raw.githack.com/AndreAlmeidaDC/federated-memory/master/guia/memoria-federada-v2.html) para montar o seu vault
 3. Rode `setup.sh` ou `setup.ps1` para criar o vault automaticamente
 4. Adapte o `00-global/AGENT.md` para descrever seu contexto pessoal
-5. Configure o adaptador do seu agente em `/40-agent-adapters/`
+5. Configure o adaptador do seu agente em `/80-agent-adapters/`
 
 ---
 
