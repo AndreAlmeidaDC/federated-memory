@@ -6,24 +6,25 @@ critérios de sucesso. Sem plano genérico, sem otimismo descalibrado, sem
 ignorar o que já foi decidido.
 
 Use:
-- /20-projects/<projeto>/CONTEXT.md
-- /20-projects/<projeto>/DECISIONS.md  (decisões prévias que restringem o plano)
-- /20-projects/<projeto>/constraints.md  (prazos, orçamento, equipe, técnico)
-- /20-projects/<projeto>/risks.md  (riscos já mapeados)
-- /10-domains/strategy/PRINCIPLES.md  (se existir domínio de estratégia)
-- Dependências externas listadas em /20-projects/<projeto>/dependencies.md
+- /10-projects/<projeto>/PROJECT.md
+- /10-projects/<projeto>/constraints.md  (prazos, orçamento, equipe, técnico)
+- /10-projects/<projeto>/risks.md  (riscos já mapeados)
+- /10-projects/<projeto>/dependencies.md  (dependências externas)
+- /70-decisions/ (decisões com status: approved relacionadas a este projeto)
+- /20-domains/strategy/PRINCIPLES.md  (se existir domínio de estratégia)
 
 Avoid:
-- Outros projetos em /20-projects/  (cada projeto é um plano, não misturar)
+- Outros projetos em /10-projects/  (cada projeto é um plano, não misturar)
+- /70-decisions/ com status: superseded
 - Templates de plano da internet ("OKR genérico", "framework X")
 - Otimismo sem análise de risco ("vamos entregar em 2 sprints")
-- Ignorar DECISIONS.md ("e se a gente trocar o banco?" — não, já foi decidido)
+- Reabrir decisões já approved ("e se a gente trocar o banco?" — não, já foi decidido)
 - Marcos vagos ("Q3: melhorar produto")
 - Plano sem dono por fase
 
 Sources of truth:
-- O contexto do projeto: CONTEXT.md
-- O que já foi decidido e não está em discussão: DECISIONS.md
+- O contexto do projeto: PROJECT.md
+- O que já foi decidido: /70-decisions/ (apenas approved, ignorar superseded)
 - O que limita o plano: constraints.md
 - O que pode dar errado: risks.md
 - Em conflito entre desejo e restrição, a restrição vence — o plano se ajusta
@@ -64,19 +65,25 @@ Plano no formato:
 - Critério de sucesso precisa ser mensurável e ter critério de falha-parceira
 
 Confidence / validity:
-Plano válido enquanto CONTEXT.md, DECISIONS.md e constraints.md não mudarem.
+Plano válido enquanto PROJECT.md, decisões approved relevantes e constraints.md não mudarem.
 Revisar marcos a cada conclusão de fase. Re-planejar quando: (a) uma
 premissa cair, (b) uma dependência crítica atrasar mais de 20%, (c) uma
-decisão prévia for revertida. Não estender prazo sem revisar premissa.
+decisão prévia for revertida (status: superseded). Não estender prazo sem revisar premissa.
+
+Validation:
+- Após cada uso, Hermes registra em /99-archive/pack-usage.log: pack, tarefa, resultado (útil/parcial/ruim)
+- Pack com 3 marcações "ruim" consecutivas é flaggeado para revisão
+- Temporal: se qualquer arquivo em "Use:" tem mtime > 90 dias, Hermes inclui aviso no output
+- Humano pode marcar pack como "stale" manualmente em /99-archive/pack-status.md
 
 Source notes:
 Caminhos hipotéticos. Antes de usar este pack, crie por projeto:
-- /20-projects/<projeto>/CONTEXT.md
-- /20-projects/<projeto>/DECISIONS.md
-- /20-projects/<projeto>/constraints.md
-- /20-projects/<projeto>/risks.md
-- /20-projects/<projeto>/dependencies.md
+- /10-projects/<projeto>/PROJECT.md
+- /10-projects/<projeto>/constraints.md
+- /10-projects/<projeto>/risks.md
+- /10-projects/<projeto>/dependencies.md
+- /70-decisions/ (decisões approved relevantes ao projeto)
 
-Sem CONTEXT.md o agente faz plano genérico. Sem DECISIONS.md ele reabre
+Sem PROJECT.md o agente faz plano genérico. Sem decisões approved ele reabre
 discussões já fechadas. Sem constraints.md ele promete o impossível. Os
 três são o mínimo; risks.md e dependencies.md elevam a qualidade.

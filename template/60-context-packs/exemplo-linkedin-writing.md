@@ -5,14 +5,15 @@ Help an AI agent draft LinkedIn posts in [SEU NOME]'s voice for
 the [SEU NICHO] community.
 
 Use:
-- /10-domains/writing/STYLE_GUIDE.md
-- /10-domains/writing/voice-examples/*.md
-- /10-domains/writing/hooks-that-worked.md
-- Last 5 entries from /10-domains/writing/recent-posts.md
+- /20-domains/writing/STYLE_GUIDE.md
+- /20-domains/writing/voice-examples/*.md
+- /20-domains/writing/hooks-that-worked.md
+- Last 5 entries from /20-domains/writing/recent-posts.md
 
 Avoid:
-- /10-domains/engineering/*  (different vocabulary)
-- /20-projects/*  (unless explicitly mentioned in the prompt)
+- /20-domains/engineering/*  (different vocabulary)
+- /10-projects/*  (unless explicitly mentioned in the prompt)
+- /30-clients/*  (unless the post is about a public client case)
 - Generic LinkedIn templates from external sources
 - Buzzwords and corporate language
 
@@ -27,4 +28,19 @@ Output expected:
 - No subtitle or headers inside the post
 - No hashtag list at the end unless requested
 
-Confidence: valid until [DATA] or until STYLE_GUIDE.md is updated
+Confidence / validity:
+Pack válido enquanto STYLE_GUIDE.md e voice-examples/ não mudarem.
+Revisar a cada 30 dias ou após nova plataforma com voz própria.
+
+Validation:
+- Após cada uso, Hermes registra em /99-archive/pack-usage.log: pack, tarefa, resultado (útil/parcial/ruim)
+- Pack com 3 marcações "ruim" consecutivas é flaggeado para revisão
+- Temporal: se qualquer arquivo em "Use:" tem mtime > 90 dias, Hermes inclui aviso no output
+- Humano pode marcar pack como "stale" manualmente em /99-archive/pack-status.md
+
+Source notes:
+Caminhos hipotéticos. Antes de usar este pack, crie:
+- /20-domains/writing/STYLE_GUIDE.md
+- /20-domains/writing/voice-examples/
+- /20-domains/writing/hooks-that-worked.md
+- /20-domains/writing/recent-posts.md
