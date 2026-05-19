@@ -116,9 +116,9 @@ This is a federated memory base. Read the consumption protocol before doing anyt
 
 Before responding to any task:
 1. Identify the domain (writing, engineering, automation, etc).
-2. Load the corresponding Context Pack from /30-context-packs/.
-3. Never write to /00-global/ or /10-domains/ without explicit human approval.
-4. New memory suggestions go to /50-inbox/suggested-memory.md.
+2. Load the corresponding Context Pack from /60-context-packs/.
+3. Never write to /00-global/ or /20-domains/ without explicit human approval.
+4. New memory suggestions go to /90-inbox/suggested-memory.md.
 AGENTSEOF
     ok "AGENTS.md criado no vault"
 fi

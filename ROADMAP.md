@@ -4,30 +4,34 @@ Estado vivo do projeto. Itens entregues ficam aqui pra histórico, não migram p
 
 Critério: só entra no ROADMAP o que tem chance real de acontecer. Wishlist sem dono vai pra issue, não pra cá.
 
-Última revisão: 2026-05-18
+Última revisão: 2026-05-18 — pós-reescrita Hermes-core v2.0
 
 ---
 
 ## Entregue
 
 ### Conteúdo
-- [x] Whitepaper PT-BR v1.0 (`whitepaper/whitepaper-memoria-federada-ptbr.html`)
-- [x] Guia de implementação v2.0 com seção de deployment remoto (`guia/memoria-federada-v2.html`)
-- [x] PDFs do whitepaper e do guia publicados na release `v1.0.0`
+- [x] Whitepaper PT-BR v1.0 — primeiro lançamento
+- [x] Whitepaper PT-BR **v2.0** — Hermes como núcleo ativo, três gaps fechados, validade temporal automática, comparação com sistemas centralizadores/Life OS
+- [x] Guia de implementação v2.0 (estrutura inicial)
+- [x] Guia de implementação **v2.0 (reescrita)** — Hermes-core, seção "Os quatro papéis do Hermes", nova estrutura de pastas, conceito "Vault único"
+- [x] PDFs do whitepaper e do guia publicados na release `v1.0.0` (PDFs da v2 entrarão em `v2.0.0`)
 
 ### Template de vault
-- [x] Estrutura clonável em `/template/` (00-global, 10-domains, 20-projects, 30-context-packs, 40-agent-adapters, 50-inbox, 90-archive)
-- [x] `AGENT.md` neutro como contrato
-- [x] Inbox + log de revisão em `90-archive/review-log.md`
+- [x] Estrutura inicial em `/template/` (6 pastas)
+- [x] **Reestruturação para 11 pastas** (00-global, 10-projects, 20-domains, 30-clients, 40-workflows, 50-skills, 60-context-packs, 70-decisions, 80-agent-adapters, 90-inbox, 99-archive)
+- [x] `AGENT.md` v2.0 com regra de resolução de conflito (`approved`/`superseded`)
+- [x] Inbox + log de revisão em `99-archive/review-log.md`
+- [x] Diretório `/70-decisions/` com README documentando o frontmatter obrigatório
 
-### Context Packs de exemplo
+### Context Packs de exemplo (com campo `Validation`)
 - [x] `exemplo-linkedin-writing.md`
 - [x] `exemplo-code-review.md`
 - [x] `exemplo-research.md`
 - [x] `exemplo-planning.md`
 
-### Adaptadores
-- [x] Claude Code (`claude/CLAUDE.md`)
+### Adaptadores (com política de escrita unificada)
+- [x] Claude Code (`claude/CLAUDE.md` + `claude/AGENTS.md` cross-tool)
 - [x] Cursor (`cursor/.cursorrules` + variante Project Rules)
 - [x] OpenAI Codex CLI (`codex/AGENTS.md`)
 - [x] Windsurf / Cascade (`windsurf/.windsurfrules`)
@@ -37,29 +41,39 @@ Critério: só entra no ROADMAP o que tem chance real de acontecer. Wishlist sem
 - [x] `scripts/review-inbox.sh` / `.ps1` — ritual semanal de revisão do inbox
 - [x] `scripts/build-pdfs.sh` / `.ps1` — geração dos PDFs via Chromium headless
 
+### Reescrita Hermes-core (v2.0)
+- [x] Hermes promovido a núcleo ativo com quatro papéis: roteador, gerenciador de memória com feedback, controlador de escopo, policy engine declarativo
+- [x] Gap 1 fechado: campo `Validation:` em todos os Context Packs
+- [x] Gap 2 fechado: regra explícita `approved`/`superseded` em `/70-decisions/` e no AGENT.md
+- [x] Gap 3 fechado: política de escrita aplicada pelo núcleo em qualquer modo (interativo, headless, agendado), restrita a `/90-inbox/`
+- [x] Diferencial: validade temporal automática por inspeção de `mtime`
+
 ---
 
 ## Próximo (prioridade alta)
 
-- [ ] Validação da v1.0 PT-BR com leitores externos (alvo: 3 revisões qualificadas)
-- [ ] Lançamento da versão em inglês do whitepaper (branch `wip/english`, ver issue #4)
+- [ ] Validação da v2.0 PT-BR com leitores externos (alvo: 3 revisões qualificadas)
+- [ ] Release `v2.0.0` no GitHub com PDFs regenerados do whitepaper e do guia v2
+- [ ] Lançamento da versão em inglês do whitepaper (branch `wip/english`, ver issue #4 — depende da validação PT-BR estabilizar)
 - [ ] Pelo menos um relato de implementação real publicado como case (`/cases/`)
+- [ ] Pack-usage logger no Hermes (referência de implementação concreta do papel 2 do núcleo)
 
 ## Próximo (prioridade média)
 
-- [ ] Adaptador Antigravity
+- [ ] Adaptador Antigravity (com política de escrita unificada)
 - [ ] Context Pack de exemplo: `exemplo-customer-support.md`
 - [ ] Context Pack de exemplo: `exemplo-data-analysis.md`
-- [ ] Exemplo de domínio real preenchido em `/template/10-domains/<exemplo>/` para mostrar como o vault parece em uso
+- [ ] Exemplo de domínio real preenchido em `/template/20-domains/<exemplo>/` para mostrar como o vault parece em uso
 - [ ] Workflow do GitHub Actions que regenera PDFs e anexa em cada nova release
 
 ## Backlog (sem data)
 
 - [ ] Tradução do guia de implementação para inglês (após validação do whitepaper EN)
-- [ ] Variante mínima do template em `/template-minimal/` (sem 20-projects, sem 90-archive) para quem só quer testar
+- [ ] Variante mínima do template em `/template-minimal/` (sem 10-projects, sem 30-clients, sem 99-archive) para quem só quer testar
 - [ ] Comparativo lado a lado com Letta, MemGPT, Zep e Mem0 num arquivo único (`COMPARISON.md`)
-- [ ] Suporte explícito a multi-vault (vários vaults compondo memória de um agente)
+- [ ] Suporte explícito a multi-vault físico (vários vaults compondo memória de um agente)
 - [ ] Integração de referência com DecisionNode no sub-módulo de decisões
+- [ ] Exemplo concreto de `hermes.policy.yml` configurável por projeto
 
 ---
 
@@ -71,6 +85,7 @@ Itens propostos mas explicitamente rejeitados. Não reabrir sem motivo novo.
 - **Memória automática sem revisão.** Anti-pattern central do whitepaper.
 - **Adaptador único universal.** Cada agente tem convenções próprias; um adaptador-genérico vira o pior denominador comum.
 - **Embeddings/RAG no caminho crítico.** Opcional para busca, nunca substitui Markdown como fonte.
+- **Núcleo ativo opcional.** Sem ele, os três gaps reabrem; a arquitetura vira pasta organizada.
 
 ---
 

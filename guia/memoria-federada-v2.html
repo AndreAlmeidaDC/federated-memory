@@ -442,7 +442,7 @@ td strong { color: var(--ink); }
 <div class="page cover">
   <div class="cover-bigtext">memória</div>
   <div>
-    <div class="eyebrow">Guia comunitário · Versão 2.0 · Edição revisada e implementável</div>
+    <div class="eyebrow">Guia comunitário · Versão 2.0 · Hermes como núcleo ativo</div>
     <h1>Memória<br>Federada para<br><em>Agentes de IA</em></h1>
     <p class="subtitle">Uma arquitetura aberta, portátil e governada para criar uma base de contexto que qualquer agente possa consultar, sem virar dono dela.</p>
   </div>
@@ -469,7 +469,7 @@ td strong { color: var(--ink); }
 
 <div class="callout">
 <div class="label">O que mudou na v2.0</div>
-<p>A v1.0 era um framework conceitual. A v2.0 vira guia de implementação: instalação real do Hermes Agent, MCP server para Obsidian com instruções concretas, Context Pack preenchido como referência, critério objetivo de governança de domínios e exemplo do padrão blackboard como coordenação assíncrona entre agentes.</p>
+<p>A v1 era framework conceitual; a v2 vira guia de implementação. Inclui: instalação real do Hermes Agent, MCP server para Obsidian com instruções concretas, Context Pack preenchido como referência, critério objetivo de governança de domínios e exemplo do padrão blackboard como coordenação assíncrona entre agentes. <strong>Reescrita Hermes-core:</strong> Hermes deixa de ser orquestrador leve para ser núcleo ativo com quatro papéis (roteador, gerenciador de memória com feedback, controlador de escopo, policy engine). Três gaps fechados via campo <code>Validation</code> nos packs, regra explícita de conflito por <code>status: approved/superseded</code>, e política de escrita aplicada pelo núcleo mesmo sem humano presente. Diferencial novo: validade temporal automática por inspeção de <code>mtime</code>. Estrutura do vault reorganizada para 11 pastas.</p>
 </div>
 
 <div class="toc">
@@ -484,6 +484,7 @@ td strong { color: var(--ink); }
 <li><span class="num">07</span> AGENT.md: o contrato neutro</li>
 <li><span class="num">08</span> Adaptadores por ferramenta</li>
 <li><span class="num">09</span> Context Packs com exemplo real</li>
+<li><span class="num">09b</span> Os quatro papéis do Hermes (núcleo ativo)</li>
 <li><span class="num">10</span> Hermes: instalação e configuração</li>
 <li><span class="num">11</span> Obsidian via MCP na prática</li>
 <li><span class="num">12</span> Fluxo operacional</li>
@@ -718,55 +719,70 @@ td strong { color: var(--ink); }
 
 <h2><span class="num">06 / Estrutura</span>Como organizar o Obsidian</h2>
 
-<p>Obsidian é a base porque trabalha bem com Markdown, links, backlinks, tags e navegação humana. A estrutura abaixo pode ser um único vault com pastas fortes ou múltiplos vaults. Para começar, vault único com pastas bem separadas costuma ser mais simples.</p>
+<p>Obsidian é a base porque trabalha bem com Markdown, links, backlinks, tags e navegação humana. A v2 do template usa onze pastas com prefixo numérico, otimizadas para roteamento por Hermes e para crescer sem virar bagunça.</p>
+
+<div class="callout tip">
+<div class="label">Vault único, separação lógica</div>
+<p>Neste guia, usamos "vaults" no sentido de domínios de memória. A implementação padrão usa um único vault Obsidian com pastas separadas por domínio. Quando houver necessidade de isolamento forte, segurança ou compartilhamento seletivo, esses domínios podem ser promovidos para vaults físicos separados.</p>
+</div>
 
 <pre><code>/federated-memory
-├── 00-global/
-│   ├── AGENT.md              # contrato neutro
-│   ├── MEMORY_RULES.md       # regras de captura e revisão
-│   └── STYLE_GUIDE.md        # estilo de escrita do usuário
+├── 00-global/           # contrato AGENT.md, regras gerais
 │
-├── 10-domains/
-│   ├── marketing/
+├── 10-projects/         # projetos ativos (começo, meio, fim)
+│   └── project-a/
+│       ├── PROJECT.md
+│       ├── notes/
+│       └── deliverables/
+│
+├── 20-domains/          # domínios estáveis (engineering, writing, research...)
 │   ├── engineering/
-│   ├── automation/
 │   ├── writing/
 │   └── research/
 │
-├── 20-projects/
-│   └── project-a/
-│       ├── PROJECT_CONTEXT.md
-│       ├── DECISIONS.md
-│       └── RISKS.md
+├── 30-clients/          # clientes — candidato a vault físico separado
+│   └── &lt;cliente&gt;/
 │
-├── 30-context-packs/
+├── 40-workflows/        # fluxos repetíveis (release, incident, review...)
+│
+├── 50-skills/           # capacidades reutilizáveis
+│
+├── 60-context-packs/    # pacotes de contexto por tarefa
 │   ├── linkedin-writing.md
-│   ├── code-refactor.md
-│   └── architecture-review.md
+│   ├── code-review.md
+│   ├── research.md
+│   └── planning.md
 │
-├── 40-agent-adapters/
-│   ├── claude/CLAUDE.md
-│   ├── codex/codex.md
-│   └── cursor/rules.md
+├── 70-decisions/        # decisões formais com status approved/superseded
 │
-├── 50-inbox/
-│   ├── raw-notes.md
+├── 80-agent-adapters/   # adaptadores por agente
+│   ├── claude/{CLAUDE.md, AGENTS.md}
+│   ├── cursor/.cursorrules
+│   ├── codex/AGENTS.md
+│   └── windsurf/.windsurfrules
+│
+├── 90-inbox/            # sugestões pendentes de revisão humana
 │   └── suggested-memory.md
 │
-└── 90-archive/</code></pre>
+└── 99-archive/          # logs, packs obsoletos, arquivados
+    ├── review-log.md
+    ├── pack-usage.log
+    └── pack-status.md</code></pre>
 
 <h3>Critério para criar um domínio novo</h3>
 
-<p>A v1 dizia "crie domínios reais, não categorias bonitas". Vago demais. Critério objetivo: <strong>crie um domínio quando houver vocabulário, decisões ou estilo de saída que NÃO devem aparecer na resposta de outro domínio</strong>. Se "marketing" usa "ICP, funil, CTA" e "engineering" usa "stack, latency, deploy", e cruzar isso confunde o agente, são dois domínios. Se "automation" e "engineering" usam o mesmo vocabulário e tomam decisões compatíveis, é uma pasta dentro de engineering, não um domínio novo.</p>
+<p>Critério objetivo: <strong>crie um domínio quando houver vocabulário, decisões ou estilo de saída que NÃO devem aparecer na resposta de outro domínio</strong>. Se "writing" usa "voz, hook, lead" e "engineering" usa "stack, latency, deploy", e cruzar isso confunde o agente, são dois domínios. Se duas áreas usam o mesmo vocabulário e tomam decisões compatíveis, é uma pasta dentro de um único domínio, não um domínio novo.</p>
+
+<h3>Quando promover a vault físico separado</h3>
 
 <div class="decision-grid">
 <div class="decision-card go">
-<h4>Vault separado faz sentido</h4>
-<p>Quando o domínio tem ciclo de vida próprio (cliente externo), exige confidencialidade, ou precisa ser sincronizado em outro dispositivo independentemente.</p>
+<h4>Vault físico separado faz sentido</h4>
+<p>Quando há requisito de isolamento contratual (NDA, dados sensíveis de cliente), sincronização independente (uma conta de cloud diferente), ou compartilhamento seletivo de leitura sem expor o resto. O caso típico é <code>30-clients/</code>.</p>
 </div>
 <div class="decision-card stop">
-<h4>Vault separado é exagero</h4>
-<p>Quando você ainda está começando, quando os domínios trocam contexto frequentemente, ou quando você é uma pessoa só usando uma máquina só.</p>
+<h4>Vault físico separado é exagero</h4>
+<p>Quando você ainda está começando, quando os domínios trocam contexto frequentemente, ou quando você é uma pessoa só usando uma máquina só. Comece com pastas no mesmo vault; promova depois se a dor justificar.</p>
 </div>
 </div>
 
@@ -787,29 +803,24 @@ not owners.
 
 Rules:
 1. Do not load the entire memory base.
-2. Start from the relevant Context Pack.
-3. If no Context Pack exists, read the domain index first.
-4. Never write permanent memory without human approval.
-5. Keep project context isolated from other domains unless
-   explicitly requested.
-6. When unsure, ask for clarification or create a suggested
-   memory entry in /50-inbox/suggested-memory.md.
+2. Start from the relevant Context Pack in /60-context-packs/.
+3. If no Context Pack exists, ask which domain is relevant.
+4. Permanent writes are forbidden outside /90-inbox/ in any
+   execution mode (interactive, headless, scheduled).
+5. Memory conflicts: the most recent entry with status: approved
+   wins. Entries with status: superseded stay in history but are
+   ignored at runtime. Never infer winner by file timestamp alone.
+6. When unsure, create a suggested memory entry in
+   /90-inbox/suggested-memory.md instead of guessing.
 
-Domains:
-- marketing
-- engineering
-- automation
-- writing
-- research
-- projects
+Folders:
+- 00-global, 10-projects, 20-domains, 30-clients, 40-workflows,
+  50-skills, 60-context-packs, 70-decisions, 80-agent-adapters,
+  90-inbox, 99-archive
 
-Permanent memory format:
-- decision
-- source
-- date
-- scope
-- status
-- related context packs</code></pre>
+Decision frontmatter (in /70-decisions/):
+- id, date, status (approved | superseded | pending), supersedes,
+  domain, owner</code></pre>
 
 <div class="callout tip">
 <div class="label">Por que isso funciona</div>
@@ -870,14 +881,14 @@ Read the shared memory protocol at:
 ../00-global/AGENT.md
 
 For this project, start with:
-../20-projects/project-a/PROJECT_CONTEXT.md
+../10-projects/project-a/PROJECT_CONTEXT.md
 
 Use Context Packs before reading raw notes:
-../30-context-packs/architecture-review.md
+../60-context-packs/architecture-review.md
 
 Do not modify permanent memory directly.
 If a new memory seems useful, write a suggestion to:
-../50-inbox/suggested-memory.md</code></pre>
+../90-inbox/suggested-memory.md</code></pre>
 
 <!-- ============================================== -->
 <!-- 09 - CONTEXT PACKS WITH REAL EXAMPLE -->
@@ -954,14 +965,14 @@ Help an AI agent draft LinkedIn posts in André's voice for
 the technology and AI community.
 
 Use:
-- /10-domains/writing/STYLE_GUIDE.md
-- /10-domains/writing/voice-examples/*.md
-- /10-domains/writing/hooks-that-worked.md
-- Last 5 entries from /10-domains/writing/recent-posts.md
+- /20-domains/writing/STYLE_GUIDE.md
+- /20-domains/writing/voice-examples/*.md
+- /20-domains/writing/hooks-that-worked.md
+- Last 5 entries from /20-domains/writing/recent-posts.md
 
 Avoid:
-- /10-domains/engineering/*  (different vocabulary)
-- /20-projects/*  (unless explicitly mentioned)
+- /20-domains/engineering/*  (different vocabulary)
+- /10-projects/*  (unless explicitly mentioned)
 - Generic LinkedIn templates from external sources
 - Em dashes (—). Never. Forbidden.
 
@@ -982,23 +993,80 @@ Confidence / validity:
 - Voice examples should not be older than 90 days.
 
 Source notes:
-- /10-domains/writing/STYLE_GUIDE.md
-- /10-domains/writing/hooks-that-worked.md</code></pre>
+- /20-domains/writing/STYLE_GUIDE.md
+- /20-domains/writing/hooks-that-worked.md</code></pre>
 
 <div class="callout">
-<div class="label">O detalhe que muda tudo</div>
-<p>Esse Context Pack tem o campo <em>Confidence / validity</em>. Isso evita que estilo de seis meses atrás contamine o post de hoje. É a porta de entrada da temporalidade que justifica o Graphiti mais tarde.</p>
+<div class="label">Validation: o feedback que faltava na v1</div>
+<p>Cada Context Pack v2 inclui o campo <code>Validation:</code>. O Hermes loga cada uso em <code>/99-archive/pack-usage.log</code> com resultado classificado (útil / parcial / ruim); três marcações ruins consecutivas flaggam o pack pra revisão. Adicionalmente, ao entregar o pack o Hermes inspeciona o <code>mtime</code> dos arquivos listados em <code>Use:</code> — se algum estiver com mais de 90 dias (default, configurável por pack), o output ganha um aviso de validade temporal. Pacote ruim tem meia-vida finita; conteúdo antigo merece checagem antes de virar base de decisão nova.</p>
+</div>
+
+<!-- ============================================== -->
+<!-- 09b - HERMES FOUR ROLES (v2.0 addition) -->
+<!-- ============================================== -->
+
+<h2><span class="num">09b / Núcleo Ativo</span>Os quatro papéis do Hermes</h2>
+
+<p>A v1 deste guia chamou o Hermes de "orquestrador leve". A prática mostrou que essa caracterização subestimava o papel. Sem um componente ativo que medeia o acesso ao contexto, três problemas estruturais ficam abertos: feedback de qualidade exige logging por uso; resolução de conflito exige inspeção de status; política de escrita exige enforcement no caminho da chamada. Nenhuma dessas funções pertence ao agente — todas pertencem ao núcleo.</p>
+
+<p>Na v2, Hermes desempenha quatro papéis. Eles não são opcionais — são o que transforma uma pasta organizada numa arquitetura.</p>
+
+<h3>1. Roteador de contexto</h3>
+<p>Classifica a tarefa, identifica o domínio relevante, seleciona o Context Pack apropriado, entrega o pacote mínimo necessário. O agente não escolhe o que ler — recebe o que foi roteado. Esse é o papel que a v1 já reconhecia.</p>
+
+<h3>2. Gerenciador de memória com loop de feedback</h3>
+<p>Cada uso de pack é logado em <code>/99-archive/pack-usage.log</code> com resultado classificado. Três marcações "ruim" consecutivas flaggam o pack pra revisão. O ciclo de melhoria é mecânico, não dependente de hábito do usuário. Sem isso, packs ruins sobrevivem indefinidamente porque ninguém é forçado a olhar.</p>
+
+<h3>3. Controlador de escopo (resolução de conflito)</h3>
+<p>Aplica a regra de conflito de memória ao montar o contexto: ignora entradas com <code>status: superseded</code>, prioriza a mais recente com <code>status: approved</code>, sinaliza ausência de status como bloqueio. O agente nunca vê o conflito — vê apenas a versão vencedora ou uma pergunta direta pro humano.</p>
+
+<pre><code># Exemplo de decisão em /70-decisions/
+---
+id: db-engine-postgres
+date: 2026-03-15
+status: approved
+supersedes: [db-engine-mysql]
+domain: engineering
+owner: andre
+---
+
+# Decisão: PostgreSQL como banco principal
+
+## Contexto
+MySQL não suporta os recursos de JSONB e CTEs recursivas que
+precisamos. Avaliamos a migração há 2 meses.
+
+## Decisão
+Postgres 16 como banco principal a partir de 2026-Q2.</code></pre>
+
+<p>A decisão antiga com <code>id: db-engine-mysql</code> ganha automaticamente <code>status: superseded</code> e fica no histórico. O Hermes ignora ela ao montar Context Pack que carregue decisões de engineering.</p>
+
+<h3>4. Policy engine declarativo</h3>
+<p>Política de escrita é configurada uma vez no Hermes — não em cada adaptador, não em cada chamada de MCP:</p>
+
+<pre><code># hermes.policy.yml (exemplo)
+write_policy:
+  default: deny
+  allow:
+    - path: "/90-inbox/**"
+      mode: "append"
+  enforcement: "all-modes"   # interactive, headless, scheduled
+  on_violation: "convert_to_inbox_suggestion"</code></pre>
+
+<p>Leitura: liberada. Escrita permanente: proibida fora de <code>/90-inbox/</code>, em qualquer modo. Qualquer pedido fora do escopo é convertido em sugestão pro inbox, mesmo em execução headless. A política é declarativa e auditável: um único arquivo descreve o que pode e o que não pode.</p>
+
+<div class="callout warn">
+<div class="label">Princípio derivado</div>
+<p>Memória federada sem núcleo ativo é apenas uma pasta organizada. O núcleo é o que transforma uma estrutura de arquivos em arquitetura: aplica política, mede qualidade e resolve conflito. Sem ele, os princípios viram boas intenções.</p>
 </div>
 
 <!-- ============================================== -->
 <!-- 10 - HERMES INSTALATION -->
 <!-- ============================================== -->
 
-<h2><span class="num">10 / Orquestrador</span>Hermes: instalação e configuração</h2>
+<h2><span class="num">10 / Instalação</span>Hermes: instalação e configuração</h2>
 
-<p>Hermes Agent é um framework do NousResearch com loop de conversação, chamada de ferramentas, memória persistente e deployment em CLI, Telegram, Discord, WhatsApp e integrações de editor via Agent Client Protocol. Ele já lê arquivos como <code>SOUL.md</code>, <code>MEMORY.md</code>, <code>USER.md</code> e <code>AGENTS.md</code> ao montar o prompt do sistema.</p>
-
-<p>Isso é importante porque significa que a sua arquitetura de memória federada pode ser carregada nativamente pelo Hermes sem código glue.</p>
+<p>Hermes Agent é o framework do NousResearch que vamos usar como núcleo. Tem loop de conversação, chamada de ferramentas, memória persistente, deployment em CLI, Telegram, Discord, WhatsApp e integrações de editor via Agent Client Protocol. E ele já lê arquivos como <code>SOUL.md</code>, <code>MEMORY.md</code>, <code>USER.md</code> e <code>AGENTS.md</code> ao montar o prompt do sistema — o que significa que a sua arquitetura federada pode ser carregada nativamente sem código glue.</p>
 
 <h3>Instalação básica</h3>
 
@@ -1030,10 +1098,10 @@ before doing anything:
 
 Before responding to any task:
 1. Identify the domain (writing, engineering, automation, etc).
-2. Load the corresponding Context Pack from /30-context-packs/.
-3. Never write to /00-global/ or /10-domains/ without explicit
+2. Load the corresponding Context Pack from /60-context-packs/.
+3. Never write to /00-global/ or /20-domains/ without explicit
    human approval.
-4. New memory suggestions go to /50-inbox/suggested-memory.md.</code></pre>
+4. New memory suggestions go to /90-inbox/suggested-memory.md.</code></pre>
 
 <h3>Configurando memória persistente</h3>
 
@@ -1060,7 +1128,7 @@ Before responding to any task:
 <ul>
 <li><code>list_vault_files</code> — lista arquivos do vault</li>
 <li><code>search_vault</code> — busca por conteúdo</li>
-<li><code>create_vault_file</code> — cria arquivo (use com restrição em <code>/50-inbox/</code>)</li>
+<li><code>create_vault_file</code> — cria arquivo (use com restrição em <code>/90-inbox/</code>)</li>
 <li><code>read_vault_file</code> — lê um arquivo específico</li>
 </ul>
 
@@ -1088,7 +1156,7 @@ Before responding to any task:
 
 <div class="callout warn">
 <div class="label">Cuidado com escopo</div>
-<p>Expor memória como ferramenta também expõe risco. Configure permissões de escrita apenas para <code>/50-inbox/</code>. As pastas <code>/00-global/</code>, <code>/10-domains/</code> e <code>/20-projects/</code> devem ser read-only para qualquer agente. Interoperabilidade sem governança vira superfície de ataque.</p>
+<p>Expor memória como ferramenta também expõe risco. Configure permissões de escrita apenas para <code>/90-inbox/</code>. As pastas <code>/00-global/</code>, <code>/20-domains/</code> e <code>/10-projects/</code> devem ser read-only para qualquer agente. Interoperabilidade sem governança vira superfície de ataque.</p>
 </div>
 
 <!-- ============================================== -->
@@ -1372,7 +1440,7 @@ mcp.seudominio.com {
 <tbody>
 <tr><td>Acesso SSH à VPS</td><td>Chave SSH obrigatória. Desabilitar login por senha (<code>PasswordAuthentication no</code> no sshd_config).</td></tr>
 <tr><td>Token do MCP server</td><td>Variável de ambiente, nunca hardcoded. Usar <code>.env</code> fora do vault.</td></tr>
-<tr><td>Escrita no vault</td><td>MCP server com permissão de escrita restrita a <code>/50-inbox/</code>. Vault principal read-only para o agente.</td></tr>
+<tr><td>Escrita no vault</td><td>MCP server com permissão de escrita restrita a <code>/90-inbox/</code>. Vault principal read-only para o agente.</td></tr>
 <tr><td>Vault no Git</td><td>Repositório privado. Checar <code>.gitignore</code> para não commitar <code>.env</code> ou tokens.</td></tr>
 <tr><td>Porta do MCP</td><td>Nunca aberta no firewall da VPS. Só acessível via tunnel ou proxy autenticado.</td></tr>
 </tbody>
@@ -1522,7 +1590,7 @@ git init</code></pre>
 
 <h3>Passo 7 — Expor via MCP</h3>
 
-<p>Escolha entre Opção A (Local REST API) ou Opção B (filesystem direto) da seção 11. Configure no seu cliente MCP de preferência. Restrinja escrita a <code>/50-inbox/</code>.</p>
+<p>Escolha entre Opção A (Local REST API) ou Opção B (filesystem direto) da seção 11. Configure no seu cliente MCP de preferência. Restrinja escrita a <code>/90-inbox/</code>.</p>
 
 <p><strong>Concluído quando:</strong> um agente externo (Claude Desktop, Cursor, ChatGPT com MCP) consulta seu vault e respeita os limites de escrita.</p>
 
@@ -1606,7 +1674,7 @@ git init</code></pre>
 </figure>
 
 <ul>
-<li>Toda nova memória começa como sugestão em <code>/50-inbox/</code>.</li>
+<li>Toda nova memória começa como sugestão em <code>/90-inbox/</code>.</li>
 <li>Toda decisão permanente deve ter data, escopo, fonte, status e responsável pela aprovação.</li>
 <li>Memórias antigas precisam poder ser arquivadas, substituídas ou marcadas como obsoletas.</li>
 <li>Agentes consultam memória, mas não reescrevem princípios globais sem permissão.</li>
@@ -1615,7 +1683,7 @@ git init</code></pre>
 
 <h3>Ritual semanal de revisão do inbox</h3>
 
-<p>Aprovação humana só funciona se houver um momento marcado para fazê-la. Sem ritual fixo, o <code>/50-inbox/</code> vira lixeira: sugestões acumulam, nada vira memória, e os agentes seguem repetindo as mesmas perguntas. Reserve um bloco curto por semana — 20 a 40 minutos costuma bastar — para processar o inbox até zerar.</p>
+<p>Aprovação humana só funciona se houver um momento marcado para fazê-la. Sem ritual fixo, o <code>/90-inbox/</code> vira lixeira: sugestões acumulam, nada vira memória, e os agentes seguem repetindo as mesmas perguntas. Reserve um bloco curto por semana — 20 a 40 minutos costuma bastar — para processar o inbox até zerar.</p>
 
 <p>O repositório traz dois scripts equivalentes em <code>/scripts/</code> que conduzem a revisão entrada a entrada:</p>
 
@@ -1635,7 +1703,7 @@ $env:VAULT_PATH = 'C:\caminho\do\vault'
 <li><strong>Adiar (d):</strong> mantém no inbox para a próxima revisão. Útil quando falta contexto para decidir.</li>
 </ul>
 
-<p>Toda decisão — inclusive rejeições e adiamentos — é registrada em <code>/90-archive/review-log.md</code> com data, domínio, destino e resumo. Esse log é o que permite, semanas depois, ver quantas sugestões viraram memória, quantas foram descartadas e onde os agentes erram com mais frequência. Se a taxa de rejeição estiver alta, o problema não é o inbox: é a regra de captura do agente.</p>
+<p>Toda decisão — inclusive rejeições e adiamentos — é registrada em <code>/99-archive/review-log.md</code> com data, domínio, destino e resumo. Esse log é o que permite, semanas depois, ver quantas sugestões viraram memória, quantas foram descartadas e onde os agentes erram com mais frequência. Se a taxa de rejeição estiver alta, o problema não é o inbox: é a regra de captura do agente.</p>
 
 <!-- ============================================== -->
 <!-- 16 - ANTI-PATTERNS -->
@@ -1651,7 +1719,7 @@ $env:VAULT_PATH = 'C:\caminho\do\vault'
 <tr><td><strong>Memória automática sem revisão</strong></td><td>Hipóteses viram fato, base degrada em semanas</td><td>Inbox obrigatório, aprovação humana</td></tr>
 <tr><td><strong>Adaptador como fonte principal</strong></td><td>Trocar de ferramenta exige reescrever tudo</td><td>AGENT.md é a fonte, adaptador só traduz</td></tr>
 <tr><td><strong>Orquestrador poderoso cedo demais</strong></td><td>Hermes/LangGraph fazendo coisa que ninguém entende</td><td>Começar com leitura direta, adicionar orquestração quando doer</td></tr>
-<tr><td><strong>MCP/API sem escopo</strong></td><td>Qualquer agente escreve em qualquer pasta</td><td>Escrita apenas em /50-inbox/, resto read-only</td></tr>
+<tr><td><strong>MCP/API sem escopo</strong></td><td>Qualquer agente escreve em qualquer pasta</td><td>Escrita apenas em /90-inbox/, resto read-only</td></tr>
 </tbody>
 </table>
 
@@ -1669,11 +1737,30 @@ $env:VAULT_PATH = 'C:\caminho\do\vault'
 
 <p><strong>Alternativas ao MCP.</strong> Leitura direta de arquivos, CLI local, API REST. MCP é recomendado quando vários agentes precisam consumir a memória de modo padronizado.</p>
 
-<p><strong>Para o sub-módulo de decisões: DecisionNode.</strong> Se você quiser trocar os arquivos <code>DECISION.md</code> por algo com busca semântica e histórico automático, o <strong>DecisionNode</strong> (<a href="https://github.com/decisionnode/DecisionNode">github.com/decisionnode/DecisionNode</a>) faz exatamente isso: decisões em JSON, embeddings via Gemini, busca por cosine similarity, MCP server pronto para Claude Code, Cursor e Windsurf, conflict detection, soft-delete reversível. O requisito para usar como substituto permanece o mesmo: não pode gravar memória permanente sem aprovação humana. No DecisionNode, isso se traduz em configurar o agente em modo "strict" e revisar o que entra antes de ativar.</p>
+<p><strong>Para o sub-módulo de decisões: DecisionNode.</strong> Se você quiser trocar os arquivos de <code>/70-decisions/</code> por algo com busca semântica e histórico automático, o <strong>DecisionNode</strong> (<a href="https://github.com/decisionnode/DecisionNode">github.com/decisionnode/DecisionNode</a>) faz exatamente isso: decisões em JSON, embeddings via Gemini, busca por cosine similarity, MCP server pronto para Claude Code, Cursor e Windsurf, conflict detection, soft-delete reversível. O requisito para usar como substituto permanece o mesmo: não pode gravar memória permanente sem aprovação humana, e a regra de <code>status: approved/superseded</code> precisa ser respeitada. No DecisionNode, isso se traduz em configurar o agente em modo "strict" e revisar o que entra antes de ativar.</p>
+
+<h3>Sistemas centralizadores / Life OS — o caminho oposto</h3>
+
+<p>Existe uma categoria de projetos que adota a abordagem inversa da federada: concentrar memória, automação, integrações e agentes em um único aplicativo monolítico. São frequentemente chamados de "Personal AI", "Life OS" ou "super-app de produtividade". Eles vencem em superfície de uso: UI pronta, integrações empacotadas, comunidade visível, curva de adoção quase nula.</p>
+
+<p>O custo aparece depois. A memória vive dentro do aplicativo, no formato do aplicativo. Trocar de ferramenta significa começar do zero. A arquitetura é, por design, centralizadora — exatamente o anti-pattern que motivou este guia. Não há contrato neutro; o adaptador é o produto. Não há <code>mtime</code> exposto; a verificação de validade temporal automática que o Hermes faz aqui não tem equivalente lá. A regra de conflito é definida pela UI, não por arquivo auditável.</p>
+
+<table>
+<thead><tr><th>Critério</th><th>Memória federada (v2)</th><th>Sistemas centralizadores / Life OS</th></tr></thead>
+<tbody>
+<tr><td>Velocidade de adoção</td><td>Lenta — exige aprender o contrato</td><td>Rápida — instalou, conectou, usou</td></tr>
+<tr><td>Portabilidade</td><td>Total (Markdown + Git)</td><td>Presa ao aplicativo</td></tr>
+<tr><td>Soberania</td><td>Do usuário</td><td>Do produto</td></tr>
+<tr><td>Validade temporal automática</td><td>Sim (mtime de arquivo)</td><td>Não disponível</td></tr>
+<tr><td>Custo de troca</td><td>Trocar adaptador</td><td>Recomeçar</td></tr>
+</tbody>
+</table>
+
+<p>Para quem prioriza velocidade de adoção sobre soberania, o caminho centralizador é a escolha certa. Para quem prioriza portabilidade e governança, é o problema vestido de solução.</p>
 
 <div class="callout">
 <div class="label">Critério de substituição</div>
-<p>Você pode trocar ferramentas. Não pode trocar os princípios: domínio separado, contrato neutro, contexto enxuto, aprovação humana, portabilidade.</p>
+<p>Você pode trocar ferramentas. Não pode trocar os princípios: domínio separado, contrato neutro, contexto enxuto, aprovação humana, política de escrita restrita a inbox, resolução determinística de conflito, portabilidade.</p>
 </div>
 
 <!-- ============================================== -->
@@ -1737,9 +1824,9 @@ Decision date: YYYY-MM-DD</code></pre>
 <li>O primeiro adaptador (<code>CLAUDE.md</code>, <code>codex.md</code>, etc) está funcionando?</li>
 <li>O Hermes carrega o <code>AGENTS.md</code> da raiz do vault automaticamente?</li>
 <li>O Hermes só roteia e sugere, sem gravar memória permanente sozinho?</li>
-<li>Existe <code>/50-inbox/suggested-memory.md</code> recebendo sugestões dos agentes?</li>
-<li>Há regra explícita de aprovação humana antes de qualquer escrita em <code>/00-global/</code> ou <code>/10-domains/</code>?</li>
-<li>O MCP server foi configurado com escrita restrita a <code>/50-inbox/</code>?</li>
+<li>Existe <code>/90-inbox/suggested-memory.md</code> recebendo sugestões dos agentes?</li>
+<li>Há regra explícita de aprovação humana antes de qualquer escrita em <code>/00-global/</code> ou <code>/20-domains/</code>?</li>
+<li>O MCP server foi configurado com escrita restrita a <code>/90-inbox/</code>?</li>
 <li>O sistema foi testado com pelo menos dois agentes diferentes consumindo a mesma base?</li>
 <li>Existe plano de quando adicionar Graphiti, e ele inclui "apenas quando a dor temporal aparecer"?</li>
 </ul>

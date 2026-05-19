@@ -4,28 +4,46 @@ Este arquivo é lido pelo Cascade quando colocado na raiz do workspace.
 Traduz o contrato neutro de `00-global/AGENT.md` para as convenções do Windsurf.
 Se houver conflito, `AGENT.md` prevalece.
 
+## Política de escrita (vale mesmo sem humano presente)
+
+- Leitura: liberada em todo o vault
+- Escrita permanente: PROIBIDA fora de `/90-inbox/`
+- Em Write mode automático, agent mode ou qualquer execução headless, a regra continua valendo
+- Pedidos fora desse escopo viram sugestão para o inbox, nunca edição direta
+
 ## Contrato do vault
 
 Este workspace é um vault de memória federada:
 
 - `00-global/AGENT.md` — contrato neutro (sempre o primeiro a ler)
-- `10-domains/` — domínios isolados, read-only
-- `20-projects/` — projetos ativos, read-only
-- `30-context-packs/` — pacotes de contexto mínimo, read-only
-- `50-inbox/suggested-memory.md` — única pasta gravável pelo agente
+- `10-projects/` — projetos ativos, read-only
+- `20-domains/` — domínios isolados, read-only
+- `30-clients/` — contexto de clientes, read-only
+- `40-workflows/` — fluxos de trabalho, read-only
+- `50-skills/` — capacidades reutilizáveis, read-only
+- `60-context-packs/` — pacotes de contexto mínimo, read-only
+- `70-decisions/` — decisões formais, read-only
+- `80-agent-adapters/` — adaptadores, read-only
+- `90-inbox/suggested-memory.md` — única pasta gravável pelo agente
+- `99-archive/` — logs, read-only
 
 ## Comportamento esperado
 
 - Antes de qualquer ação, leia `00-global/AGENT.md`
 - Use o Context Pack indicado pelo usuário; se não houver, pergunte qual domínio importa
 - Não puxe o workspace inteiro para o contexto — o Cascade tende a indexar tudo, então seja explícito sobre o escopo no prompt
-- Toda memória nova entra como sugestão em `50-inbox/suggested-memory.md` no formato definido lá
-- Pastas fora de `50-inbox/` são read-only
+- Toda memória nova entra como sugestão em `90-inbox/suggested-memory.md` no formato definido lá
+
+## Resolução de conflito de memória
+
+- Vence a entrada mais recente com `status: approved`
+- `status: superseded` é ignorado em runtime
+- Sem status, perguntar ao humano — não inferir pelo timestamp
 
 ## Cascade — Chat, Write e Legacy modes
 
 - **Chat mode:** padrão para discutir e propor. Sem edits silenciosos.
-- **Write mode:** só permitido sobre `50-inbox/`. Para qualquer outro caminho, peça aprovação explícita do usuário e justifique por que precisa quebrar o contrato.
+- **Write mode:** só permitido sobre `90-inbox/`. Para qualquer outro caminho, peça aprovação explícita do usuário e justifique por que precisa quebrar o contrato.
 - **Legacy autocompletion:** ok em arquivos de código fora do vault; dentro do vault, desabilite para evitar reescrita acidental de notas.
 
 ## Memories e Rules do Windsurf

@@ -5,7 +5,7 @@
 Copie `.cursorrules` para a raiz do vault (mesmo nível de `00-global/`):
 
 ```bash
-cp template/40-agent-adapters/cursor/.cursorrules /caminho/do/vault/.cursorrules
+cp template/80-agent-adapters/cursor/.cursorrules /caminho/do/vault/.cursorrules
 ```
 
 O Cursor lê esse arquivo automaticamente ao abrir o workspace.
@@ -26,4 +26,4 @@ E cole o conteúdo de `.cursorrules` abaixo.
 
 ## MCP
 
-Se você expõe o vault via MCP server (filesystem ou Obsidian Local REST API), configure-o em **Settings → MCP** no Cursor com escrita restrita a `50-inbox/`.
+Se você expõe o vault via MCP server (filesystem ou Obsidian Local REST API), configure-o em **Settings → MCP** no Cursor com escrita restrita a `90-inbox/`.
