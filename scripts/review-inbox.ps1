@@ -1,11 +1,11 @@
 # review-inbox.ps1 — ritual semanal de revisão do inbox de memória federada.
-# Processa cada sugestão de /50-inbox/suggested-memory.md interativamente:
+# Processa cada sugestão de /90-inbox/suggested-memory.md interativamente:
 #   a = aprovar (anexa ao destino e remove do inbox)
 #   e = editar (abre $env:EDITOR e volta a perguntar)
 #   r = rejeitar (remove do inbox)
 #   d = adiar  (mantém no inbox)
 #   q = sair    (mantém o que sobrar)
-# Decisões são registradas em /90-archive/review-log.md.
+# Decisões são registradas em /99-archive/review-log.md.
 
 [CmdletBinding()]
 param(
@@ -13,8 +13,8 @@ param(
 )
 
 $ErrorActionPreference = 'Stop'
-$inbox = Join-Path $VaultPath '50-inbox/suggested-memory.md'
-$log   = Join-Path $VaultPath '90-archive/review-log.md'
+$inbox = Join-Path $VaultPath '90-inbox/suggested-memory.md'
+$log   = Join-Path $VaultPath '99-archive/review-log.md'
 $marker = '<!-- Entradas pendentes abaixo desta linha -->'
 $editor = if ($env:EDITOR) { $env:EDITOR } else { 'notepad' }
 
@@ -22,7 +22,7 @@ if (-not (Test-Path $inbox)) { throw "Inbox não encontrado: $inbox" }
 $logDir = Split-Path $log -Parent
 if (-not (Test-Path $logDir)) { New-Item -ItemType Directory -Path $logDir -Force | Out-Null }
 if (-not (Test-Path $log)) {
-    "# 90-archive — Log de revisões do inbox`n`n<!-- Entradas abaixo desta linha -->`n" | Set-Content -Path $log -Encoding UTF8
+    "# 99-archive — Log de revisões do inbox`n`n<!-- Entradas abaixo desta linha -->`n" | Set-Content -Path $log -Encoding UTF8
 }
 
 $raw = Get-Content -Raw -Path $inbox -Encoding UTF8

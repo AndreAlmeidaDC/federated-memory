@@ -1,24 +1,24 @@
 #!/usr/bin/env bash
 # review-inbox.sh — ritual semanal de revisão do inbox de memória federada.
-# Processa cada sugestão de /50-inbox/suggested-memory.md interativamente:
+# Processa cada sugestão de /90-inbox/suggested-memory.md interativamente:
 #   a = aprovar (anexa ao destino e remove do inbox)
 #   e = editar (abre $EDITOR e volta a perguntar)
 #   r = rejeitar (remove do inbox)
 #   d = adiar  (mantém no inbox)
 #   q = sair    (mantém o que sobrar)
-# Decisões são registradas em /90-archive/review-log.md.
+# Decisões são registradas em /99-archive/review-log.md.
 
 set -euo pipefail
 
 VAULT="${VAULT_PATH:-$(pwd)/template}"
-INBOX="$VAULT/50-inbox/suggested-memory.md"
-LOG="$VAULT/90-archive/review-log.md"
+INBOX="$VAULT/90-inbox/suggested-memory.md"
+LOG="$VAULT/99-archive/review-log.md"
 MARKER="<!-- Entradas pendentes abaixo desta linha -->"
 EDITOR_CMD="${EDITOR:-nano}"
 
 [[ -f "$INBOX" ]] || { echo "Inbox não encontrado: $INBOX" >&2; exit 1; }
 mkdir -p "$(dirname "$LOG")"
-[[ -f "$LOG" ]] || printf '# 90-archive — Log de revisões do inbox\n\n<!-- Entradas abaixo desta linha -->\n' > "$LOG"
+[[ -f "$LOG" ]] || printf '# 99-archive — Log de revisões do inbox\n\n<!-- Entradas abaixo desta linha -->\n' > "$LOG"
 
 header=$(awk -v m="$MARKER" 'BEGIN{p=1} {print} $0==m{exit}' "$INBOX")
 body=$(awk -v m="$MARKER" 'f{print} $0==m{f=1}' "$INBOX")
