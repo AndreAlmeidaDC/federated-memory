@@ -30,7 +30,9 @@ Ambos partem da mesma tese: memória de agente acoplada ao agente é um anti-pat
 | Adaptador Cursor | ✅ Disponível |
 | Adaptador Codex | ✅ Disponível |
 | Adaptador Windsurf | ✅ Disponível |
-| Adaptador Antigravity | ⏳ Aceita contribuição |
+| Adaptador OpenCode | ✅ Disponível (`AGENTS.md` nativo v1.15+) |
+| Adaptador Antigravity | ✅ Disponível (Antigravity 2.0, Google I/O 19/05/2026) |
+| Adaptador Kimi Code CLI | ✅ Disponível (MoonshotAI v1.44) |
 | Context Packs de exemplo | ✅ 4 disponíveis com campo `Validation` (linkedin-writing, code-review, research, planning) |
 | Context Packs adicionais | ⏳ Aceita contribuição |
 | Diferencial: validade temporal automática | ✅ Hermes verifica `mtime` dos arquivos de cada pack |
@@ -109,7 +111,10 @@ O núcleo inspeciona o `mtime` dos arquivos listados em cada Context Pack. Se al
 │   │   ├── claude/{CLAUDE.md, AGENTS.md}
 │   │   ├── cursor/.cursorrules
 │   │   ├── codex/AGENTS.md
-│   │   └── windsurf/.windsurfrules
+│   │   ├── windsurf/.windsurfrules
+│   │   ├── opencode/AGENTS.md
+│   │   ├── antigravity/AGENTS.md
+│   │   └── kimi/AGENTS.md
 │   ├── 90-inbox/suggested-memory.md
 │   └── 99-archive/review-log.md
 ├── scripts/
