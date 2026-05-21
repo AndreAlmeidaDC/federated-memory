@@ -1,36 +1,44 @@
-# 50-skills — Habilidades
+# /50-skills/ — Procedimentos de Execução Reutilizáveis
 
-Capacidades reutilizáveis: o que você (ou um agente atuando por você) sabe fazer. Diferente de `40-workflows/` (sequência de passos) e de `20-domains/` (área de conhecimento).
+Skills são **procedimentos de execução** reutilizáveis. Elas descrevem *como* fazer uma tarefa específica, passo a passo, com restrições explícitas.
 
-Uma skill é o "como" — uma técnica, padrão ou competência aplicável a múltiplos contextos.
+## Skills × Context Packs
+
+A distinção importa. As duas pastas resolvem problemas diferentes:
+
+| Aspecto | Context Pack (`/60-context-packs/`) | Skill (`/50-skills/`) |
+|---|---|---|
+| Pergunta que responde | "O que saber antes de executar?" | "Como executar esta tarefa específica?" |
+| Natureza | Contexto **declarativo** | Procedimento **imperativo** |
+| Conteúdo | Princípios, restrições, exemplos, referências | Passos numerados, triggers, validações |
+| Quando carregar | Antes de raciocinar sobre o domínio | Quando a tarefa-alvo é reconhecida |
+
+Em prática: o Context Pack carrega princípios do domínio (ex: "como o André escreve no LinkedIn — voz, anti-patterns, exemplos"). A Skill executa um procedimento que *consome* esse contexto (ex: "criar-post-linkedin: passos 1 a 8 com restrições").
+
+Skills podem (e geralmente devem) apontar para Context Packs no primeiro passo. O contexto entra como leitura prévia; a skill ordena a execução.
+
+## Como qualquer agente consome
+
+Qualquer agente conectado ao vault via MCP — Claude, Codex, Grok Build, OpenCode, Kimi, Antigravity, Cursor, Windsurf — consegue ler uma skill como instrução. Não há formato proprietário: cada skill é um Markdown legível por humanos e por modelos.
+
+O fluxo típico:
+
+1. Usuário aciona um trigger (ex: "cria um post sobre X no LinkedIn")
+2. Agente identifica a skill correspondente em `/50-skills/`
+3. Agente lê a skill, executa cada passo na ordem, respeita as restrições
+4. Se um passo aponta para um Context Pack, o agente carrega esse pack antes de continuar
 
 ## Formato sugerido
 
-```markdown
-# Skill: <nome>
+Cada skill deve ter:
 
-Descrição:
-- O que esta skill permite fazer
+- **Trigger** — em que situação ela é acionada
+- **Passos** — lista numerada, ações concretas e verificáveis
+- **Restrições** — o que *não* fazer, com a regra explícita
+- **Critério de conclusão** (opcional) — como saber que a skill foi executada bem
 
-Pré-requisitos:
-- Conhecimentos ou ferramentas necessárias
+Veja `skill-criar-post-linkedin.md` como exemplo de referência.
 
-Aplicação:
-- Quando esta skill é o instrumento certo
-- Quando NÃO é (e o que usar em vez)
+## Política de escrita
 
-Referências:
-- Notas de domínio relacionadas
-- Workflows que dependem desta skill
-
-Última revisão: YYYY-MM-DD
-```
-
-## Exemplos de skill
-
-- `code-review-tecnico.md`
-- `entrevista-de-usuario.md`
-- `redacao-de-prd.md`
-- `analise-de-trade-offs.md`
-
-Uma skill que só você aplica e nunca delega para um agente não precisa estar aqui — pode viver em `00-global/` como nota pessoal.
+A pasta `/50-skills/` é **read-only para agentes**. Skills novas, alterações ou variantes entram via `/90-inbox/suggested-memory.md` como sugestão, e só viram skill real depois de revisão humana.
