@@ -1368,7 +1368,7 @@ git clone ssh://usuario@sua-vps:/vault-remote.git ~/vault
 git pull origin main
 
 # Depois de aprovações no inbox
-git add 00-global/ 10-domains/ 20-projects/ 30-context-packs/
+git add 00-global/ 10-projects/ 20-domains/ 60-context-packs/
 git commit -m "feat: memória aprovada — [domínio]"
 git push origin main</code></pre>
 
@@ -1544,8 +1544,9 @@ ufw allow 22  # SSH continua aberto</code></pre>
 
 <pre><code>mkdir federated-memory
 cd federated-memory
-mkdir -p 00-global 10-domains 20-projects 30-context-packs \
-         40-agent-adapters 50-inbox 90-archive
+mkdir -p 00-global 10-projects 20-domains 30-clients 40-workflows \
+         50-skills 60-context-packs 70-decisions 80-agent-adapters \
+         90-inbox 99-archive
 git init</code></pre>
 
 <p><strong>Concluído quando:</strong> a estrutura de pastas existe e o repositório git está inicializado.</p>
@@ -1558,13 +1559,13 @@ git init</code></pre>
 
 <h3>Passo 3 — Definir domínios reais</h3>
 
-<p>Crie uma pasta para cada domínio em <code>10-domains/</code>. Use o critério da seção 06: vocabulário próprio + saídas que não devem se misturar com outros.</p>
+<p>Crie uma pasta para cada domínio em <code>20-domains/</code>. Use o critério da seção 06: vocabulário próprio + saídas que não devem se misturar com outros.</p>
 
 <p><strong>Concluído quando:</strong> você tem entre 3 e 6 domínios. Mais que 8 é overhead. Menos que 3 quase nunca justifica memória federada.</p>
 
 <h3>Passo 4 — Três Context Packs iniciais</h3>
 
-<p>Crie em <code>30-context-packs/</code>:</p>
+<p>Crie em <code>60-context-packs/</code>:</p>
 
 <ul>
 <li><code>writing-style.md</code> — tarefas de escrita no seu estilo</li>
@@ -1578,7 +1579,7 @@ git init</code></pre>
 
 <h3>Passo 5 — Adaptador para o primeiro agente</h3>
 
-<p>Se for Claude Code, crie <code>40-agent-adapters/claude/CLAUDE.md</code> apontando para o <code>AGENT.md</code> e para um Context Pack default. Use o template da seção 08.</p>
+<p>Se for Claude Code, crie <code>80-agent-adapters/claude/CLAUDE.md</code> apontando para o <code>AGENT.md</code> e para um Context Pack default. Use o template da seção 08.</p>
 
 <p><strong>Concluído quando:</strong> você consegue rodar o Claude Code no diretório do vault e ele lê o adaptador automaticamente.</p>
 
