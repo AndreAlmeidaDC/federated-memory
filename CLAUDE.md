@@ -47,7 +47,7 @@ Além disso, o repositório distribui um **template clonável** de vault e adapt
 99-archive/        logs e arquivados
 ```
 
-### Adaptadores (9 agentes em `/template/80-agent-adapters/`)
+### Adaptadores (10 agentes em `/template/80-agent-adapters/`)
 
 | Agente | Arquivo |
 |---|---|
@@ -60,8 +60,7 @@ Além disso, o repositório distribui um **template clonável** de vault e adapt
 | Kimi Code CLI | `kimi/AGENTS.md` (MoonshotAI v1.44) |
 | Grok Build | `grok/AGENTS.md` (xAI, beta maio/2026) |
 | Pi | `pi/AGENTS.md` (pi.dev, filesystem direto sem MCP) |
-
-> Pendente: adapter `commandcode` mencionado no plano mas não criado no repo ainda.
+| Command Code | `commandcode/AGENTS.md` (commandcode.ai, taste + skills nativas) |
 
 ### Context Packs (`/template/60-context-packs/`)
 
