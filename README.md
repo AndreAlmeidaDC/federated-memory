@@ -34,6 +34,7 @@ Ambos partem da mesma tese: memória de agente acoplada ao agente é um anti-pat
 | Adaptador Antigravity | ✅ Disponível (Antigravity 2.0, Google I/O 19/05/2026) |
 | Adaptador Kimi Code CLI | ✅ Disponível (MoonshotAI v1.44) |
 | Adaptador Grok Build | ✅ Disponível (xAI, beta maio/2026) |
+| Adaptador Pi | ✅ Disponível (pi.dev, filesystem direto sem MCP) |
 | Context Packs de exemplo | ✅ 4 disponíveis com campo `Validation` (linkedin-writing, code-review, research, planning) |
 | Context Packs adicionais | ⏳ Aceita contribuição |
 | Diferencial: validade temporal automática | ✅ Hermes verifica `mtime` dos arquivos de cada pack |
@@ -116,7 +117,8 @@ O núcleo inspeciona o `mtime` dos arquivos listados em cada Context Pack. Se al
 │   │   ├── opencode/AGENTS.md
 │   │   ├── antigravity/AGENTS.md
 │   │   ├── kimi/AGENTS.md
-│   │   └── grok/AGENTS.md
+│   │   ├── grok/AGENTS.md
+│   │   └── pi/AGENTS.md
 │   ├── 90-inbox/suggested-memory.md
 │   └── 99-archive/review-log.md
 ├── scripts/
