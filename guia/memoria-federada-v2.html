@@ -481,10 +481,12 @@ td strong { color: var(--ink); }
 <li><span class="num">04</span> O padrão blackboard</li>
 <li><span class="num">05</span> Componentes da implementação</li>
 <li><span class="num">06</span> Estrutura no Obsidian</li>
+<li><span class="num">06b</span> Multimodal — assets no vault</li>
 <li><span class="num">07</span> AGENT.md: o contrato neutro</li>
 <li><span class="num">08</span> Adaptadores por ferramenta</li>
 <li><span class="num">09</span> Context Packs com exemplo real</li>
 <li><span class="num">09b</span> Os quatro papéis do Hermes (núcleo ativo)</li>
+<li><span class="num">09c</span> Captura automática — inbox sem intervenção manual</li>
 <li><span class="num">10</span> Hermes: instalação e configuração</li>
 <li><span class="num">11</span> Obsidian via MCP na prática</li>
 <li><span class="num">12</span> Fluxo operacional</li>
@@ -787,6 +789,63 @@ td strong { color: var(--ink); }
 </div>
 
 <!-- ============================================== -->
+<!-- 06b - MULTIMODAL ASSETS -->
+<!-- ============================================== -->
+
+<h2><span class="num">06b / Multimodal</span>Assets no vault</h2>
+
+<p>O vault é Markdown por padrão. Mas o suporte multimodal não exige mudar a arquitetura — exige apenas uma convenção de onde os assets ficam e como são referenciados.</p>
+
+<p>Suporte multimodal é uma capacidade do LLM configurado no agente, não do agente em si. O agente passa o arquivo, o LLM processa. Verifique a documentação atualizada do provider:</p>
+
+<ul>
+<li>Anthropic: <a href="https://docs.anthropic.com">docs.anthropic.com</a></li>
+<li>Google: <a href="https://ai.google.dev">ai.google.dev</a></li>
+<li>OpenAI: <a href="https://platform.openai.com/docs">platform.openai.com/docs</a></li>
+<li>Zhipu/GLM: <a href="https://docs.z.ai">docs.z.ai</a></li>
+<li>MoonshotAI/Kimi: <a href="https://platform.moonshot.cn">platform.moonshot.cn</a></li>
+<li>xAI/Grok: <a href="https://docs.x.ai">docs.x.ai</a></li>
+</ul>
+
+<p>Todos os principais LLMs hoje suportam ao menos imagem e PDF. Áudio e vídeo variam por provider.</p>
+
+<p><strong>Estrutura de assets no vault:</strong></p>
+
+<pre><code>/federated-memory
+  /20-domains/
+    /engineering/
+      /assets/
+        arquitetura-v2.png
+        decisao-banco.pdf
+    /writing/
+      /assets/
+        exemplos-visuais/
+  /10-projects/
+    /project-a/
+      /assets/
+        wireframes/
+        screenshots/
+        bugs/
+          bug-001/
+            screenshot-erro.png
+            tentativa-01-failed.md
+            tentativa-02-success.md
+</code></pre>
+
+<p><strong>Regra de referência no Markdown:</strong> todo asset é referenciado no arquivo <code>.md</code> do mesmo domínio ou projeto. O Context Pack aponta para o <code>.md</code>. O agente carrega o asset quando o <code>.md</code> o referencia.</p>
+
+<p>Exemplo em um <code>DECISION.md</code>:</p>
+
+<pre><code>Diagrama de referência: ./assets/arquitetura-v2.png
+O agente deve carregar esta imagem ao analisar decisões de stack.
+</code></pre>
+
+<div class="callout warn">
+<div class="label">Regra para assets grandes</div>
+<p>Vídeos, datasets e arquivos acima de 10MB não devem ficar no vault. Referencie por URL ou caminho externo. O vault deve permanecer leve e versionável.</p>
+</div>
+
+<!-- ============================================== -->
 <!-- 07 - AGENT.MD -->
 <!-- ============================================== -->
 
@@ -1058,6 +1117,39 @@ write_policy:
 <div class="callout warn">
 <div class="label">Princípio derivado</div>
 <p>Memória federada sem núcleo ativo é apenas uma pasta organizada. O núcleo é o que transforma uma estrutura de arquivos em arquitetura: aplica política, mede qualidade e resolve conflito. Sem ele, os princípios viram boas intenções.</p>
+</div>
+
+<!-- ============================================== -->
+<!-- 09c - AUTO CAPTURE VIA HOOKS -->
+<!-- ============================================== -->
+
+<h2><span class="num">09c / Captura automática</span>Inbox sem intervenção manual</h2>
+
+<p>O maior gargalo de curadoria é lembrar de pedir ao agente para salvar algo importante. O Hermes resolve isso com hooks de ciclo de vida: <code>sync_turn</code>, <code>prefetch</code> e <code>shutdown</code>.</p>
+
+<p>Configurados corretamente, o Hermes detecta padrões relevantes durante a sessão — decisão tomada, bug resolvido, preferência identificada, padrão recorrente — e grava automaticamente uma sugestão em <code>/90-inbox/suggested-memory.md</code>.</p>
+
+<p>O humano não precisa pedir. O inbox se alimenta sozinho. A aprovação humana permanece como filtro de qualidade. A captura é automática. A curadoria é proporcional ao risco.</p>
+
+<p><strong>Exemplo de configuração:</strong></p>
+
+<pre><code># hermes.hooks.yml
+hooks:
+  sync_turn:
+    - trigger: "decision_detected"
+      action: "append_to_inbox"
+      target: "/90-inbox/suggested-memory.md"
+    - trigger: "bug_resolved"
+      action: "append_to_inbox"
+      target: "/90-inbox/suggested-memory.md"
+    - trigger: "preference_identified"
+      action: "append_to_inbox"
+      target: "/90-inbox/suggested-memory.md"
+</code></pre>
+
+<div class="callout warn">
+<div class="label">Captura automática ≠ ausência de curadoria</div>
+<p>Captura automática não elimina curadoria humana. Elimina o gargalo de lembrar de pedir. O inbox cresce sozinho. O ritual de review continua sendo o mecanismo de controle de qualidade — mas agora proporcional ao risco, não obrigatório para tudo.</p>
 </div>
 
 <!-- ============================================== -->

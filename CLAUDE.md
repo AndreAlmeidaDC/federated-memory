@@ -22,7 +22,7 @@ Além disso, o repositório distribui um **template clonável** de vault e adapt
 
 ### Guia de implementação
 
-- `guia/memoria-federada-v2.html` — **v2.0 com 20 seções**
+- `guia/memoria-federada-v2.html` — **v2.0 com 20 seções + 06b (multimodal/assets) + 09c (captura automática via hooks)**
 - Diagramas SVG inline (sem dependência de imagens externas)
 - Hermes como **núcleo ativo** com 4 papéis: roteador, gerenciador de memória com feedback, controlador de escopo, policy engine declarativo
 - Inclui seção 12b de **deployment remoto** (VPS, SSH tunnel, MCP via Caddy)
@@ -64,12 +64,13 @@ Além disso, o repositório distribui um **template clonável** de vault e adapt
 
 ### Context Packs (`/template/60-context-packs/`)
 
-4 packs prontos, todos com campo `Validation` para validade temporal:
+5 packs prontos, todos com campo `Validation` para validade temporal:
 
 - `exemplo-linkedin-writing.md`
 - `exemplo-code-review.md`
 - `exemplo-research.md`
 - `exemplo-planning.md`
+- `exemplo-bug-tracking.md`
 
 ### Documentos auxiliares
 
@@ -92,6 +93,15 @@ Além disso, o repositório distribui um **template clonável** de vault e adapt
 
 ---
 
+### Classificação automática (v2.0.2)
+
+- `AGENT.md` agora exige `confidence` + `risk` em toda sugestão de inbox
+- `verified + low` com TTL <=7 dias promove-se automaticamente para o domínio
+- `hypothesis`, `high risk` e entradas sem classificação vão para revisão humana
+- `verified + medium` fica no inbox como aprovação lazy
+- Scripts `review-inbox.{sh,ps1}` aplicam essas regras antes da revisão interativa
+- Whitepaper: princípio 5 reformulado de "aprovação humana obrigatória" para "humano como auditor de última instância"
+
 ## Backlog restante
 
 - Versão em inglês do whitepaper (branch `wip/english`, após validação PT-BR)
@@ -100,6 +110,7 @@ Além disso, o repositório distribui um **template clonável** de vault e adapt
 - GitHub Action para validar estrutura do vault (presença de `AGENT.md`, formato de Context Packs, etc.)
 - Templates por área (escritor, dev, pesquisador) — perfis pré-configurados de domínios e packs
 - Plugin Obsidian dedicado para Context Packs (criação assistida, validação de campos)
+- Avaliar integração do ai-memory (github.com/akitaonrails/ai-memory) após estabilização — hoje em beta com dependência Docker
 
 ---
 

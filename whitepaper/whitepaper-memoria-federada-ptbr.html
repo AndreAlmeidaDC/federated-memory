@@ -456,7 +456,7 @@ sup {
       <td><strong>Memória Federada (v2.0)</strong></td>
       <td class="yes">Total</td>
       <td class="yes">Por domínio</td>
-      <td class="yes">Humana + policy</td>
+      <td class="yes">Proporcional ao risco (automática para baixo risco, humana para hipóteses e alto risco)</td>
       <td class="yes">Usuário</td>
     </tr>
   </tbody>
@@ -494,7 +494,7 @@ sup {
     <p><strong>Contexto mínimo suficiente.</strong> O agente recebe o contexto necessário para a tarefa em execução, não o histórico completo. Context Packs são a unidade de entrega: pacotes enxutos, orientados à tarefa, com escopo explícito do que usar e do que evitar.</p>
   </li>
   <li>
-    <p><strong>Aprovação humana para memória permanente.</strong> Nenhuma informação vira memória permanente sem revisão humana explícita. A automação pode sugerir; o humano aprova. Essa distinção é o que impede a degradação inevitável dos sistemas de memória automática.</p>
+    <p><strong>Humano como auditor de última instância.</strong> Captura é automática via hooks do Hermes. Classificação é responsabilidade do agente (<code>confidence</code> + <code>risk</code>). Aprovação é proporcional ao risco: entradas verificadas de baixo risco promovem-se automaticamente com TTL; hipóteses e alto risco exigem decisão humana explícita. O humano não é gargalo de captura — é filtro de qualidade.</p>
   </li>
 </ol>
 
@@ -539,6 +539,8 @@ sup {
   <div class="label">Princípio derivado</div>
   <p>Memória federada sem núcleo ativo é apenas uma pasta organizada. O núcleo é o que transforma uma estrutura de arquivos em uma arquitetura: ele aplica política, mede qualidade e resolve conflito. Sem ele, os princípios viram boas intenções.</p>
 </div>
+
+<p>Suporte multimodal é acomodado pela estrutura de <code>/assets/</code> por domínio e projeto. A capacidade de processar imagens, áudio e PDFs depende do LLM configurado no agente — não do agente em si. Consulte a documentação do provider para capacidades atuais.</p>
 
 <!-- SECTION 6 -->
 <h2><span class="section-num">06 · Diferencial</span>Validade temporal automática por inspeção de arquivos.</h2>
@@ -607,6 +609,8 @@ sup {
 <h3>3. Governança depende de disciplina humana</h3>
 
 <p>A regra de aprovação humana, o ritual de revisão do inbox, a curadoria de decisões com <code>status: approved</code> — tudo isso depende do humano fazer o trabalho. Se ninguém revisa o inbox, sugestões acumulam e nada vira memória. Se decisões antigas não são marcadas como <code>superseded</code>, o núcleo continua entregando contexto desatualizado. O núcleo aplica as regras que existem; não cria disciplina onde ela não existe. Memória federada é uma arquitetura para usuários dispostos a participar — não um substituto para participação.</p>
+
+<p>Esta limitação é mitigada pelos hooks de ciclo de vida do Hermes (<code>sync_turn</code>, <code>prefetch</code>, <code>shutdown</code>), que alimentam o inbox automaticamente. A classificação automática por <code>confidence</code> e <code>risk</code> reduz o volume de revisão humana ao essencial: hipóteses e decisões de alto risco. O ritual semanal de review deixa de ser obrigatório e passa a ser proporcional ao risco acumulado no inbox.</p>
 
 <h3>4. Escala não foi testada — e não precisa ser teto</h3>
 
