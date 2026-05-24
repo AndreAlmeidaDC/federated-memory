@@ -481,6 +481,7 @@ td strong { color: var(--ink); }
 <li><span class="num">04</span> O padrão blackboard</li>
 <li><span class="num">05</span> Componentes da implementação</li>
 <li><span class="num">06</span> Estrutura no Obsidian</li>
+<li><span class="num">06b</span> Multimodal — assets no vault</li>
 <li><span class="num">07</span> AGENT.md: o contrato neutro</li>
 <li><span class="num">08</span> Adaptadores por ferramenta</li>
 <li><span class="num">09</span> Context Packs com exemplo real</li>
@@ -784,6 +785,63 @@ td strong { color: var(--ink); }
 <h4>Vault físico separado é exagero</h4>
 <p>Quando você ainda está começando, quando os domínios trocam contexto frequentemente, ou quando você é uma pessoa só usando uma máquina só. Comece com pastas no mesmo vault; promova depois se a dor justificar.</p>
 </div>
+</div>
+
+<!-- ============================================== -->
+<!-- 06b - MULTIMODAL ASSETS -->
+<!-- ============================================== -->
+
+<h2><span class="num">06b / Multimodal</span>Assets no vault</h2>
+
+<p>O vault é Markdown por padrão. Mas o suporte multimodal não exige mudar a arquitetura — exige apenas uma convenção de onde os assets ficam e como são referenciados.</p>
+
+<p>Suporte multimodal é uma capacidade do LLM configurado no agente, não do agente em si. O agente passa o arquivo, o LLM processa. Verifique a documentação atualizada do provider:</p>
+
+<ul>
+<li>Anthropic: <a href="https://docs.anthropic.com">docs.anthropic.com</a></li>
+<li>Google: <a href="https://ai.google.dev">ai.google.dev</a></li>
+<li>OpenAI: <a href="https://platform.openai.com/docs">platform.openai.com/docs</a></li>
+<li>Zhipu/GLM: <a href="https://docs.z.ai">docs.z.ai</a></li>
+<li>MoonshotAI/Kimi: <a href="https://platform.moonshot.cn">platform.moonshot.cn</a></li>
+<li>xAI/Grok: <a href="https://docs.x.ai">docs.x.ai</a></li>
+</ul>
+
+<p>Todos os principais LLMs hoje suportam ao menos imagem e PDF. Áudio e vídeo variam por provider.</p>
+
+<p><strong>Estrutura de assets no vault:</strong></p>
+
+<pre><code>/federated-memory
+  /20-domains/
+    /engineering/
+      /assets/
+        arquitetura-v2.png
+        decisao-banco.pdf
+    /writing/
+      /assets/
+        exemplos-visuais/
+  /10-projects/
+    /project-a/
+      /assets/
+        wireframes/
+        screenshots/
+        bugs/
+          bug-001/
+            screenshot-erro.png
+            tentativa-01-failed.md
+            tentativa-02-success.md
+</code></pre>
+
+<p><strong>Regra de referência no Markdown:</strong> todo asset é referenciado no arquivo <code>.md</code> do mesmo domínio ou projeto. O Context Pack aponta para o <code>.md</code>. O agente carrega o asset quando o <code>.md</code> o referencia.</p>
+
+<p>Exemplo em um <code>DECISION.md</code>:</p>
+
+<pre><code>Diagrama de referência: ./assets/arquitetura-v2.png
+O agente deve carregar esta imagem ao analisar decisões de stack.
+</code></pre>
+
+<div class="callout warn">
+<div class="label">Regra para assets grandes</div>
+<p>Vídeos, datasets e arquivos acima de 10MB não devem ficar no vault. Referencie por URL ou caminho externo. O vault deve permanecer leve e versionável.</p>
 </div>
 
 <!-- ============================================== -->
