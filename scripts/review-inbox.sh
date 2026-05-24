@@ -43,6 +43,51 @@ idx=0
 ts() { date '+%Y-%m-%d %H:%M'; }
 field() { printf '%s' "$1" | tr '\v' '\n' | grep -m1 -E "^\*\*$2:\*\*" | sed -E "s/^\*\*$2:\*\*[[:space:]]*//" || true; }
 title() { printf '%s' "$1" | tr '\v' '\n' | grep -m1 -E '^## ' | sed 's/^## //'; }
+fm() { printf '%s' "$1" | tr '\v' '\n' | grep -m1 -E "^$2:" | sed -E "s/^$2:[[:space:]]*//"; }
+
+log_archive() {
+  local kind="$1" dest="$2" dom="$3"
+  printf -- '- %s — **%s** — %s — `%s`\n' "$(ts)" "$kind" "${dom:-?}" "${dest:-—}" >> "$LOG"
+}
+
+# Pré-pass: classificação automática por confidence/risk/ttl
+auto_kept=()
+for entry in "${entries[@]}"; do
+  [[ -z "${entry//[[:space:]]/}" ]] && continue
+  conf=$(fm "$entry" "confidence")
+  risk=$(fm "$entry" "risk")
+  ttl=$(fm "$entry" "ttl_days")
+  dom=$(fm "$entry" "domain")
+  # Sem classificação → vai para revisão humana
+  if [[ -z "$conf" || -z "$risk" ]]; then
+    auto_kept+=("$entry"); continue
+  fi
+  # High risk → sempre revisão humana
+  if [[ "$risk" == "high" ]]; then
+    auto_kept+=("$entry"); continue
+  fi
+  # Hypothesis → fica para humano
+  if [[ "$conf" == "hypothesis" ]]; then
+    auto_kept+=("$entry"); continue
+  fi
+  # Verified + low + ttl vencido (<=7) → promove auto
+  if [[ "$conf" == "verified" && "$risk" == "low" && -n "$ttl" && "$ttl" -le 7 ]]; then
+    target="$VAULT/20-domains/${dom:-uncategorized}/auto-promoted.md"
+    mkdir -p "$(dirname "$target")"
+    [[ -f "$target" ]] || : > "$target"
+    { printf '\n'; printf '%s' "$entry" | tr '\v' '\n'; } >> "$target"
+    log_archive "auto_promoted" "20-domains/${dom:-uncategorized}/auto-promoted.md" "$dom"
+    continue
+  fi
+  # Verified + medium → mantém no inbox (aprovação lazy, não interativa)
+  if [[ "$conf" == "verified" && "$risk" == "medium" ]]; then
+    auto_kept+=("$entry"); continue
+  fi
+  # Default: vai para humano
+  auto_kept+=("$entry")
+done
+entries=("${auto_kept[@]}")
+total=${#entries[@]}
 
 log_decision() {
   local decision="$1" dest="$2" sug="$3" dom="$4"
@@ -83,7 +128,7 @@ for entry in "${entries[@]}"; do
         mkdir -p "$(dirname "$target")"
         [[ -f "$target" ]] || : > "$target"
         { printf '\n'; printf '%s' "$entry" | tr '\v' '\n'; } >> "$target"
-        log_decision "aprovado" "$dest" "$sug" "$dom"
+        log_decision "human_approved" "$dest" "$sug" "$dom"
         echo "→ anexado em $dest"
         break;;
       e)
@@ -93,8 +138,8 @@ for entry in "${entries[@]}"; do
         dest=$(field "$entry" "Destino sugerido"); sug=$(field "$entry" "Sugestão"); dom=$(title "$entry")
         echo "(editado — escolha de novo)"
         ;;
-      r) log_decision "rejeitado" "$dest" "$sug" "$dom"; echo "→ rejeitado"; break;;
-      d) kept+=("$entry"); log_decision "adiado" "$dest" "$sug" "$dom"; echo "→ adiado"; break;;
+      r) log_decision "human_rejected" "$dest" "$sug" "$dom"; echo "→ rejeitado"; break;;
+      d) kept+=("$entry"); log_decision "human_deferred" "$dest" "$sug" "$dom"; echo "→ adiado"; break;;
       q) kept+=("$entry"); quit=1; break;;
       *) echo "Opção inválida.";;
     esac

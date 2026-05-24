@@ -65,6 +65,37 @@ function Write-Log($decision, $dest, $sug, $dom) {
     Add-Content -Path $log -Value $line -Encoding UTF8
 }
 
+function Get-FrontmatterField($text, $name) {
+    $m = [regex]::Match($text, "(?m)^$([regex]::Escape($name)):\s*(.+)$")
+    if ($m.Success) { return $m.Groups[1].Value.Trim() } else { return '' }
+}
+
+# Pré-pass: classificação automática por confidence/risk/ttl
+$autoKept = New-Object System.Collections.Generic.List[string]
+foreach ($entry in $entries) {
+    $conf = Get-FrontmatterField $entry 'confidence'
+    $risk = Get-FrontmatterField $entry 'risk'
+    $ttl  = Get-FrontmatterField $entry 'ttl_days'
+    $dom  = Get-FrontmatterField $entry 'domain'
+    if (-not $conf -or -not $risk) { $autoKept.Add($entry) | Out-Null; continue }
+    if ($risk -eq 'high') { $autoKept.Add($entry) | Out-Null; continue }
+    if ($conf -eq 'hypothesis') { $autoKept.Add($entry) | Out-Null; continue }
+    if ($conf -eq 'verified' -and $risk -eq 'low' -and $ttl -and [int]$ttl -le 7) {
+        $domSafe = if ($dom) { $dom } else { 'uncategorized' }
+        $relPath = "20-domains/$domSafe/auto-promoted.md"
+        $target = Join-Path $VaultPath $relPath
+        $td = Split-Path $target -Parent
+        if (-not (Test-Path $td)) { New-Item -ItemType Directory -Path $td -Force | Out-Null }
+        if (-not (Test-Path $target)) { New-Item -ItemType File -Path $target -Force | Out-Null }
+        Add-Content -Path $target -Value ("`n" + $entry) -Encoding UTF8
+        Write-Log 'auto_promoted' $relPath '' $dom
+        continue
+    }
+    if ($conf -eq 'verified' -and $risk -eq 'medium') { $autoKept.Add($entry) | Out-Null; continue }
+    $autoKept.Add($entry) | Out-Null
+}
+$entries = $autoKept
+
 $kept = New-Object System.Collections.Generic.List[string]
 $total = $entries.Count
 $idx = 0
@@ -92,7 +123,7 @@ foreach ($entry in $entries) {
                 if (-not (Test-Path $td)) { New-Item -ItemType Directory -Path $td -Force | Out-Null }
                 if (-not (Test-Path $target)) { New-Item -ItemType File -Path $target -Force | Out-Null }
                 Add-Content -Path $target -Value ("`n" + $entry) -Encoding UTF8
-                Write-Log 'aprovado' $dest $sug $dom
+                Write-Log 'human_approved' $dest $sug $dom
                 Write-Host "→ anexado em $dest"
                 break
             }
@@ -107,8 +138,8 @@ foreach ($entry in $entries) {
                 $dom  = Get-Title $entry
                 Write-Host "(editado — escolha de novo)"
             }
-            'r' { Write-Log 'rejeitado' $dest $sug $dom; Write-Host "→ rejeitado"; break }
-            'd' { $kept.Add($entry) | Out-Null; Write-Log 'adiado' $dest $sug $dom; Write-Host "→ adiado"; break }
+            'r' { Write-Log 'human_rejected' $dest $sug $dom; Write-Host "→ rejeitado"; break }
+            'd' { $kept.Add($entry) | Out-Null; Write-Log 'human_deferred' $dest $sug $dom; Write-Host "→ adiado"; break }
             'q' { $kept.Add($entry) | Out-Null; $quit = $true; break }
             default { Write-Host "Opção inválida." }
         }
