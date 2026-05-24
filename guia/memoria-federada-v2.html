@@ -486,6 +486,7 @@ td strong { color: var(--ink); }
 <li><span class="num">08</span> Adaptadores por ferramenta</li>
 <li><span class="num">09</span> Context Packs com exemplo real</li>
 <li><span class="num">09b</span> Os quatro papéis do Hermes (núcleo ativo)</li>
+<li><span class="num">09c</span> Captura automática — inbox sem intervenção manual</li>
 <li><span class="num">10</span> Hermes: instalação e configuração</li>
 <li><span class="num">11</span> Obsidian via MCP na prática</li>
 <li><span class="num">12</span> Fluxo operacional</li>
@@ -1116,6 +1117,39 @@ write_policy:
 <div class="callout warn">
 <div class="label">Princípio derivado</div>
 <p>Memória federada sem núcleo ativo é apenas uma pasta organizada. O núcleo é o que transforma uma estrutura de arquivos em arquitetura: aplica política, mede qualidade e resolve conflito. Sem ele, os princípios viram boas intenções.</p>
+</div>
+
+<!-- ============================================== -->
+<!-- 09c - AUTO CAPTURE VIA HOOKS -->
+<!-- ============================================== -->
+
+<h2><span class="num">09c / Captura automática</span>Inbox sem intervenção manual</h2>
+
+<p>O maior gargalo de curadoria é lembrar de pedir ao agente para salvar algo importante. O Hermes resolve isso com hooks de ciclo de vida: <code>sync_turn</code>, <code>prefetch</code> e <code>shutdown</code>.</p>
+
+<p>Configurados corretamente, o Hermes detecta padrões relevantes durante a sessão — decisão tomada, bug resolvido, preferência identificada, padrão recorrente — e grava automaticamente uma sugestão em <code>/90-inbox/suggested-memory.md</code>.</p>
+
+<p>O humano não precisa pedir. O inbox se alimenta sozinho. A aprovação humana permanece como filtro de qualidade. A captura é automática. A curadoria é proporcional ao risco.</p>
+
+<p><strong>Exemplo de configuração:</strong></p>
+
+<pre><code># hermes.hooks.yml
+hooks:
+  sync_turn:
+    - trigger: "decision_detected"
+      action: "append_to_inbox"
+      target: "/90-inbox/suggested-memory.md"
+    - trigger: "bug_resolved"
+      action: "append_to_inbox"
+      target: "/90-inbox/suggested-memory.md"
+    - trigger: "preference_identified"
+      action: "append_to_inbox"
+      target: "/90-inbox/suggested-memory.md"
+</code></pre>
+
+<div class="callout warn">
+<div class="label">Captura automática ≠ ausência de curadoria</div>
+<p>Captura automática não elimina curadoria humana. Elimina o gargalo de lembrar de pedir. O inbox cresce sozinho. O ritual de review continua sendo o mecanismo de controle de qualidade — mas agora proporcional ao risco, não obrigatório para tudo.</p>
 </div>
 
 <!-- ============================================== -->
