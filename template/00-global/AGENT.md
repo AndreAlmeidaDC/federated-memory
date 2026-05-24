@@ -81,3 +81,34 @@ Quando identificar algo que merece ser memorizado permanentemente, escreva em
 ```
 
 Nunca escreva isso diretamente nas pastas de domínio. O humano revisa e decide via ritual semanal (`scripts/review-inbox.{sh,ps1}`).
+
+## Classificação obrigatória antes de gravar no inbox
+
+Antes de sugerir qualquer memória, classifique obrigatoriamente:
+
+- `confidence`: `verified` | `hypothesis` | `preference` | `deprecated`
+- `risk`: `low` | `medium` | `high`
+
+Regras de promoção automática:
+
+- `verified` + `low` → TTL 7 dias → vira permanente sem aprovação
+- `verified` + `medium` → notifica humano → aprovação lazy
+- `hypothesis` → fica no inbox → humano decide quando quiser
+- `deprecated` → substitui entrada anterior + arquiva a antiga
+- `high` risk (qualquer confidence) → bloqueia → exige aprovação
+
+Formato obrigatório no inbox:
+
+```
+---
+source: [agente ou sessão]
+date: YYYY-MM-DD
+domain: [domínio alvo]
+type: fact | decision | preference | workflow | risk
+confidence: verified | hypothesis | preference | deprecated
+risk: low | medium | high
+ttl_days: 7  # só para verified + low
+supersedes: [id da entrada anterior, se aplicável]
+---
+[conteúdo da memória]
+```
