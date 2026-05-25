@@ -4,3 +4,8 @@
 # PDFs gerados localmente; distribuidos via GitHub Releases
 releases/
 
+# Dependências do build de PDF (Puppeteer instalado ad-hoc)
+node_modules/
+package-lock.json
+package.json
+

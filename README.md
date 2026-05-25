@@ -125,7 +125,7 @@ O núcleo inspeciona o `mtime` dos arquivos listados em cada Context Pack. Se al
 │   └── 99-archive/review-log.md
 ├── scripts/
 │   ├── review-inbox.{sh,ps1}
-│   └── build-pdfs.{sh,ps1}
+│   └── build-pdfs.mjs
 ├── setup.sh
 ├── setup.ps1
 ├── ROADMAP.md
@@ -162,7 +162,7 @@ Para leitura offline, impressão ou anotação, os artefatos também estão disp
 - `whitepaper-memoria-federada-ptbr-v1.0.pdf`
 - `guia-implementacao-v2.0.pdf`
 
-Os PDFs são gerados a partir dos HTML via Chromium headless. Para regenerar localmente, veja `scripts/build-pdfs.sh` ou `scripts/build-pdfs.ps1`.
+Os PDFs são gerados a partir dos HTML via Puppeteer. Para regenerar localmente: `npm install puppeteer` e depois `node scripts/build-pdfs.mjs` (script único, multiplataforma).
 
 ---
 
