@@ -83,7 +83,7 @@ Além disso, o repositório distribui um **template clonável** de vault e adapt
 
 - `setup.sh` / `setup.ps1` — instala vault, Hermes, MCP server, gera settings.json
 - `scripts/review-inbox.sh` / `.ps1` — ritual de revisão do inbox
-- `scripts/build-pdfs.sh` / `.ps1` — gera PDFs do whitepaper e do guia via Chromium headless
+- `scripts/build-pdfs.mjs` — gera PDFs do whitepaper e do guia via Puppeteer (script único multiplataforma; requer `npm install puppeteer`). Substituiu os antigos `.sh`/`.ps1` que dependiam de Chrome headless CLI (paginação quebrada no Windows — sempre 1 página).
 
 ### Releases publicadas
 
