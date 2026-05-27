@@ -1,6 +1,54 @@
-# /50-skills/ — Procedimentos de Execução Reutilizáveis
+# 50-skills
 
-Skills são **procedimentos de execução** reutilizáveis. Elas descrevem *como* fazer uma tarefa específica, passo a passo, com restrições explícitas.
+Skills são procedimentos de execução reutilizáveis entre agentes.
+
+## Três níveis
+
+### /published/
+Skills aprovadas, disponíveis para qualquer agente consumir.
+Chegam aqui automaticamente (TTL) ou por aprovação humana.
+
+### /proposed/
+Skills propostas por agentes aguardando classificação e aprovação.
+Equivalente ao /90-inbox/ mas específico para skills.
+
+### /deprecated/
+Skills antigas mantidas para histórico e rastreabilidade.
+Nunca deletar — marcar como deprecated com referência à substituta.
+
+## Protocolo de publicação
+
+Antes de criar uma skill nova:
+1. Leia o INDEX.md
+2. Busque por tags relacionadas
+3. Se já existir algo similar, adapte ou proponha melhoria
+4. Se não existir, crie a proposta no /90-inbox/ com type: skill
+
+## Metadados obrigatórios em cada skill
+
+```
+---
+author_agent: [nome do agente que criou]
+origin_project: [projeto de origem, se aplicável]
+version: 1.0.0
+status: published | proposed | deprecated
+domain: [domínio principal]
+sensitivity: public | internal | private
+confidence: verified | hypothesis
+risk: low | medium | high
+created: YYYY-MM-DD
+approved_by: [nome ou auto-promoted]
+supersedes: [skill anterior, se aplicável]
+tags: [lista de tags]
+---
+```
+
+## Regras de promoção automática
+
+- `verified` + `low` → TTL 7 dias → vai para /published/ automaticamente
+- `verified` + `medium` → notifica humano → aprovação lazy
+- `hypothesis` → fica em /proposed/ → humano decide quando quiser
+- `high` risk → bloqueia → exige aprovação explícita
 
 ## Skills × Context Packs
 
@@ -13,32 +61,6 @@ A distinção importa. As duas pastas resolvem problemas diferentes:
 | Conteúdo | Princípios, restrições, exemplos, referências | Passos numerados, triggers, validações |
 | Quando carregar | Antes de raciocinar sobre o domínio | Quando a tarefa-alvo é reconhecida |
 
-Em prática: o Context Pack carrega princípios do domínio (ex: "como o André escreve no LinkedIn — voz, anti-patterns, exemplos"). A Skill executa um procedimento que *consome* esse contexto (ex: "criar-post-linkedin: passos 1 a 8 com restrições").
-
-Skills podem (e geralmente devem) apontar para Context Packs no primeiro passo. O contexto entra como leitura prévia; a skill ordena a execução.
-
-## Como qualquer agente consome
-
-Qualquer agente conectado ao vault via MCP — Claude, Codex, Grok Build, OpenCode, Kimi, Antigravity, Cursor, Windsurf — consegue ler uma skill como instrução. Não há formato proprietário: cada skill é um Markdown legível por humanos e por modelos.
-
-O fluxo típico:
-
-1. Usuário aciona um trigger (ex: "cria um post sobre X no LinkedIn")
-2. Agente identifica a skill correspondente em `/50-skills/`
-3. Agente lê a skill, executa cada passo na ordem, respeita as restrições
-4. Se um passo aponta para um Context Pack, o agente carrega esse pack antes de continuar
-
-## Formato sugerido
-
-Cada skill deve ter:
-
-- **Trigger** — em que situação ela é acionada
-- **Passos** — lista numerada, ações concretas e verificáveis
-- **Restrições** — o que *não* fazer, com a regra explícita
-- **Critério de conclusão** (opcional) — como saber que a skill foi executada bem
-
-Veja `skill-criar-post-linkedin.md` como exemplo de referência.
-
 ## Política de escrita
 
-A pasta `/50-skills/` é **read-only para agentes**. Skills novas, alterações ou variantes entram via `/90-inbox/suggested-memory.md` como sugestão, e só viram skill real depois de revisão humana.
+A pasta `/50-skills/` é **read-only para agentes**. Skills novas, alterações ou variantes entram via `/90-inbox/` como sugestão com `type: skill`, e só viram skill real depois do processo de classificação e aprovação.
