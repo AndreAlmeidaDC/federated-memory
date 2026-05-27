@@ -23,10 +23,11 @@ Além disso, o repositório distribui um **template clonável** de vault e adapt
 
 ### Guia de implementação
 
-- `guia/memoria-federada-v2.html` — **v2.1 com 20+ seções incluindo 06b (multimodal/assets) e 09c (captura automática via hooks Hermes + Claude Code)**
+- `guia/memoria-federada-v2.html` — **v2.2 com 20+ seções incluindo 06b (multimodal/assets), 09c (captura automática via hooks Hermes + Claude Code) e 12c (Harness Engineering)**
 - Diagramas SVG inline (sem dependência de imagens externas)
 - Hermes como **núcleo ativo** com 4 papéis: roteador, gerenciador de memória com feedback, controlador de escopo, policy engine declarativo
 - Inclui seção 12b de **deployment remoto** (VPS, SSH tunnel, MCP via Caddy)
+- Inclui seção 12c de **Harness Engineering** — mapeamento dos componentes de controle (MCP, AGENT.md, adaptadores, hooks, SESSION.lock, review-inbox) e roadmap v3.0
 - Inclui Graphiti como camada temporal opcional (seção 13)
 - PDF distribuído via release v2.0.1
 
@@ -88,9 +89,19 @@ Além disso, o repositório distribui um **template clonável** de vault e adapt
 - `scripts/capture-to-inbox.mjs` — hook PostToolUse do Claude Code que detecta decisões/preferências/bugs via regex e anexa sugestões classificadas no inbox
 - `template/.claude/hooks.json` — configuração de exemplo do hook acima
 
+### Template de harness (`/template/`)
+
+Arquivos adicionados ao template:
+
+- `template/10-projects/SESSION.lock.example` — exemplo de lock por projeto (agente, máquina, usuário, TTL)
+- `template/99-archive/session-log.md` — registro de sessões de agentes com audit trail
+- `template/00-global/AGENT.md` — inclui agora regras de lock de projeto (verificação, criação, expiração, log)
+- `.gitignore` — entrada `**/SESSION.lock` para não versionar locks reais
+
 ### Releases publicadas
 
-- **v2.1.0** (atual) — Classificação automática confidence+risk+TTL, captura via hooks, princípio 5 reformulado
+- **v2.2.0** (atual) — SESSION.lock + Harness Engineering (seção 12c) + ROADMAP v3.0 expandido
+- v2.1.0 — Classificação automática confidence+risk+TTL, captura via hooks, princípio 5 reformulado
 - v2.0.1 — Limitações conhecidas + progressão Graphiti + comparação Paperclip/Pi
 - v2.0.0 — Hermes núcleo ativo
 - v1.0.0 — lançamento inicial
@@ -110,7 +121,7 @@ Além disso, o repositório distribui um **template clonável** de vault e adapt
 
 - Versão em inglês do whitepaper (branch `wip/english`, após validação PT-BR)
 - Validação real do QUICKSTART na máquina do André antes de divulgar amplamente
-- **v3.0**: Graphiti + FTS5 + embeddings + worker local quando vault escalar (centenas de decisões)
+- **v3.0**: Graphiti + FTS5 + embeddings + worker local quando vault escalar (centenas de decisões); Harness Engineering avançado com toolset por domínio e observabilidade completa
 - Pack-usage logger no Hermes — implementação de referência do logging de uso
 - GitHub Action para validar estrutura do vault (presença de `AGENT.md`, formato de Context Packs, etc.)
 - Templates por área (escritor, dev, pesquisador) — perfis pré-configurados de domínios e packs

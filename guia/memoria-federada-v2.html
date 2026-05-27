@@ -1581,6 +1581,49 @@ ufw deny 3000
 ufw allow 22  # SSH continua aberto</code></pre>
 
 <!-- ============================================== -->
+<!-- 12c - HARNESS ENGINEERING -->
+<!-- ============================================== -->
+
+<h2><span class="num">12c / Harness</span>Harness Engineering — a camada entre o agente e o mundo</h2>
+
+<p>Harness Engineering é a disciplina de conectar o agente ao ambiente de forma controlada: quais ferramentas ele pode usar, como o output é capturado, como falhas são tratadas. Na memória federada, o harness não é uma peça separada. Está distribuído pela arquitetura.</p>
+
+<h3>Mapeamento do harness na arquitetura federada</h3>
+
+<table>
+<thead><tr><th>Componente</th><th>Função de harness</th></tr></thead>
+<tbody>
+<tr><td><code>MCP server</code></td><td>Expõe ferramentas ao agente de forma padronizada — define o toolset disponível e aplica permissões de escrita</td></tr>
+<tr><td><code>AGENT.md</code></td><td>Define regras de comportamento (harness declarativo) — o agente lê e aplica antes de qualquer ação</td></tr>
+<tr><td>Adaptadores</td><td>Traduzem o contrato neutro do <code>AGENT.md</code> para cada agente específico (Claude, Cursor, Windsurf...)</td></tr>
+<tr><td><code>capture-to-inbox.mjs</code></td><td>Captura output do agente via PostToolUse hook — preenche o inbox automaticamente sem intervenção manual</td></tr>
+<tr><td><code>SESSION.lock</code></td><td>Controla acesso concorrente por projeto — identifica agente, máquina e usuário em cada sessão</td></tr>
+<tr><td><code>review-inbox</code></td><td>Processa o que o agente produziu e decide o destino — audit trail completo em <code>/99-archive/review-log.md</code></td></tr>
+</tbody>
+</table>
+
+<h3>O que a v2 já implementa</h3>
+
+<ul>
+<li><strong>Toolset via MCP</strong> com permissões de escrita restritas a <code>/90-inbox/</code> em qualquer modo de execução</li>
+<li><strong>Captura automática via hooks</strong> (PostToolUse → inbox) — o inbox se alimenta sem depender de memória do operador</li>
+<li><strong>Lock de sessão por projeto</strong> com identificação de agente, máquina e usuário (<code>SESSION.lock</code>)</li>
+<li><strong>Observabilidade básica</strong> via <code>session-log.md</code> (quem fez o quê, quando) e <code>review-log.md</code> (o que foi promovido ou rejeitado)</li>
+</ul>
+
+<h3>O que entra na v3.0 (quando o ambiente escalar)</h3>
+
+<ul>
+<li><strong>Toolset por domínio:</strong> agente em <code>/30-clients/</code> acessa apenas ferramentas de cliente; agente em <code>/20-domains/engineering/</code> acessa apenas ferramentas de código. O MCP expõe conjuntos diferentes dependendo do contexto de entrada.</li>
+<li><strong>Observabilidade completa:</strong> tokens consumidos por sessão, tempo de execução, ferramentas mais usadas, taxa de sucesso de captura de memória. Métricas que mostram se o harness está funcionando — não só se o agente respondeu.</li>
+</ul>
+
+<div class="callout tip">
+<div class="label">Harness Engineering não é sobre controlar o agente</div>
+<p>É sobre tornar o ambiente previsível o suficiente para que o agente seja confiável. Regras claras produzem comportamento consistente. Um agente num ambiente ambíguo não é mais capaz do que um agente num ambiente bem definido — só é menos previsível.</p>
+</div>
+
+<!-- ============================================== -->
 <!-- 13 - GRAPHITI -->
 <!-- ============================================== -->
 

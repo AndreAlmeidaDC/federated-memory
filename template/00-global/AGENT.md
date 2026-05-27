@@ -112,3 +112,35 @@ supersedes: [id da entrada anterior, se aplicável]
 ---
 [conteúdo da memória]
 ```
+
+## Lock de projeto (SESSION.lock)
+
+Antes de iniciar qualquer trabalho em um projeto:
+
+1. Verifique se existe `/10-projects/[projeto]/SESSION.lock`
+2. Se existir, calcule se o lock ainda é válido:
+   - `(started + ttl_minutes) > agora` → lock válido, avise o usuário e pergunte se continua
+   - `(started + ttl_minutes) <= agora` → lock expirado, pode sobrescrever
+3. Se não existir ou estiver expirado, crie o `SESSION.lock` com seus dados:
+   - `agent`: seu nome de agente
+   - `machine`: hostname da máquina atual
+   - `user`: identificador do usuário atual
+   - `started`: timestamp atual em ISO 8601
+   - `ttl_minutes`: 60 (padrão)
+   - `task`: descrição curta do que vai fazer
+   - `session_id`: string aleatória de 8 caracteres
+4. Ao finalizar a sessão, delete o `SESSION.lock`
+5. Registre a sessão em `/99-archive/session-log.md`:
+
+```
+## [YYYY-MM-DD] [agent] em [machine]
+- session_id: [id]
+- user: [user]
+- started: [timestamp]
+- finished: [timestamp]
+- task: [descrição]
+- project: [projeto]
+```
+
+O arquivo de exemplo do lock fica em `/10-projects/SESSION.lock.example`.
+Locks reais não são versionados (ver `.gitignore`).

@@ -87,6 +87,11 @@ Critério: só entra no ROADMAP o que tem chance real de acontecer. Wishlist sem
 - O índice fica dentro do vault em `/99-archive/index/` — portável e versionável
 - Inspiração técnica: padrão de 3 camadas do claude-mem (`search → timeline → get_observations`) com economia de tokens
 
+**Harness Engineering avançado:**
+- Toolset por domínio: restrição de ferramentas MCP por contexto de trabalho — agente em `/30-clients/` acessa só ferramentas de cliente; agente em `/20-domains/engineering/` acessa só ferramentas de código
+- Observabilidade completa: tokens por sessão, tempo de execução, ferramentas mais usadas, taxa de sucesso de captura de memória
+- Inspiração: padrão de worker service do claude-mem com métricas por sessão
+
 > v3.0 não é uma data. É um conjunto de problemas que aparecem quando o vault tem centenas de decisões e o agente começa a ter dificuldade de encontrar contexto relevante sem carregar tudo. Adicione quando sentir essa dor.
 
 ---
