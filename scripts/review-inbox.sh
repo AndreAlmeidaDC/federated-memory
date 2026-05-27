@@ -51,7 +51,8 @@ log_archive() {
 }
 
 # Pré-pass: classificação automática por confidence/risk/ttl
-auto_kept=()
+auto_kept=()       # entradas que vão para revisão humana
+silent_kept=()     # entradas mantidas no inbox sem apresentar (aprovação lazy)
 for entry in "${entries[@]}"; do
   [[ -z "${entry//[[:space:]]/}" ]] && continue
   conf=$(fm "$entry" "confidence")
@@ -79,9 +80,11 @@ for entry in "${entries[@]}"; do
     log_archive "auto_promoted" "20-domains/${dom:-uncategorized}/auto-promoted.md" "$dom"
     continue
   fi
-  # Verified + medium → mantém no inbox (aprovação lazy, não interativa)
+  # Verified + medium → mantém no inbox sem apresentar (aprovação lazy)
   if [[ "$conf" == "verified" && "$risk" == "medium" ]]; then
-    auto_kept+=("$entry"); continue
+    silent_kept+=("$entry")
+    log_archive "pending_lazy" "90-inbox/suggested-memory.md" "$dom"
+    continue
   fi
   # Default: vai para humano
   auto_kept+=("$entry")
@@ -97,6 +100,10 @@ log_decision() {
 flush() {
   {
     printf '%s\n' "$header"
+    # Mantidos silenciosamente (verified+medium, aprovação lazy)
+    if ((${#silent_kept[@]})); then
+      for e in "${silent_kept[@]}"; do printf '%s' "$e" | tr '\v' '\n'; done
+    fi
     if ((${#kept[@]})); then
       for e in "${kept[@]}"; do printf '%s' "$e" | tr '\v' '\n'; done
     fi

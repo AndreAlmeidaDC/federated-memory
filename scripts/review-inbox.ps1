@@ -71,7 +71,8 @@ function Get-FrontmatterField($text, $name) {
 }
 
 # Pré-pass: classificação automática por confidence/risk/ttl
-$autoKept = New-Object System.Collections.Generic.List[string]
+$autoKept   = New-Object System.Collections.Generic.List[string]   # vão para revisão humana
+$silentKept = New-Object System.Collections.Generic.List[string]   # mantidos no inbox sem apresentar
 foreach ($entry in $entries) {
     $conf = Get-FrontmatterField $entry 'confidence'
     $risk = Get-FrontmatterField $entry 'risk'
@@ -91,7 +92,11 @@ foreach ($entry in $entries) {
         Write-Log 'auto_promoted' $relPath '' $dom
         continue
     }
-    if ($conf -eq 'verified' -and $risk -eq 'medium') { $autoKept.Add($entry) | Out-Null; continue }
+    if ($conf -eq 'verified' -and $risk -eq 'medium') {
+        $silentKept.Add($entry) | Out-Null
+        Write-Log 'pending_lazy' '90-inbox/suggested-memory.md' '' $dom
+        continue
+    }
     $autoKept.Add($entry) | Out-Null
 }
 $entries = $autoKept
@@ -148,7 +153,10 @@ foreach ($entry in $entries) {
 }
 
 $out = $header + "`n`n"
-if ($kept.Count -gt 0) { $out += (($kept -join "`n`n") + "`n") }
+$finalKept = New-Object System.Collections.Generic.List[string]
+foreach ($e in $silentKept) { $finalKept.Add($e) | Out-Null }
+foreach ($e in $kept) { $finalKept.Add($e) | Out-Null }
+if ($finalKept.Count -gt 0) { $out += (($finalKept -join "`n`n") + "`n") }
 Set-Content -Path $inbox -Value $out -Encoding UTF8
 
 Write-Host ""
