@@ -1,0 +1,9 @@
+---
+agent: [nome do agente: claude-code | cursor | windsurf | opencode | etc]
+machine: [hostname da máquina]
+user: [nome ou identificador do usuário]
+started: YYYY-MM-DDTHH:MM:SSZ
+ttl_minutes: 60
+task: [descrição curta da tarefa em andamento]
+session_id: [identificador único da sessão]
+---
