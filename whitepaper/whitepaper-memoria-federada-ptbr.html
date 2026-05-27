@@ -421,6 +421,7 @@ sup {
       <th>Isolamento</th>
       <th>Governança</th>
       <th>Soberania</th>
+      <th>Compartilhamento entre agentes</th>
     </tr>
   </thead>
   <tbody>
@@ -430,6 +431,7 @@ sup {
       <td class="partial">Parcial</td>
       <td class="no">Nenhuma</td>
       <td class="no">Ferramenta</td>
+      <td class="no">Não disponível por design</td>
     </tr>
     <tr>
       <td><strong>Mem0 / Zep</strong></td>
@@ -437,6 +439,7 @@ sup {
       <td class="no">Nenhuma</td>
       <td class="no">Automática</td>
       <td class="no">Serviço externo</td>
+      <td class="no">Não disponível por design</td>
     </tr>
     <tr>
       <td><strong>Graphiti</strong></td>
@@ -444,6 +447,7 @@ sup {
       <td class="partial">Parcial</td>
       <td class="partial">Limitada</td>
       <td class="no">Serviço externo</td>
+      <td class="no">Não disponível por design</td>
     </tr>
     <tr>
       <td><strong>Sistemas centralizadores / Life OS</strong></td>
@@ -451,13 +455,15 @@ sup {
       <td class="no">Nenhuma</td>
       <td class="partial">UI-driven</td>
       <td class="no">Aplicativo</td>
+      <td class="no">Não disponível por design</td>
     </tr>
     <tr>
-      <td><strong>Memória Federada (v2.0)</strong></td>
+      <td><strong>Memória Federada (v2.1)</strong></td>
       <td class="yes">Total</td>
       <td class="yes">Por domínio</td>
       <td class="yes">Proporcional ao risco (automática para baixo risco, humana para hipóteses e alto risco)</td>
       <td class="yes">Usuário</td>
+      <td class="partial">Via vault compartilhado (mente de colmeia, v3.0)</td>
     </tr>
   </tbody>
 </table>
@@ -587,6 +593,8 @@ sup {
 
 <p>O projeto DecisionNode<sup>1</sup>, desenvolvido independentemente, chegou a conclusões parcialmente sobrepostas: decisões como unidade estruturada, acesso via MCP por múltiplos agentes, histórico auditável, padrão blackboard implícito. Resolve especificamente o sub-módulo de decisões com busca semântica por embeddings — uma implementação concreta de parte dos princípios propostos aqui. A convergência independente de projetos distintos para conclusões similares é evidência de que o problema é real e a direção arquitetural é válida.</p>
 
+<p>À medida que múltiplos agentes especializados coexistem no mesmo ecossistema, o padrão blackboard evolui para o que chamamos de <em>mente de colmeia</em>: cada agente mantém sua memória privada, mas conhecimento reutilizável é publicado numa área compartilhada do vault que qualquer agente pode consultar. Leitura federada, escrita controlada. Nenhum agente altera diretamente a memória de outro. Melhorias são propostas, não impostas.</p>
+
 <h3>Camadas complementares: memória e orquestração</h3>
 
 <p>Sistemas como o Paperclip (paperclip.ing) resolvem um problema adjacente mas distinto. Não são sistemas de memória — são plataformas de orquestração de equipes de agentes, com org charts, orçamentos por agente, heartbeats agendados e governança hierárquica. A distinção é importante: memória federada é infraestrutura de contexto <em>por agente</em>. Orquestração é infraestrutura de coordenação <em>entre agentes</em>. Quem usa as duas camadas juntas tem a solução mais completa: contexto persistente e governado por um lado, coordenação estruturada por outro. O Paperclip inclusive usa um <code>SKILLS.md</code> próprio para injeção de contexto em runtime — convergência com a pasta <code>/50-skills/</code> desta arquitetura. São projetos complementares, não concorrentes.</p>
@@ -623,6 +631,10 @@ sup {
 </ul>
 
 <div class="pull">A limitação de escala não é um teto arquitetural. É um ponto de entrada deliberado. Graphiti entra quando o vault precisa de memória temporal. Múltiplos vaults entram quando o isolamento físico se torna necessário. A arquitetura cresce com a dor, não antes dela.</div>
+
+<h3>5. Mente de colmeia é v3.0, não v2</h3>
+
+<p>A arquitetura atual é otimizada para um usuário com múltiplos agentes acessando o mesmo vault. O compartilhamento estruturado de conhecimento entre agentes especializados — com índice de skills, protocolo de publicação e metadados de autoria — está documentado mas não implementado como código de produção. A estrutura de pastas (<code>/50-skills/published/</code>, <code>/proposed/</code>, <code>/deprecated/</code>) e o protocolo de classificação por <code>confidence</code> + <code>risk</code> existem como template. A automação de promoção entre níveis entra na v3.0 junto com Graphiti e busca semântica — quando o ecossistema tiver agentes suficientes para o compartilhamento fazer sentido operacional.</p>
 
 <!-- SECTION 9 — Princípios e Limites -->
 <h2><span class="section-num">09 · Princípios e Limites</span>O que esta arquitetura recusa.</h2>
