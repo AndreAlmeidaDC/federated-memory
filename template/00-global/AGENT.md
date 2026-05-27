@@ -144,3 +144,38 @@ Antes de iniciar qualquer trabalho em um projeto:
 
 O arquivo de exemplo do lock fica em `/10-projects/SESSION.lock.example`.
 Locks reais não são versionados (ver `.gitignore`).
+
+## Mente de colmeia: compartilhamento de conhecimento entre agentes
+
+Cada agente mantém sua memória privada. Conhecimento reutilizável
+pode ser publicado na área compartilhada para outros agentes consumirem.
+
+### Antes de criar uma skill, playbook ou template:
+1. Leia `/50-skills/INDEX.md`
+2. Se encontrar algo similar, reutilize, adapte ou proponha melhoria
+3. Não crie duplicatas — prefira fork ou nova versão com `supersedes`
+
+### Para publicar conhecimento novo:
+1. Crie a proposta em `/90-inbox/` com `type: skill` (ou `playbook`, `template`, `pattern`)
+2. Preencha todos os metadados obrigatórios incluindo `confidence` e `risk`
+3. O sistema processa automaticamente baseado em `confidence` + `risk`:
+   - `verified` + `low` → published em 7 dias
+   - `verified` + `medium` → aguarda aprovação lazy
+   - `hypothesis` → aguarda decisão humana
+   - `high` risk → exige aprovação explícita
+
+### O que pode ser publicado na área compartilhada:
+- Skills (procedimentos de execução)
+- Playbooks (sequências de passos para tarefas complexas)
+- Templates (estruturas reutilizáveis)
+- Padrões de arquitetura
+- Decisões técnicas compartilhadas
+- Lessons learned
+- Critérios de validação
+- Padrões de prompt
+
+### O que NUNCA fazer:
+- Escrever diretamente na memória privada de outro agente
+- Publicar conhecimento sem metadados completos
+- Criar skill duplicada sem verificar o `INDEX.md` primeiro
+- Marcar como `verified` sem ter testado em uso real
