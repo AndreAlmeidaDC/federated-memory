@@ -1624,6 +1624,66 @@ ufw allow 22  # SSH continua aberto</code></pre>
 </div>
 
 <!-- ============================================== -->
+<!-- 12d - MENTE DE COLMEIA -->
+<!-- ============================================== -->
+
+<h2><span class="num">12d / Colmeia</span>Mente de Colmeia — conhecimento compartilhado entre agentes</h2>
+
+<p>À medida que você adiciona agentes especializados ao ecossistema, surge um novo problema: cada agente aprende coisas úteis, cria skills, escreve playbooks, toma decisões técnicas. Se esse conhecimento fica isolado na memória privada de cada agente, os outros redescobrirão a roda indefinidamente.</p>
+
+<p>A mente de colmeia resolve isso com uma camada federada de leitura e descoberta de conhecimento entre agentes. Cada agente pode consultar o que outros publicaram — sem ter acesso à memória privada de ninguém.</p>
+
+<h3>Três níveis de memória</h3>
+
+<table>
+<thead><tr><th>Nível</th><th>Onde</th><th>Quem acessa</th><th>O que contém</th></tr></thead>
+<tbody>
+<tr><td><strong>Memória privada</strong></td><td><code>~/.hermes/</code> ou equivalente interno</td><td>Só o próprio agente</td><td>Aprendizados de sessão, preferências operacionais, histórico interno</td></tr>
+<tr><td><strong>Conhecimento publicado</strong></td><td><code>/50-skills/published/</code></td><td>Qualquer agente via MCP (leitura)</td><td>Skills, playbooks, templates, padrões aprovados ou promovidos por TTL</td></tr>
+<tr><td><strong>Conhecimento aprovado</strong></td><td><code>/70-decisions/</code> e <code>/20-domains/</code></td><td>Qualquer agente via MCP (leitura)</td><td>Decisões formais, princípios de domínio, regras globais</td></tr>
+</tbody>
+</table>
+
+<h3>Protocolo de publicação</h3>
+
+<ol>
+<li><strong>Antes de criar:</strong> consulte <code>/50-skills/INDEX.md</code> — busque por tag ou domínio para evitar duplicação</li>
+<li><strong>Proposta:</strong> vai para <code>/90-inbox/</code> com <code>type: skill</code> e metadados completos (<code>author_agent</code>, <code>domain</code>, <code>confidence</code>, <code>risk</code>, <code>tags</code>)</li>
+<li><strong>Classificação automática</strong> por <code>confidence</code> + <code>risk</code>:
+  <ul>
+    <li><code>verified</code> + <code>low</code> → promovido automaticamente para <code>/published/</code> em 7 dias</li>
+    <li><code>verified</code> + <code>medium</code> → aprovação lazy do humano</li>
+    <li><code>hypothesis</code> → fica em <code>/proposed/</code> aguardando decisão humana</li>
+    <li><code>high</code> risk → aprovação explícita obrigatória</li>
+  </ul>
+</li>
+</ol>
+
+<h3>Regras fundamentais</h3>
+
+<ul>
+<li><strong>Leitura federada:</strong> qualquer agente lê qualquer área compartilhada</li>
+<li><strong>Escrita controlada:</strong> agente só escreve em <code>/90-inbox/</code></li>
+<li>Nenhum agente altera diretamente a memória de outro</li>
+<li>Melhorias viram proposta, fork ou nova versão com <code>supersedes</code></li>
+<li><code>INDEX.md</code> é consultado antes de qualquer criação nova</li>
+</ul>
+
+<h3>Estrutura de /50-skills/</h3>
+
+<pre><code>50-skills/
+  INDEX.md              # índice navegável por domínio e agente
+  README.md             # protocolo, metadados obrigatórios, regras
+  published/            # skills aprovadas — read-only para agentes
+  proposed/             # skills pendentes de revisão
+  deprecated/           # skills antigas — nunca deletar, manter rastreabilidade</code></pre>
+
+<div class="callout tip">
+<div class="label">Mente de colmeia não é comunicação entre agentes</div>
+<p>É conhecimento acumulado que qualquer agente pode descobrir e reutilizar. O vault federado é o quadro compartilhado. O blackboard pattern em escala — não como memória em tempo real, mas como repositório de aprendizado persistente.</p>
+</div>
+
+<!-- ============================================== -->
 <!-- 13 - GRAPHITI -->
 <!-- ============================================== -->
 
