@@ -15,14 +15,15 @@ Além disso, o repositório distribui um **template clonável** de vault e adapt
 
 ### Whitepaper
 
-- `whitepaper/whitepaper-memoria-federada-ptbr.html` — **v2.0 completo**
+- `whitepaper/whitepaper-memoria-federada-ptbr.html` — **v2.1**
+- Princípio 5 reformulado: humano como auditor de última instância (não aprovação obrigatória)
 - Inclui seção de limitações conhecidas (rollback, validade temporal, governança, escala)
 - Inclui comparação honesta com Paperclip (orquestração complementar) e Pi (agente minimalista, caso de uso ideal)
-- PDF distribuído via release v2.0.1 no GitHub
+- PDF distribuído via release v2.1.0 no GitHub
 
 ### Guia de implementação
 
-- `guia/memoria-federada-v2.html` — **v2.0 com 20 seções + 06b (multimodal/assets) + 09c (captura automática via hooks)**
+- `guia/memoria-federada-v2.html` — **v2.1 com 20+ seções incluindo 06b (multimodal/assets) e 09c (captura automática via hooks Hermes + Claude Code)**
 - Diagramas SVG inline (sem dependência de imagens externas)
 - Hermes como **núcleo ativo** com 4 papéis: roteador, gerenciador de memória com feedback, controlador de escopo, policy engine declarativo
 - Inclui seção 12b de **deployment remoto** (VPS, SSH tunnel, MCP via Caddy)
@@ -82,12 +83,15 @@ Além disso, o repositório distribui um **template clonável** de vault e adapt
 ### Scripts
 
 - `setup.sh` / `setup.ps1` — instala vault, Hermes, MCP server, gera settings.json
-- `scripts/review-inbox.sh` / `.ps1` — ritual de revisão do inbox
-- `scripts/build-pdfs.mjs` — gera PDFs do whitepaper e do guia via Puppeteer (script único multiplataforma; requer `npm install puppeteer`). Substituiu os antigos `.sh`/`.ps1` que dependiam de Chrome headless CLI (paginação quebrada no Windows — sempre 1 página).
+- `scripts/review-inbox.sh` / `.ps1` — ritual de revisão do inbox, com TTL automático e filtro por risco (verified+low promove auto, verified+medium fica silencioso no inbox como pending_lazy, hypothesis/high/sem classificação vão para humano)
+- `scripts/build-pdfs.mjs` — gera PDFs do whitepaper e do guia via Puppeteer (script único multiplataforma; requer `npm install puppeteer`)
+- `scripts/capture-to-inbox.mjs` — hook PostToolUse do Claude Code que detecta decisões/preferências/bugs via regex e anexa sugestões classificadas no inbox
+- `template/.claude/hooks.json` — configuração de exemplo do hook acima
 
 ### Releases publicadas
 
-- **v2.0.1** (atual) — Limitações conhecidas + progressão Graphiti + comparação Paperclip/Pi
+- **v2.1.0** (atual) — Classificação automática confidence+risk+TTL, captura via hooks, princípio 5 reformulado
+- v2.0.1 — Limitações conhecidas + progressão Graphiti + comparação Paperclip/Pi
 - v2.0.0 — Hermes núcleo ativo
 - v1.0.0 — lançamento inicial
 
@@ -106,10 +110,12 @@ Além disso, o repositório distribui um **template clonável** de vault e adapt
 
 - Versão em inglês do whitepaper (branch `wip/english`, após validação PT-BR)
 - Validação real do QUICKSTART na máquina do André antes de divulgar amplamente
+- **v3.0**: Graphiti + FTS5 + embeddings + worker local quando vault escalar (centenas de decisões)
 - Pack-usage logger no Hermes — implementação de referência do logging de uso
 - GitHub Action para validar estrutura do vault (presença de `AGENT.md`, formato de Context Packs, etc.)
 - Templates por área (escritor, dev, pesquisador) — perfis pré-configurados de domínios e packs
 - Plugin Obsidian dedicado para Context Packs (criação assistida, validação de campos)
+- Avaliar integração com Sinapse Vault do Michel como camada de sessão
 - Avaliar integração do ai-memory (github.com/akitaonrails/ai-memory) após estabilização — hoje em beta com dependência Docker
 
 ---
