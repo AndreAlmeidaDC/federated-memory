@@ -17,17 +17,20 @@ Além disso, o repositório distribui um **template clonável** de vault e adapt
 
 - `whitepaper/whitepaper-memoria-federada-ptbr.html` — **v2.1**
 - Princípio 5 reformulado: humano como auditor de última instância (não aprovação obrigatória)
-- Inclui seção de limitações conhecidas (rollback, validade temporal, governança, escala)
+- Inclui seção de limitações conhecidas (rollback, validade temporal, governança, escala, **mente de colmeia**)
 - Inclui comparação honesta com Paperclip (orquestração complementar) e Pi (agente minimalista, caso de uso ideal)
+- Tabela de comparação com nova coluna: **Compartilhamento entre agentes**
+- Parágrafo sobre mente de colmeia como evolução do blackboard pattern (seção 7, após DecisionNode)
 - PDF distribuído via release v2.1.0 no GitHub
 
 ### Guia de implementação
 
-- `guia/memoria-federada-v2.html` — **v2.2 com 20+ seções incluindo 06b (multimodal/assets), 09c (captura automática via hooks Hermes + Claude Code) e 12c (Harness Engineering)**
+- `guia/memoria-federada-v2.html` — **v2.3 com 20+ seções incluindo 06b (multimodal/assets), 09c (captura automática via hooks Hermes + Claude Code), 12c (Harness Engineering) e 12d (Mente de Colmeia)**
 - Diagramas SVG inline (sem dependência de imagens externas)
 - Hermes como **núcleo ativo** com 4 papéis: roteador, gerenciador de memória com feedback, controlador de escopo, policy engine declarativo
 - Inclui seção 12b de **deployment remoto** (VPS, SSH tunnel, MCP via Caddy)
 - Inclui seção 12c de **Harness Engineering** — mapeamento dos componentes de controle (MCP, AGENT.md, adaptadores, hooks, SESSION.lock, review-inbox) e roadmap v3.0
+- Inclui seção 12d de **Mente de Colmeia** — três níveis de memória, protocolo de publicação via inbox, regras fundamentais de leitura federada e escrita controlada
 - Inclui Graphiti como camada temporal opcional (seção 13)
 - PDF distribuído via release v2.0.1
 
@@ -36,17 +39,21 @@ Além disso, o repositório distribui um **template clonável** de vault e adapt
 11 pastas numeradas (00 a 99):
 
 ```
-00-global/         AGENT.md — contrato neutro
-10-projects/       projetos ativos
+00-global/         AGENT.md — contrato neutro (inclui protocolo de mente de colmeia)
+10-projects/       projetos ativos (+ SESSION.lock.example)
 20-domains/        domínios isolados
 30-clients/        contexto de clientes
 40-workflows/      fluxos de trabalho
-50-skills/         procedimentos de execução reutilizáveis (README + exemplo)
+50-skills/         skills reutilizáveis com estrutura de mente de colmeia:
+                     published/  — aprovadas, disponíveis para qualquer agente
+                     proposed/   — aguardando classificação/aprovação
+                     deprecated/ — históricas, nunca deletar
+                     INDEX.md    — índice navegável por domínio e agente
 60-context-packs/  pacotes de contexto mínimo por tarefa
 70-decisions/      decisões formais com status
 80-agent-adapters/ adaptadores por agente
 90-inbox/          único destino de escrita do agente
-99-archive/        logs e arquivados
+99-archive/        logs e arquivados (+ session-log.md)
 ```
 
 ### Adaptadores (10 agentes em `/template/80-agent-adapters/`)
@@ -100,7 +107,8 @@ Arquivos adicionados ao template:
 
 ### Releases publicadas
 
-- **v2.2.0** (atual) — SESSION.lock + Harness Engineering (seção 12c) + ROADMAP v3.0 expandido
+- **v2.3.0** (atual) — Mente de Colmeia: estrutura 50-skills, AGENT.md, seção 12d, whitepaper atualizado
+- v2.2.0 — SESSION.lock + Harness Engineering (seção 12c) + ROADMAP v3.0 expandido
 - v2.1.0 — Classificação automática confidence+risk+TTL, captura via hooks, princípio 5 reformulado
 - v2.0.1 — Limitações conhecidas + progressão Graphiti + comparação Paperclip/Pi
 - v2.0.0 — Hermes núcleo ativo
@@ -121,7 +129,7 @@ Arquivos adicionados ao template:
 
 - Versão em inglês do whitepaper (branch `wip/english`, após validação PT-BR)
 - Validação real do QUICKSTART na máquina do André antes de divulgar amplamente
-- **v3.0**: Graphiti + FTS5 + embeddings + worker local quando vault escalar (centenas de decisões); Harness Engineering avançado com toolset por domínio e observabilidade completa
+- **v3.0**: Graphiti + FTS5 + embeddings + worker local quando vault escalar; Harness Engineering avançado com toolset por domínio e observabilidade completa; **implementação real da mente de colmeia** (automação de promoção entre published/proposed/deprecated com scripts equivalentes ao review-inbox)
 - Pack-usage logger no Hermes — implementação de referência do logging de uso
 - GitHub Action para validar estrutura do vault (presença de `AGENT.md`, formato de Context Packs, etc.)
 - Templates por área (escritor, dev, pesquisador) — perfis pré-configurados de domínios e packs
