@@ -77,6 +77,20 @@ Critério: só entra no ROADMAP o que tem chance real de acontecer. Wishlist sem
 
 ---
 
+## Visão de longo prazo
+
+### v3.0 — Quando o vault escalar
+
+- Graphiti (Zep) para memória temporal: decisões que substituem decisões, relações entre entidades, histórico de mudanças, consultas "o que mudou?"
+- Busca semântica local: FTS5 (SQLite) para busca por texto + embeddings para busca semântica vetorial
+- Worker local que indexa o vault automaticamente quando arquivos mudam
+- O índice fica dentro do vault em `/99-archive/index/` — portável e versionável
+- Inspiração técnica: padrão de 3 camadas do claude-mem (`search → timeline → get_observations`) com economia de tokens
+
+> v3.0 não é uma data. É um conjunto de problemas que aparecem quando o vault tem centenas de decisões e o agente começa a ter dificuldade de encontrar contexto relevante sem carregar tudo. Adicione quando sentir essa dor.
+
+---
+
 ## Fora de escopo
 
 Itens propostos mas explicitamente rejeitados. Não reabrir sem motivo novo.

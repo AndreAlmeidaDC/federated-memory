@@ -1147,9 +1147,42 @@ hooks:
       target: "/90-inbox/suggested-memory.md"
 </code></pre>
 
+<h3>Hooks simples para Claude Code (sem Hermes)</h3>
+
+<p>Para captura automática sem o Hermes, o Claude Code suporta hooks via arquivo <code>.claude/hooks.json</code> na raiz do vault. O hook <code>PostToolUse</code> dispara um script Node que lê o output do agente, aplica regex para identificar padrões relevantes e anexa uma sugestão classificada em <code>/90-inbox/suggested-memory.md</code>.</p>
+
+<p>Crie <code>template/.claude/hooks.json</code> com o conteúdo:</p>
+
+<pre><code>{
+  "hooks": {
+    "PostToolUse": [
+      {
+        "matcher": ".*",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "node scripts/capture-to-inbox.mjs"
+          }
+        ]
+      }
+    ]
+  }
+}
+</code></pre>
+
+<p>O script <code>scripts/capture-to-inbox.mjs</code> usa heurísticas simples (regex sobre strings comuns) para identificar três padrões:</p>
+
+<ul>
+<li><strong>Decisão:</strong> "decidi", "decidimos", "resolved to", "decision:" → <code>confidence: verified</code>, <code>risk: medium</code></li>
+<li><strong>Preferência:</strong> "prefiro", "prefere", "I prefer", "preference:" → <code>confidence: preference</code>, <code>risk: low</code></li>
+<li><strong>Bug resolvido:</strong> "resolvido", "fixed", "bug resolved", "solved" → <code>confidence: verified</code>, <code>risk: low</code></li>
+</ul>
+
+<p>Se nenhum padrão for encontrado, o script não faz nada. Não há dependências externas além de Node.js built-in. O ritual de revisão (<code>scripts/review-inbox.{sh,ps1}</code>) processa o que o hook gravou — com TTL para <code>verified+low</code> e filtro por risco.</p>
+
 <div class="callout warn">
 <div class="label">Captura automática ≠ ausência de curadoria</div>
-<p>Captura automática não elimina curadoria humana. Elimina o gargalo de lembrar de pedir. O inbox cresce sozinho. O ritual de review continua sendo o mecanismo de controle de qualidade — mas agora proporcional ao risco, não obrigatório para tudo.</p>
+<p>Captura automática não elimina curadoria humana. Elimina o gargalo de lembrar de pedir. O inbox cresce sozinho. O ritual de review continua sendo o mecanismo de controle de qualidade, proporcional ao risco, não obrigatório para tudo.</p>
 </div>
 
 <!-- ============================================== -->
