@@ -1,4 +1,6 @@
 .claude/
+!template/.claude/
+!template/.claude/**
 *.local
 
 # PDFs gerados localmente; distribuidos via GitHub Releases
