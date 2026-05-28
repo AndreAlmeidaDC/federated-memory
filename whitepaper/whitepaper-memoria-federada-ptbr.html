@@ -604,21 +604,23 @@ sup {
 <!-- SECTION 8 — Limitações conhecidas -->
 <h2><span class="section-num">08 · Limitações Conhecidas</span>O que esta arquitetura ainda não resolve.</h2>
 
-<p>Adotar memória federada não compra todos os problemas resolvidos. Quatro limitações merecem ser reconhecidas explicitamente — não para justificar a arquitetura, mas para deixar claro onde ela termina e onde o usuário precisa preencher a lacuna.</p>
+<p>Adotar memória federada não compra todos os problemas resolvidos. Cinco limitações merecem ser reconhecidas explicitamente — não para justificar a arquitetura, mas para deixar claro onde ela termina e onde o usuário precisa preencher a lacuna.</p>
 
 <h3>1. Rollback de ação não existe</h3>
 
 <p>O núcleo aplica política sobre o que entra no contexto e sobre o que pode ser escrito. Ele não desfaz a ação que o agente já executou. Se um agente, ao receber um Context Pack, produz código ruim, manda e-mail errado ou aplica uma mudança em sistema externo, a arquitetura federada não tem como reverter isso. Rollback continua sendo problema do sistema-alvo (Git para código, sent-folder para e-mail, transações para banco). A memória federada melhora a chance de o agente fazer a coisa certa; não garante que a ação seja reversível quando ele falha.</p>
 
+<p>Esta limitação é parcialmente mitigada pelo pre-action logging: antes de executar ações de alto risco, o agente registra em <code>/99-archive/pre-action-log.md</code> o contexto ativo, o pack carregado, o agente executor e o recurso alvo. Não é rollback — é rastreabilidade. Se algo der errado, você sabe exatamente o que estava ativo quando o erro aconteceu. Para ações reversíveis como código, o Git cobre o rollback; o pre-action log cobre a auditoria.</p>
+
 <h3>2. Temporal validity é aviso, não garantia</h3>
 
 <p>A inspeção automática de <code>mtime</code> avisa quando arquivos do Context Pack passaram do limite de idade configurado. O aviso é informativo, não bloqueante por padrão. Conteúdo antigo pode continuar válido; conteúdo recém-atualizado pode estar errado. A arquitetura não substitui revisão de conteúdo — torna mais visível o ponto onde a revisão é necessária. Confundir <em>aviso de validade</em> com <em>garantia de correção</em> é uma falha de interpretação que o sistema não previne.</p>
 
+<p>Esta limitação é mitigada pelo campo <code>review_date</code> nos Context Packs e Decisions. Em vez de depender apenas do <code>mtime</code> do arquivo, o Hermes verifica se <code>next_review</code> venceu — independente de o arquivo ter sido modificado. O humano que revisa o conteúdo e confirma que ainda é válido atualiza o <code>review_date</code> sem alterar o arquivo. O sistema distingue conteúdo não modificado de conteúdo revisado.</p>
+
 <h3>3. Governança depende de disciplina humana</h3>
 
-<p>A regra de aprovação humana, o ritual de revisão do inbox, a curadoria de decisões com <code>status: approved</code> — tudo isso depende do humano fazer o trabalho. Se ninguém revisa o inbox, sugestões acumulam e nada vira memória. Se decisões antigas não são marcadas como <code>superseded</code>, o núcleo continua entregando contexto desatualizado. O núcleo aplica as regras que existem; não cria disciplina onde ela não existe. Memória federada é uma arquitetura para usuários dispostos a participar — não um substituto para participação.</p>
-
-<p>Esta limitação é mitigada pelos hooks de ciclo de vida do Hermes (<code>sync_turn</code>, <code>prefetch</code>, <code>shutdown</code>), que alimentam o inbox automaticamente. A classificação automática por <code>confidence</code> e <code>risk</code> reduz o volume de revisão humana ao essencial: hipóteses e decisões de alto risco. O ritual semanal de review deixa de ser obrigatório e passa a ser proporcional ao risco acumulado no inbox.</p>
+<p>Com a classificação automática por <code>confidence</code> + <code>risk</code>, o inbox acumula apenas hipóteses e decisões de alto risco. Tudo que é <code>verified</code> + <code>low</code> promove-se automaticamente em 7 dias. O humano não precisa revisar o que é rotineiro — só o que é incerto ou consequente. A limitação real é mais precisa: se você não revisar o inbox, hipóteses e decisões de alto risco não viram memória. O fluxo automático continua operando para o restante. Os hooks de captura (<code>sync_turn</code>, <code>prefetch</code>, <code>shutdown</code>) reduzem ainda mais a dependência de ação manual.</p>
 
 <h3>4. Escala não foi testada — e não precisa ser teto</h3>
 
@@ -632,9 +634,9 @@ sup {
 
 <div class="pull">A limitação de escala não é um teto arquitetural. É um ponto de entrada deliberado. Graphiti entra quando o vault precisa de memória temporal. Múltiplos vaults entram quando o isolamento físico se torna necessário. A arquitetura cresce com a dor, não antes dela.</div>
 
-<h3>5. Mente de colmeia é v3.0, não v2</h3>
+<h3>5. Mente de colmeia: estrutura implementada, escala é v3.0</h3>
 
-<p>A arquitetura atual é otimizada para um usuário com múltiplos agentes acessando o mesmo vault. O compartilhamento estruturado de conhecimento entre agentes especializados — com índice de skills, protocolo de publicação e metadados de autoria — está documentado mas não implementado como código de produção. A estrutura de pastas (<code>/50-skills/published/</code>, <code>/proposed/</code>, <code>/deprecated/</code>) e o protocolo de classificação por <code>confidence</code> + <code>risk</code> existem como template. A automação de promoção entre níveis entra na v3.0 junto com Graphiti e busca semântica — quando o ecossistema tiver agentes suficientes para o compartilhamento fazer sentido operacional.</p>
+<p>A estrutura da mente de colmeia está implementada: <code>/50-skills/published/</code>, <code>/proposed/</code>, <code>/deprecated/</code>, <code>INDEX.md</code> e protocolo de publicação via inbox. Os scripts <code>promote-skills.mjs</code> e <code>update-index.mjs</code> automatizam a promoção por TTL e a atualização do índice. O que ainda é v3.0: integração com Graphiti para relações entre skills, busca semântica no índice, e worker local que indexa automaticamente quando o ecossistema de agentes especializados crescer o suficiente para o compartilhamento fazer sentido operacional.</p>
 
 <!-- SECTION 9 — Princípios e Limites -->
 <h2><span class="section-num">09 · Princípios e Limites</span>O que esta arquitetura recusa.</h2>
