@@ -17,11 +17,16 @@ Além disso, o repositório distribui um **template clonável** de vault e adapt
 
 - `whitepaper/whitepaper-memoria-federada-ptbr.html` — **v2.1**
 - Princípio 5 reformulado: humano como auditor de última instância (não aprovação obrigatória)
-- Inclui seção de limitações conhecidas (rollback, validade temporal, governança, escala, **mente de colmeia**)
+- Inclui seção de limitações conhecidas com 5 limitações e mitigações documentadas:
+  - Lim 1 (rollback): mitigada pelo pre-action logging
+  - Lim 2 (temporal validity): mitigada pelo campo review_date + next_review
+  - Lim 3 (governança): texto atualizado — classificação automática reduz dependência humana ao essencial
+  - Lim 4 (escala): progressão documentada (pequena → Graphiti → multi-vault)
+  - Lim 5 (mente de colmeia): estrutura e scripts implementados; v3.0 é Graphiti + busca semântica
 - Inclui comparação honesta com Paperclip (orquestração complementar) e Pi (agente minimalista, caso de uso ideal)
-- Tabela de comparação com nova coluna: **Compartilhamento entre agentes**
+- Tabela de comparação com coluna **Compartilhamento entre agentes**
 - Parágrafo sobre mente de colmeia como evolução do blackboard pattern (seção 7, após DecisionNode)
-- PDF distribuído via release v2.1.0 no GitHub
+- PDF distribuído via release v2.3.0 no GitHub
 
 ### Guia de implementação
 
@@ -94,7 +99,10 @@ Além disso, o repositório distribui um **template clonável** de vault e adapt
 - `scripts/review-inbox.sh` / `.ps1` — ritual de revisão do inbox, com TTL automático e filtro por risco (verified+low promove auto, verified+medium fica silencioso no inbox como pending_lazy, hypothesis/high/sem classificação vão para humano)
 - `scripts/build-pdfs.mjs` — gera PDFs do whitepaper e do guia via Puppeteer (script único multiplataforma; requer `npm install puppeteer`)
 - `scripts/capture-to-inbox.mjs` — hook PostToolUse do Claude Code que detecta decisões/preferências/bugs via regex e anexa sugestões classificadas no inbox
-- `template/.claude/hooks.json` — configuração de exemplo do hook acima
+- `scripts/pre-action-log.mjs` — hook PreToolUse que detecta ações de alto risco (delete, drop, rm, truncate, push --force, deploy, send, overwrite, format) e registra em `template/99-archive/pre-action-log.md` antes da execução. Não bloqueia — só audita.
+- `scripts/promote-skills.mjs` — processa `template/50-skills/proposed/`, aplica regras confidence+risk+TTL, move verified+low para `published/` quando TTL venceu, loga no `review-log.md`
+- `scripts/update-index.mjs` — regenera `template/50-skills/INDEX.md` a partir dos arquivos em `published/`, agrupado por domínio e por agente
+- `template/.claude/hooks.json` — configuração de hooks: PreToolUse (pre-action-log) + PostToolUse (capture-to-inbox)
 
 ### Template de harness (`/template/`)
 
@@ -102,12 +110,16 @@ Arquivos adicionados ao template:
 
 - `template/10-projects/SESSION.lock.example` — exemplo de lock por projeto (agente, máquina, usuário, TTL)
 - `template/99-archive/session-log.md` — registro de sessões de agentes com audit trail
-- `template/00-global/AGENT.md` — inclui agora regras de lock de projeto (verificação, criação, expiração, log)
+- `template/99-archive/pre-action-log.md` — registro de ações de alto risco (auditoria, não rollback)
+- `template/00-global/AGENT.md` — inclui regras de lock, mente de colmeia, validade temporal explícita (review_date + next_review)
+- `template/60-context-packs/*.md` — todos os packs com campo `Review` (review_date, review_by, next_review)
+- `template/70-decisions/README.md` — frontmatter de DECISION.md atualizado com review_date/next_review
 - `.gitignore` — entrada `**/SESSION.lock` para não versionar locks reais
 
 ### Releases publicadas
 
-- **v2.3.0** (atual) — Mente de Colmeia: estrutura 50-skills, AGENT.md, seção 12d, whitepaper atualizado
+- **v2.4.0** (atual) — Pre-action log, review_date, promote-skills/update-index, whitepaper com mitigações
+- v2.3.0 — Mente de Colmeia: estrutura 50-skills, AGENT.md, seção 12d, whitepaper atualizado
 - v2.2.0 — SESSION.lock + Harness Engineering (seção 12c) + ROADMAP v3.0 expandido
 - v2.1.0 — Classificação automática confidence+risk+TTL, captura via hooks, princípio 5 reformulado
 - v2.0.1 — Limitações conhecidas + progressão Graphiti + comparação Paperclip/Pi
