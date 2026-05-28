@@ -102,6 +102,7 @@ Além disso, o repositório distribui um **template clonável** de vault e adapt
 - `scripts/pre-action-log.mjs` — hook PreToolUse que detecta ações de alto risco (delete, drop, rm, truncate, push --force, deploy, send, overwrite, format) e registra em `template/99-archive/pre-action-log.md` antes da execução. Não bloqueia — só audita.
 - `scripts/promote-skills.mjs` — processa `template/50-skills/proposed/`, aplica regras confidence+risk+TTL, move verified+low para `published/` quando TTL venceu, loga no `review-log.md`
 - `scripts/update-index.mjs` — regenera `template/50-skills/INDEX.md` a partir dos arquivos em `published/`, agrupado por domínio e por agente
+- `scripts/escalate-patterns.mjs` — processa entradas `type: tool_pattern` no inbox, mantém ledger em `50-skills/tool-patterns/` e aplica escalada de 3 tiers: observed → auto_fix → root_cause_pending
 - `template/.claude/hooks.json` — configuração de hooks: PreToolUse (pre-action-log) + PostToolUse (capture-to-inbox)
 
 ### Template de harness (`/template/`)
@@ -111,14 +112,16 @@ Arquivos adicionados ao template:
 - `template/10-projects/SESSION.lock.example` — exemplo de lock por projeto (agente, máquina, usuário, TTL)
 - `template/99-archive/session-log.md` — registro de sessões de agentes com audit trail
 - `template/99-archive/pre-action-log.md` — registro de ações de alto risco (auditoria, não rollback)
-- `template/00-global/AGENT.md` — inclui regras de lock, mente de colmeia, validade temporal explícita (review_date + next_review)
+- `template/00-global/AGENT.md` — inclui regras de lock, mente de colmeia, validade temporal explícita (review_date + next_review), protocolo de padrões recorrentes por ferramenta (3 tiers)
+- `template/50-skills/tool-patterns/README.md` — ledger de padrões recorrentes por ferramenta (observed → auto_fix → root_cause_pending)
 - `template/60-context-packs/*.md` — todos os packs com campo `Review` (review_date, review_by, next_review)
 - `template/70-decisions/README.md` — frontmatter de DECISION.md atualizado com review_date/next_review
 - `.gitignore` — entrada `**/SESSION.lock` para não versionar locks reais
 
 ### Releases publicadas
 
-- **v2.4.0** (atual) — Pre-action log, review_date, promote-skills/update-index, whitepaper com mitigações
+- **v2.5.0** (atual) — Memória de padrões recorrentes por ferramenta: escalate-patterns, tool-patterns/, protocolo 3 tiers, seção 12e no guia
+- v2.4.0 — Pre-action log, review_date, promote-skills/update-index, whitepaper com mitigações
 - v2.3.0 — Mente de Colmeia: estrutura 50-skills, AGENT.md, seção 12d, whitepaper atualizado
 - v2.2.0 — SESSION.lock + Harness Engineering (seção 12c) + ROADMAP v3.0 expandido
 - v2.1.0 — Classificação automática confidence+risk+TTL, captura via hooks, princípio 5 reformulado

@@ -192,3 +192,43 @@ pode ser publicado na área compartilhada para outros agentes consumirem.
 - Publicar conhecimento sem metadados completos
 - Criar skill duplicada sem verificar o `INDEX.md` primeiro
 - Marcar como `verified` sem ter testado em uso real
+
+## Memória de padrões recorrentes por ferramenta
+
+Problemas repetidos com a mesma ferramenta ou biblioteca são rastreados em
+`/50-skills/tool-patterns/`, separados do contexto de projeto e de cliente.
+O que o agente aprende sobre o Brandcraft num projeto vale para todos os outros.
+
+### Protocolo de 3 tiers
+
+| Tier | Ocorrência | Status | Ação |
+|---|---|---|---|
+| 1 | 1ª vez | `observed` | Registre no inbox com `type: tool_pattern` |
+| 2 | 2ª vez | `auto_fix` | Aplique o fix documentado automaticamente, sem perguntar |
+| 3 | 3ª+ vez | `root_cause_pending` | Execute `escalate-patterns.mjs` e inicie análise de causa raiz |
+
+### Antes de criar qualquer workaround para uma ferramenta externa:
+1. Verifique se existe `/50-skills/tool-patterns/{tool}.md`
+2. Se `status: auto_fix` → aplique o fix documentado sem intervenção humana
+3. Se não existir → registre no inbox para iniciar o rastreamento
+
+### Formato obrigatório no inbox para tool_pattern:
+
+```
+---
+source: [agente ou sessão]
+date: YYYY-MM-DD
+type: tool_pattern
+tool: [nome da ferramenta ou biblioteca]
+symptom: [descrição objetiva do problema]
+fix: [solução encontrada, se já conhecida]
+confidence: verified
+risk: low | medium | high
+---
+[contexto adicional se necessário]
+```
+
+### O que NÃO fazer:
+- Criar workarounds silenciosos sem registrar o padrão
+- Confundir `tool_pattern` com `fact` ou `preference` — são tipos distintos
+- Misturar padrões de ferramentas com contexto de projeto ou cliente

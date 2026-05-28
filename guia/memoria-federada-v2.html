@@ -1684,6 +1684,87 @@ ufw allow 22  # SSH continua aberto</code></pre>
 </div>
 
 <!-- ============================================== -->
+<!-- 12e - PADRÕES RECORRENTES POR FERRAMENTA -->
+<!-- ============================================== -->
+
+<h2><span class="num">12e / Padrões</span>Memória de padrões recorrentes por ferramenta</h2>
+
+<p>Toda ferramenta tem comportamentos não-documentados, bugs conhecidos e workarounds que você descobre na prática. Sem memória estruturada, o agente repete o mesmo diagnóstico a cada sessão — e você paga o custo em tempo e frustração. Pior: o workaround que você descobriu num projeto não chega ao próximo.</p>
+
+<p>A solução: um ledger de padrões por ferramenta em <code>/50-skills/tool-patterns/</code>, separado do contexto de projeto e de cliente. O que o agente aprende sobre o Brandcraft num projeto vale para todos os outros.</p>
+
+<h3>O mecanismo de 3 tiers</h3>
+
+<table>
+<thead>
+<tr><th>Tier</th><th>Ocorrência</th><th>Status</th><th>O que acontece</th></tr>
+</thead>
+<tbody>
+<tr>
+  <td><strong>1</strong></td>
+  <td>1ª vez</td>
+  <td><code>observed</code></td>
+  <td>Agente registra sintoma no inbox com <code>type: tool_pattern</code>. Problema documentado, workaround opcional.</td>
+</tr>
+<tr>
+  <td><strong>2</strong></td>
+  <td>2ª vez</td>
+  <td><code>auto_fix</code></td>
+  <td>Agente encontra o padrão em <code>tool-patterns/</code> e aplica o fix documentado <em>sem perguntar</em>.</td>
+</tr>
+<tr>
+  <td><strong>3</strong></td>
+  <td>3ª+ vez</td>
+  <td><code>root_cause_pending</code></td>
+  <td>Trigger para análise de causa raiz. O problema é recorrente demais para ser apenas um workaround.</td>
+</tr>
+</tbody>
+</table>
+
+<p>A escalada é automática: <code>node scripts/escalate-patterns.mjs</code> lê o inbox, incrementa o contador e atualiza o status. Na 3ª ocorrência, o script alerta explicitamente que uma análise humana é necessária.</p>
+
+<h3>Escopo: ferramenta, não projeto</h3>
+
+<p>Essa é a distinção que torna o mecanismo útil. Memória de projeto fica em <code>/10-projects/</code>. Memória de cliente em <code>/30-clients/</code>. Padrões de ferramenta ficam em <code>/50-skills/tool-patterns/</code> — disponíveis para qualquer projeto, sem contaminar nenhum contexto específico.</p>
+
+<pre><code>50-skills/
+├── published/          ← skills aprovadas (procedimentos)
+├── proposed/           ← skills aguardando aprovação
+├── deprecated/         ← histórico
+├── tool-patterns/      ← ledger por ferramenta  ← NOVO
+│   ├── README.md
+│   ├── brandcraft.md   ← 1 arquivo por ferramenta
+│   └── puppeteer.md
+└── INDEX.md</code></pre>
+
+<h3>Fluxo completo</h3>
+
+<ol>
+<li><strong>1ª ocorrência:</strong> agente encontra problema com o Brandcraft. Escreve no inbox:
+<pre><code>---
+type: tool_pattern
+tool: brandcraft
+symptom: API retorna rate limit em header não-padrão X-BrandCraft-Limit-Remaining
+fix: verificar X-BrandCraft-Limit-Remaining antes de X-RateLimit-Remaining
+confidence: verified
+risk: low
+---</code></pre>
+</li>
+<li><strong>Processa o padrão:</strong> <code>node scripts/escalate-patterns.mjs</code> cria <code>tool-patterns/brandcraft.md</code> com <code>status: observed</code>.</li>
+<li><strong>2ª ocorrência (outro projeto):</strong> agente consulta <code>tool-patterns/brandcraft.md</code>, encontra <code>status: auto_fix</code> e aplica o fix documentado sem diagnóstico.</li>
+<li><strong>3ª ocorrência:</strong> script escala para <code>root_cause_pending</code> e alerta que o problema precisa ser resolvido na fonte — não só contornado.</li>
+</ol>
+
+<h3>O que NÃO é um tool_pattern</h3>
+
+<p>Não confundir com preferências do usuário (<code>preference</code>), fatos de projeto (<code>fact</code>) ou decisões formais (<code>decision</code>). Tool patterns são específicos de comportamentos de ferramentas externas — não de escolhas do usuário, não de contexto de negócio.</p>
+
+<div class="callout tip">
+<div class="label">Por que 3 tiers e não só "registra e resolve"?</div>
+<p>Porque o custo de intervenção deve escalar com a frequência. Na 1ª vez, o contexto ainda é raro — documentar é suficiente. Na 2ª vez, já é recorrente — automação é justificada. Na 3ª vez, é um padrão sistêmico — exige investigação da causa raiz, não mais um workaround.</p>
+</div>
+
+<!-- ============================================== -->
 <!-- 13 - GRAPHITI -->
 <!-- ============================================== -->
 
