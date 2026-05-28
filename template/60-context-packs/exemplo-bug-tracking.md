@@ -30,6 +30,13 @@ Confidence / validity:
 - Válido enquanto o stack do projeto não mudar
 - Revalidar se houver mudança de framework ou linguagem principal
 
+Review:
+- review_date: YYYY-MM-DD
+- review_by: [nome]
+- next_review: YYYY-MM-DD  # quando deve ser revisado novamente
+- Nota: atualize review_date mesmo quando nenhum conteúdo mudar.
+  O Hermes usa este campo para avisos de validade, não só o mtime.
+
 Source notes:
 - Estrutura de bugs: /10-projects/[projeto]/assets/bugs/
 - Crie o diretório do bug antes de iniciar: bugs/[bug-id]/

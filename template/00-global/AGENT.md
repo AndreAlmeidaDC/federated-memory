@@ -82,6 +82,19 @@ Quando identificar algo que merece ser memorizado permanentemente, escreva em
 
 Nunca escreva isso diretamente nas pastas de domínio. O humano revisa e decide via ritual semanal (`scripts/review-inbox.{sh,ps1}`).
 
+## Validade temporal explícita
+
+O campo `review_date` é obrigatório em Context Packs e Decisions.
+Ele representa a última vez que um humano revisou o conteúdo —
+independente de ter alterado algo.
+
+O Hermes verifica dois critérios antes de entregar um pack:
+1. `mtime` do arquivo > 90 dias → aviso automático
+2. `next_review` < hoje → aviso automático
+
+Se ambos estiverem dentro do prazo, o pack é entregue sem aviso.
+Se qualquer um venceu, o pack é entregue com aviso de revisão pendente.
+
 ## Classificação obrigatória antes de gravar no inbox
 
 Antes de sugerir qualquer memória, classifique obrigatoriamente:

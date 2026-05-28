@@ -12,6 +12,9 @@ status: approved | superseded | pending
 supersedes: [<id-anterior-1>, <id-anterior-2>]
 domain: <pasta-relevante>
 owner: <quem-aprovou>
+review_date: YYYY-MM-DD
+review_by: [nome]
+next_review: YYYY-MM-DD
 ---
 
 # Decisão: <titulo>

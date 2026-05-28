@@ -51,6 +51,13 @@ Revalidar a cada release maior da stack (linguagem ou framework principal)
 ou a cada nova decisão approved em /70-decisions/ que altere padrão de revisão.
 Recomendado: revisão a cada 6 meses mesmo sem mudanças explícitas.
 
+Review:
+- review_date: YYYY-MM-DD
+- review_by: [nome]
+- next_review: YYYY-MM-DD  # quando deve ser revisado novamente
+- Nota: atualize review_date mesmo quando nenhum conteúdo mudar.
+  O Hermes usa este campo para avisos de validade, não só o mtime.
+
 Validation:
 - Após cada uso, Hermes registra em /99-archive/pack-usage.log: pack, tarefa, resultado (útil/parcial/ruim)
 - Pack com 3 marcações "ruim" consecutivas é flaggeado para revisão
