@@ -1,5 +1,16 @@
 {
   "hooks": {
+    "PreToolUse": [
+      {
+        "matcher": ".*",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "node scripts/pre-action-log.mjs"
+          }
+        ]
+      }
+    ],
     "PostToolUse": [
       {
         "matcher": ".*",
