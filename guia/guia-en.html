@@ -1,0 +1,2182 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Federated Memory for AI Agents — v2.0</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,300;9..144,400;9..144,500;9..144,600;9..144,700;9..144,900&family=Manrope:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+:root {
+  --paper: #F4EFE6;
+  --paper-2: #ECE5D6;
+  --ink: #14110F;
+  --ink-soft: #3A332D;
+  --ink-mute: #6B6258;
+  --accent: #0A4F4A;
+  --accent-2: #C24A2A;
+  --accent-3: #B89455;
+  --line: #2A2520;
+  --line-soft: #C8BFAF;
+  --highlight: #F7E199;
+}
+
+* { box-sizing: border-box; margin: 0; padding: 0; }
+
+html { -webkit-font-smoothing: antialiased; -moz-osx-font-smoothing: grayscale; }
+
+body {
+  font-family: 'Manrope', sans-serif;
+  background: var(--paper);
+  color: var(--ink);
+  font-size: 16px;
+  line-height: 1.65;
+  font-weight: 400;
+}
+
+.page {
+  max-width: 820px;
+  margin: 0 auto;
+  padding: 80px 60px;
+  background: var(--paper);
+}
+
+/* ---------- TYPOGRAPHY ---------- */
+
+h1, h2, h3, h4 {
+  font-family: 'Fraunces', serif;
+  font-weight: 600;
+  color: var(--ink);
+  letter-spacing: -0.02em;
+  line-height: 1.15;
+}
+
+h1 {
+  font-size: 64px;
+  font-weight: 500;
+  font-variation-settings: "opsz" 144;
+  margin-bottom: 16px;
+}
+
+h2 {
+  font-size: 36px;
+  margin-top: 72px;
+  margin-bottom: 24px;
+  padding-bottom: 14px;
+  border-bottom: 1px solid var(--line);
+  font-variation-settings: "opsz" 96;
+}
+
+h2 .num {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 18px;
+  color: var(--accent-2);
+  font-weight: 500;
+  display: block;
+  margin-bottom: 8px;
+  letter-spacing: 0.05em;
+}
+
+h3 {
+  font-size: 24px;
+  margin-top: 42px;
+  margin-bottom: 14px;
+  color: var(--accent);
+  font-style: italic;
+  font-variation-settings: "opsz" 48;
+}
+
+h4 {
+  font-size: 18px;
+  font-family: 'Manrope', sans-serif;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  margin-top: 32px;
+  margin-bottom: 12px;
+  color: var(--ink-soft);
+}
+
+p { margin-bottom: 16px; color: var(--ink-soft); }
+
+p strong { color: var(--ink); font-weight: 700; }
+
+ul, ol { margin: 16px 0 20px 24px; }
+li { margin-bottom: 10px; color: var(--ink-soft); }
+li::marker { color: var(--accent-2); }
+
+a { color: var(--accent); text-decoration: underline; text-decoration-thickness: 1px; text-underline-offset: 3px; }
+
+code {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 0.88em;
+  background: var(--paper-2);
+  padding: 2px 6px;
+  border-radius: 3px;
+  color: var(--ink);
+}
+
+pre {
+  font-family: 'JetBrains Mono', monospace;
+  background: var(--ink);
+  color: #E8E2D4;
+  padding: 24px;
+  border-radius: 4px;
+  font-size: 13px;
+  line-height: 1.6;
+  overflow-x: auto;
+  margin: 20px 0;
+}
+pre code { background: transparent; color: inherit; padding: 0; }
+
+/* ---------- COVER ---------- */
+
+.cover {
+  min-height: 90vh;
+  padding: 100px 60px;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  border-bottom: 2px solid var(--line);
+  position: relative;
+}
+
+.cover .eyebrow {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 12px;
+  text-transform: uppercase;
+  letter-spacing: 0.2em;
+  color: var(--accent-2);
+  margin-bottom: 60px;
+}
+
+.cover h1 {
+  font-size: 88px;
+  font-weight: 400;
+  font-variation-settings: "opsz" 144;
+  line-height: 0.95;
+  margin-bottom: 24px;
+}
+
+.cover h1 em {
+  font-style: italic;
+  color: var(--accent);
+  font-weight: 500;
+}
+
+.cover .subtitle {
+  font-size: 22px;
+  color: var(--ink-soft);
+  line-height: 1.4;
+  max-width: 600px;
+  font-weight: 300;
+  margin-bottom: 80px;
+}
+
+.cover-footer {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-end;
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 12px;
+  text-transform: uppercase;
+  letter-spacing: 0.12em;
+  color: var(--ink-mute);
+}
+
+.cover-footer .right { text-align: right; }
+
+.cover-bigtext {
+  position: absolute;
+  bottom: 100px;
+  right: -40px;
+  font-family: 'Fraunces', serif;
+  font-size: 220px;
+  font-weight: 300;
+  font-style: italic;
+  font-variation-settings: "opsz" 144;
+  color: var(--paper-2);
+  letter-spacing: -0.05em;
+  line-height: 1;
+  z-index: 0;
+  pointer-events: none;
+}
+
+.cover > * { position: relative; z-index: 1; }
+
+/* ---------- CALLOUTS ---------- */
+
+.callout {
+  background: var(--paper-2);
+  border-left: 3px solid var(--accent);
+  padding: 20px 24px;
+  margin: 24px 0;
+  font-size: 15px;
+}
+
+.callout.warn { border-color: var(--accent-2); }
+.callout.tip { border-color: var(--accent-3); }
+
+.callout .label {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 11px;
+  text-transform: uppercase;
+  letter-spacing: 0.15em;
+  color: var(--accent);
+  margin-bottom: 8px;
+  font-weight: 600;
+}
+.callout.warn .label { color: var(--accent-2); }
+.callout.tip .label { color: #6B7A4F; }
+
+.callout p:last-child { margin-bottom: 0; }
+
+/* ---------- FIGURE ---------- */
+
+figure {
+  margin: 40px 0 36px;
+}
+
+figure svg {
+  display: block;
+  width: 100%;
+  height: auto;
+}
+
+figcaption {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 11px;
+  text-align: center;
+  margin-top: 16px;
+  color: var(--ink-mute);
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+}
+
+/* ---------- TABLES ---------- */
+
+table {
+  width: 100%;
+  border-collapse: collapse;
+  margin: 24px 0;
+  font-size: 14px;
+}
+
+th, td {
+  text-align: left;
+  padding: 12px 16px;
+  border-bottom: 1px solid var(--line-soft);
+  vertical-align: top;
+}
+
+th {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 11px;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: var(--ink-mute);
+  font-weight: 600;
+  border-bottom: 2px solid var(--ink);
+}
+
+td { color: var(--ink-soft); }
+td strong { color: var(--ink); }
+
+/* ---------- SECTION DIVIDER ---------- */
+
+.divider {
+  text-align: center;
+  margin: 80px 0 40px;
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 11px;
+  letter-spacing: 0.3em;
+  color: var(--ink-mute);
+}
+
+.divider::before, .divider::after {
+  content: "—";
+  margin: 0 16px;
+  color: var(--line-soft);
+}
+
+/* ---------- INTRO LARGE TEXT ---------- */
+
+.lead {
+  font-family: 'Fraunces', serif;
+  font-size: 26px;
+  line-height: 1.4;
+  font-weight: 300;
+  font-style: italic;
+  color: var(--ink);
+  margin: 32px 0;
+  padding-left: 20px;
+  border-left: 2px solid var(--accent-2);
+  font-variation-settings: "opsz" 96;
+}
+
+/* ---------- TOC ---------- */
+
+.toc {
+  margin: 48px 0;
+  padding: 32px;
+  background: var(--paper-2);
+  border: 1px solid var(--line-soft);
+}
+
+.toc h3 {
+  margin-top: 0;
+  margin-bottom: 20px;
+  color: var(--ink);
+  font-style: normal;
+  font-size: 20px;
+}
+
+.toc ol {
+  list-style: none;
+  margin-left: 0;
+  column-count: 2;
+  column-gap: 32px;
+}
+
+.toc li {
+  margin-bottom: 8px;
+  font-size: 14px;
+  break-inside: avoid;
+}
+
+.toc .num {
+  font-family: 'JetBrains Mono', monospace;
+  color: var(--accent-2);
+  margin-right: 8px;
+  font-size: 12px;
+}
+
+/* ---------- INLINE EMPHASIS ---------- */
+
+.tag {
+  display: inline-block;
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 11px;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  padding: 2px 8px;
+  background: var(--ink);
+  color: var(--paper);
+  margin: 0 2px;
+}
+
+/* ---------- DECISION TABLE ---------- */
+
+.decision-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 16px;
+  margin: 28px 0;
+}
+
+.decision-card {
+  padding: 20px;
+  border: 1px solid var(--line-soft);
+  background: var(--paper-2);
+}
+
+.decision-card h4 {
+  margin-top: 0;
+  margin-bottom: 8px;
+  font-size: 13px;
+  letter-spacing: 0.1em;
+}
+
+.decision-card.go { border-left: 4px solid var(--accent); }
+.decision-card.stop { border-left: 4px solid var(--accent-2); }
+
+.decision-card.go h4 { color: var(--accent); }
+.decision-card.stop h4 { color: var(--accent-2); }
+
+.decision-card p {
+  margin: 0;
+  font-size: 14px;
+}
+
+/* ---------- CHECKLIST ---------- */
+
+.checklist {
+  list-style: none;
+  margin-left: 0;
+}
+
+.checklist li {
+  padding-left: 32px;
+  position: relative;
+  margin-bottom: 12px;
+}
+
+.checklist li::before {
+  content: "☐";
+  position: absolute;
+  left: 0;
+  top: -2px;
+  color: var(--accent);
+  font-size: 18px;
+  font-weight: bold;
+}
+
+/* ---------- PRINT ---------- */
+
+@media print {
+  body { background: white; }
+  .page { padding: 40px; }
+  h2 { page-break-before: auto; }
+  figure { page-break-inside: avoid; }
+  pre { page-break-inside: avoid; }
+  .callout { page-break-inside: avoid; }
+}
+</style>
+</head>
+<body>
+
+<!-- ============================================== -->
+<!-- COVER -->
+<!-- ============================================== -->
+
+<div class="page cover">
+  <div class="cover-bigtext">memory</div>
+  <div>
+    <div class="eyebrow">Community Guide · Version 2.0 · Hermes as active core</div>
+    <h1>Federated<br>Memory for<br><em>AI Agents</em></h1>
+    <p class="subtitle">An open, portable and governed architecture to create a context base any agent can consult without becoming its owner.</p>
+  </div>
+  <div class="cover-footer">
+    <div>
+      By André Almeida<br>
+      andrealmeidadc.com
+    </div>
+    <div class="right">
+      Implementation:<br>
+      Obsidian + Hermes + MCP
+    </div>
+  </div>
+</div>
+
+<!-- ============================================== -->
+<!-- ACKNOWLEDGMENTS + TOC -->
+<!-- ============================================== -->
+
+<div class="page">
+
+<h3 style="margin-top: 0;">Acknowledgments</h3>
+<p>To Jean Duarte for the initial idea, Gabriel Menegat for the orchestration concept with Hermes, Francisco Brasil for the database provocation, and the Miners community for the discussions that helped mature this guide. v2.0 incorporates technical corrections, concrete implementation examples and the recognition of the blackboard pattern as the architectural backbone.</p>
+
+<div class="callout">
+<div class="label">What changed in v2.0</div>
+<p>v1 was a conceptual framework; v2 becomes an implementation guide. Includes: real Hermes Agent installation, MCP server for Obsidian with concrete instructions, filled Context Pack as reference, objective domain governance criteria and blackboard pattern example as asynchronous coordination between agents. <strong>Hermes-core rewrite:</strong> Hermes evolves from lightweight orchestrator to active core with four roles (router, memory manager with feedback, scope controller, policy engine). Three gaps closed via <code>Validation</code> field in packs, explicit conflict rule by <code>status: approved/superseded</code>, and write policy enforced by the core even with no human present. New differentiator: automatic temporal validity via <code>mtime</code> inspection. Vault structure reorganized to 11 folders.</p>
+</div>
+
+<div class="toc">
+<h3>Table of Contents</h3>
+<ol>
+<li><span class="num">01</span> The problem is not AI, it is memory</li>
+<li><span class="num">02</span> What this guide builds</li>
+<li><span class="num">03</span> Architectural principles</li>
+<li><span class="num">04</span> The blackboard pattern</li>
+<li><span class="num">05</span> Implementation components</li>
+<li><span class="num">06</span> Obsidian structure</li>
+<li><span class="num">06b</span> Multimodal — assets in the vault</li>
+<li><span class="num">07</span> AGENT.md: the neutral contract</li>
+<li><span class="num">08</span> Adaptadores por ferramenta</li>
+<li><span class="num">09</span> Context Packs with a real example</li>
+<li><span class="num">09b</span> The four roles of Hermes (active core)</li>
+<li><span class="num">09c</span> Automatic capture — inbox without manual intervention</li>
+<li><span class="num">10</span> Hermes: installation and configuration</li>
+<li><span class="num">11</span> Obsidian via MCP in practice</li>
+<li><span class="num">12</span> Operational flow</li>
+<li><span class="num">13</span> Graphiti: when it enters</li>
+<li><span class="num">14</span> Executable step by step</li>
+<li><span class="num">15</span> Minimum governance</li>
+<li><span class="num">16</span> Anti-patterns</li>
+<li><span class="num">17</span> Possible substitutions</li>
+<li><span class="num">18</span> Ready-made templates</li>
+<li><span class="num">19</span> Validation checklist</li>
+<li><span class="num">20</span> References and closing</li>
+</ol>
+</div>
+
+<!-- ============================================== -->
+<!-- 01 - PROBLEM -->
+<!-- ============================================== -->
+
+<h2><span class="num">01 / Storytelling</span>The problem is not lack of AI, it is lack of reliable memory</h2>
+
+<p>Every AI tool looks brilliant in the first few minutes. It understands the request, writes code, suggests campaigns, summarizes meetings and even seems to have followed the project from the start. The problem shows up in the second, third or tenth session: the AI forgets decisions, mixes context, repeats questions and needs to be re-educated constantly.</p>
+
+<p>The natural reaction is to build a "super brain": dump everything in one place and let the agent read it. At first this seems to solve it. Then the system degrades. A marketing task pulls in coding conventions. One project contaminates another. Old memories enter as if they were still true. The agent knows too much and, precisely because of that, starts making better mistakes.</p>
+
+<p class="lead">This guide proposes a different path: federated memory. Separate domains, readable files, neutral contract, context packages and controlled routing. It is not about letting an agent run the house. It is about creating a base any agent can consult without messing up the environment.</p>
+
+<div class="callout tip">
+<div class="label">Summary in one sentence</div>
+<p>Obsidian stores the reviewed memory. Context Packs deliver the minimum sufficient context. Hermes routes. MCP exposes. Graphiti adds time. And the agents execute, without needing to talk to each other.</p>
+</div>
+
+<!-- ============================================== -->
+<!-- 02 - WHAT THE GUIDE BUILDS -->
+<!-- ============================================== -->
+
+<h2><span class="num">02 / Scope</span>What this guide builds</h2>
+
+<p>Reference implementation using Obsidian + Hermes + MCP. The architecture, however, is not locked to these tools. The goal is a portable memory layer for any current or future agent.</p>
+
+<ul>
+<li>Knowledge base in Markdown, human-readable and versionable in Git.</li>
+<li>Vaults or folders separated by domain, project or work area.</li>
+<li><code>AGENT.md</code> as a neutral contract, with no dependency on Claude Code, Codex, Cursor or any executor.</li>
+<li>Context Packs from the start, because memory only becomes useful when delivered as lean context.</li>
+<li>Short per-tool adapters (<code>CLAUDE.md</code>, <code>codex.md</code>, Cursor rules).</li>
+<li>Hermes as local router and orchestrator with memory plugins.</li>
+<li>MCP server for Obsidian, exposing the vault in a standardized way for multiple agents.</li>
+<li>Graphiti as a temporal upgrade when relations and changes over time matter.</li>
+</ul>
+
+<div class="callout warn">
+<div class="label">What this guide is NOT</div>
+<p>It is not a closed product. It is not a framework that needs to control all projects. It is not a proposal for automatic memory without review. Permanent memory must pass through human curation.</p>
+</div>
+
+<!-- ============================================== -->
+<!-- 03 - PRINCIPLES -->
+<!-- ============================================== -->
+
+<h2><span class="num">03 / Foundation</span>Architectural principles</h2>
+
+<p><strong>Sovereign memory.</strong> The base belongs to the user. Agents come and go; context stays portable.</p>
+
+<p><strong>Isolated domains.</strong> Marketing, programming, clients, products and research should not live in the same semantic soup.</p>
+
+<p><strong>Neutral contract.</strong> <code>AGENT.md</code> describes how any agent should consume the memory. Adapters only translate for specific tools.</p>
+
+<p><strong>Minimum sufficient context.</strong> The agent should receive what is needed for the task, not the entire history of your digital life.</p>
+
+<p><strong>Human approves permanent memory.</strong> Raw conversation, hypothesis and draft do not become automatic truth.</p>
+
+<p><strong>Orchestration without hijacking.</strong> Hermes can route and suggest, but should not alter everything alone or create invisible automations.</p>
+
+<!-- ============================================== -->
+<!-- 04 - BLACKBOARD PATTERN (NEW) -->
+<!-- ============================================== -->
+
+<h2><span class="num">04 / Core insight</span>The blackboard pattern: why agents do not need to talk</h2>
+
+<p>A common confusion in multi-agent architectures is assuming agents need to talk to each other. They do not. In a well-designed federated memory, coordination is <strong>asynchronous via shared state</strong>. This pattern has a name: <em>blackboard architecture</em>.</p>
+
+<p>Think of a classroom blackboard. Different people write on it at different times. Whoever enters later reads what is there. Nobody needs to be present when another wrote. Coordination happens through the board.</p>
+
+<figure>
+<svg viewBox="0 0 760 480" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <pattern id="dots1" patternUnits="userSpaceOnUse" width="6" height="6">
+      <circle cx="1" cy="1" r="0.8" fill="#6B6258" opacity="0.3"/>
+    </pattern>
+  </defs>
+
+  <!-- Title -->
+  <text x="380" y="32" text-anchor="middle" font-family="Fraunces, serif" font-size="22" font-style="italic" fill="#14110F">Coordination via shared blackboard</text>
+  <text x="380" y="54" text-anchor="middle" font-family="JetBrains Mono, monospace" font-size="11" fill="#6B6258" letter-spacing="1">NO AGENT NEEDS TO TALK TO ANOTHER</text>
+
+  <!-- The central blackboard -->
+  <rect x="240" y="180" width="280" height="120" fill="#14110F" stroke="#0A4F4A" stroke-width="2"/>
+  <rect x="248" y="188" width="264" height="104" fill="url(#dots1)" opacity="0.4"/>
+  <text x="380" y="220" text-anchor="middle" font-family="Fraunces, serif" font-size="22" fill="#F4EFE6">Federated Memory</text>
+  <text x="380" y="245" text-anchor="middle" font-family="JetBrains Mono, monospace" font-size="10" fill="#B89455" letter-spacing="1">OBSIDIAN VAULT · MARKDOWN</text>
+  <text x="380" y="270" text-anchor="middle" font-family="Manrope, sans-serif" font-size="12" fill="#ECE5D6" opacity="0.7">curated context · isolated domains · governed history</text>
+
+  <!-- Agent A - Claude Code -->
+  <rect x="40" y="100" width="140" height="60" fill="#F4EFE6" stroke="#0A4F4A" stroke-width="1.5"/>
+  <text x="110" y="125" text-anchor="middle" font-family="Manrope, sans-serif" font-size="13" font-weight="600" fill="#14110F">Claude Code</text>
+  <text x="110" y="143" text-anchor="middle" font-family="JetBrains Mono, monospace" font-size="9" fill="#6B6258">monday · 10am</text>
+
+  <!-- Agent B - Codex -->
+  <rect x="40" y="320" width="140" height="60" fill="#F4EFE6" stroke="#0A4F4A" stroke-width="1.5"/>
+  <text x="110" y="345" text-anchor="middle" font-family="Manrope, sans-serif" font-size="13" font-weight="600" fill="#14110F">Codex</text>
+  <text x="110" y="363" text-anchor="middle" font-family="JetBrains Mono, monospace" font-size="9" fill="#6B6258">wednesday · 3pm</text>
+
+  <!-- Agent C - Cursor -->
+  <rect x="580" y="100" width="140" height="60" fill="#F4EFE6" stroke="#0A4F4A" stroke-width="1.5"/>
+  <text x="650" y="125" text-anchor="middle" font-family="Manrope, sans-serif" font-size="13" font-weight="600" fill="#14110F">Cursor</text>
+  <text x="650" y="143" text-anchor="middle" font-family="JetBrains Mono, monospace" font-size="9" fill="#6B6258">friday · 9am</text>
+
+  <!-- Agent D - Antigravity -->
+  <rect x="580" y="320" width="140" height="60" fill="#F4EFE6" stroke="#0A4F4A" stroke-width="1.5"/>
+  <text x="650" y="345" text-anchor="middle" font-family="Manrope, sans-serif" font-size="13" font-weight="600" fill="#14110F">Antigravity</text>
+  <text x="650" y="363" text-anchor="middle" font-family="JetBrains Mono, monospace" font-size="9" fill="#6B6258">saturday · 2pm</text>
+
+  <!-- Arrows from agents to blackboard -->
+  <line x1="180" y1="130" x2="240" y2="200" stroke="#0A4F4A" stroke-width="1.5" stroke-dasharray="4 3"/>
+  <line x1="240" y1="240" x2="180" y2="350" stroke="#C24A2A" stroke-width="1.5" stroke-dasharray="4 3"/>
+  <line x1="580" y1="130" x2="520" y2="200" stroke="#C24A2A" stroke-width="1.5" stroke-dasharray="4 3"/>
+  <line x1="520" y1="240" x2="580" y2="350" stroke="#0A4F4A" stroke-width="1.5" stroke-dasharray="4 3"/>
+
+  <!-- Labels on arrows -->
+  <text x="195" y="175" font-family="JetBrains Mono, monospace" font-size="9" fill="#0A4F4A">reads</text>
+  <text x="200" y="305" font-family="JetBrains Mono, monospace" font-size="9" fill="#C24A2A">suggests</text>
+  <text x="545" y="175" font-family="JetBrains Mono, monospace" font-size="9" fill="#C24A2A">suggests</text>
+  <text x="555" y="305" font-family="JetBrains Mono, monospace" font-size="9" fill="#0A4F4A">reads</text>
+
+  <!-- Bottom caption -->
+  <text x="380" y="440" text-anchor="middle" font-family="Manrope, sans-serif" font-size="12" fill="#6B6258" font-style="italic">Each agent accesses in its own time. The board is the only shared source of truth.</text>
+</svg>
+<figcaption>Figure 1 — Asynchronous coordination via blackboard</figcaption>
+</figure>
+
+<p>Practical implications of this choice:</p>
+
+<ul>
+<li>There is no inter-agent communication protocol to design, debug or maintain.</li>
+<li>No agent needs to be running when another queries the memory.</li>
+<li>Swapping one agent for another does not break the system: the new one reads the same board.</li>
+<li>Conflicts are resolved by a human via inbox, not by automatic consensus.</li>
+<li>The risk of error cascade between agents disappears because there is no direct propagation.</li>
+</ul>
+
+<div class="callout">
+<div class="label">Practical translation</div>
+<p>When you use Claude Code in the morning and Codex at night, only the executor changes. The curated memory is the same. The night agent reads what was approved in the morning. No real-time orchestration. No message queue. No broker.</p>
+</div>
+
+<!-- ============================================== -->
+<!-- 05 - COMPONENTS -->
+<!-- ============================================== -->
+
+<h2><span class="num">05 / Anatomy</span>Implementation components</h2>
+
+<figure>
+<svg viewBox="0 0 760 540" xmlns="http://www.w3.org/2000/svg">
+  <text x="380" y="32" text-anchor="middle" font-family="Fraunces, serif" font-size="22" font-style="italic" fill="#14110F">Target architecture</text>
+  <text x="380" y="54" text-anchor="middle" font-family="JetBrains Mono, monospace" font-size="11" fill="#6B6258" letter-spacing="1">MEMORY IS SOVEREIGN · AGENTS ARE CONSUMERS</text>
+
+  <!-- Layer 1: Obsidian -->
+  <rect x="120" y="90" width="520" height="60" fill="#0A4F4A" stroke="#14110F" stroke-width="1"/>
+  <text x="380" y="115" text-anchor="middle" font-family="Manrope, sans-serif" font-size="15" font-weight="700" fill="#F4EFE6">Obsidian</text>
+  <text x="380" y="135" text-anchor="middle" font-family="JetBrains Mono, monospace" font-size="10" fill="#B89455">REVIEWED MEMORY IN MARKDOWN</text>
+
+  <!-- Layer 2: AGENT.md -->
+  <rect x="120" y="160" width="520" height="50" fill="#14110F" stroke="#14110F" stroke-width="1"/>
+  <text x="380" y="180" text-anchor="middle" font-family="Manrope, sans-serif" font-size="14" font-weight="700" fill="#F4EFE6">AGENT.md</text>
+  <text x="380" y="198" text-anchor="middle" font-family="JetBrains Mono, monospace" font-size="10" fill="#B89455">NEUTRAL CONSUMPTION CONTRACT</text>
+
+  <!-- Layer 3: Context Packs -->
+  <rect x="120" y="220" width="520" height="50" fill="#C24A2A" stroke="#14110F" stroke-width="1"/>
+  <text x="380" y="240" text-anchor="middle" font-family="Manrope, sans-serif" font-size="14" font-weight="700" fill="#F4EFE6">Context Packs</text>
+  <text x="380" y="258" text-anchor="middle" font-family="JetBrains Mono, monospace" font-size="10" fill="#F4EFE6" opacity="0.8">MINIMUM CONTEXT PER TASK</text>
+
+  <!-- Side: Graphiti -->
+  <rect x="20" y="280" width="90" height="80" fill="#6B7A4F" stroke="#14110F" stroke-width="1"/>
+  <text x="65" y="312" text-anchor="middle" font-family="Manrope, sans-serif" font-size="13" font-weight="700" fill="#F4EFE6">Graphiti</text>
+  <text x="65" y="332" text-anchor="middle" font-family="JetBrains Mono, monospace" font-size="9" fill="#F4EFE6" opacity="0.85">UPGRADE</text>
+  <text x="65" y="348" text-anchor="middle" font-family="JetBrains Mono, monospace" font-size="9" fill="#F4EFE6" opacity="0.85">TEMPORAL</text>
+
+  <!-- Side: Governance -->
+  <rect x="650" y="280" width="90" height="80" fill="#B89455" stroke="#14110F" stroke-width="1"/>
+  <text x="695" y="312" text-anchor="middle" font-family="Manrope, sans-serif" font-size="13" font-weight="700" fill="#14110F">Governance</text>
+  <text x="695" y="332" text-anchor="middle" font-family="JetBrains Mono, monospace" font-size="9" fill="#14110F">APPROVAL</text>
+  <text x="695" y="348" text-anchor="middle" font-family="JetBrains Mono, monospace" font-size="9" fill="#14110F">HUMAN</text>
+
+  <!-- Layer 4: Hermes -->
+  <rect x="120" y="290" width="520" height="60" fill="#5C4A3A" stroke="#14110F" stroke-width="1"/>
+  <text x="380" y="315" text-anchor="middle" font-family="Manrope, sans-serif" font-size="15" font-weight="700" fill="#F4EFE6">Hermes Agent</text>
+  <text x="380" y="335" text-anchor="middle" font-family="JetBrains Mono, monospace" font-size="10" fill="#B89455">LOCAL ROUTER AND ORCHESTRATOR</text>
+
+  <!-- Layer 5: MCP -->
+  <rect x="120" y="360" width="520" height="50" fill="#14110F" stroke="#14110F" stroke-width="1"/>
+  <text x="380" y="380" text-anchor="middle" font-family="Manrope, sans-serif" font-size="14" font-weight="700" fill="#F4EFE6">MCP Server</text>
+  <text x="380" y="398" text-anchor="middle" font-family="JetBrains Mono, monospace" font-size="10" fill="#B89455">STANDARDIZED ACCESS FOR EXTERNAL AGENTS</text>
+
+  <!-- Layer 6: Agents -->
+  <rect x="120" y="420" width="520" height="60" fill="#0A4F4A" stroke="#14110F" stroke-width="1"/>
+  <text x="380" y="445" text-anchor="middle" font-family="Manrope, sans-serif" font-size="15" font-weight="700" fill="#F4EFE6">Executing Agents</text>
+  <text x="380" y="465" text-anchor="middle" font-family="JetBrains Mono, monospace" font-size="10" fill="#B89455">CLAUDE CODE · CODEX · CURSOR · ANTIGRAVITY</text>
+
+  <!-- Caption -->
+  <text x="380" y="510" text-anchor="middle" font-family="Manrope, sans-serif" font-size="12" fill="#6B6258" font-style="italic">Each layer has a clear responsibility. None owns the memory.</text>
+</svg>
+<figcaption>Figure 2 — Reference architecture layers</figcaption>
+</figure>
+
+<table>
+<thead><tr><th>Component</th><th>Function</th><th>Replaceable by</th></tr></thead>
+<tbody>
+<tr><td><strong>Obsidian</strong></td><td>Human-reviewed base in Markdown</td><td>Logseq, Foam, bare Git repository</td></tr>
+<tr><td><strong>Vaults / pastas</strong></td><td>Isolate domains and reduce contamination</td><td>Subfolders in the same vault</td></tr>
+<tr><td><strong>AGENT.md</strong></td><td>Neutral consumption contract</td><td>No. It is the portability core.</td></tr>
+<tr><td><strong>Context Packs</strong></td><td>Minimum context per task</td><td>Curated RAG, modular prompts</td></tr>
+<tr><td><strong>Adaptadores</strong></td><td>Contract translation for the tool</td><td>Specific to each agent</td></tr>
+<tr><td><strong>Hermes</strong></td><td>Local router and orchestrator</td><td>LangGraph, CrewAI, Letta, AutoGen</td></tr>
+<tr><td><strong>MCP server</strong></td><td>Standardized multi-agent access</td><td>Direct reading, CLI, REST API</td></tr>
+<tr><td><strong>Graphiti</strong></td><td>Temporal memory and relations</td><td>Add only when it hurts</td></tr>
+</tbody>
+</table>
+
+<!-- ============================================== -->
+<!-- 06 - OBSIDIAN STRUCTURE -->
+<!-- ============================================== -->
+
+<h2><span class="num">06 / Structure</span>How to organize Obsidian</h2>
+
+<p>Obsidian is the base because it works well with Markdown, links, backlinks, tags and human navigation. The v2 template uses eleven numbered folders, optimized for Hermes routing and for growing without becoming a mess.</p>
+
+<div class="callout tip">
+<div class="label">Single vault, logical separation</div>
+<p>In this guide, we use "vaults" in the sense of memory domains. The default implementation uses a single Obsidian vault with folders separated by domain. When there is a need for strong isolation, security or selective sharing, these domains can be promoted to separate physical vaults.</p>
+</div>
+
+<pre><code>/federated-memory
+├── 00-global/           # AGENT.md contract, general rules
+│
+├── 10-projects/         # active projects (start, middle, end)
+│   └── project-a/
+│       ├── PROJECT.md
+│       ├── notes/
+│       └── deliverables/
+│
+├── 20-domains/          # stable domains (engineering, writing, research...)
+│   ├── engineering/
+│   ├── writing/
+│   └── research/
+│
+├── 30-clients/          # clients — candidate for separate physical vault
+│   └── &lt;cliente&gt;/
+│
+├── 40-workflows/        # repeatable flows (release, incident, review...)
+│
+├── 50-skills/           # reusable capabilities
+│
+├── 60-context-packs/    # context packages per task
+│   ├── linkedin-writing.md
+│   ├── code-review.md
+│   ├── research.md
+│   └── planning.md
+│
+├── 70-decisions/        # formal decisions with approved/superseded status
+│
+├── 80-agent-adapters/   # per-agent adapters
+│   ├── claude/{CLAUDE.md, AGENTS.md}
+│   ├── cursor/.cursorrules
+│   ├── codex/AGENTS.md
+│   └── windsurf/.windsurfrules
+│
+├── 90-inbox/            # suggestions pending human review
+│   └── suggested-memory.md
+│
+└── 99-archive/          # logs, obsolete packs, archived
+    ├── review-log.md
+    ├── pack-usage.log
+    └── pack-status.md</code></pre>
+
+<h3>Criteria for creating a new domain</h3>
+
+<p>Objective criteria: <strong>create a domain when there is vocabulary, decisions or output style that should NOT appear in another domain's response</strong>. If "writing" uses "voice, hook, lead" and "engineering" uses "stack, latency, deploy", and crossing them confuses the agent, they are two domains. If two areas use the same vocabulary and make compatible decisions, it is a folder within a single domain, not a new domain.</p>
+
+<h3>When to promote to a separate physical vault</h3>
+
+<div class="decision-grid">
+<div class="decision-card go">
+<h4>A separate physical vault makes sense</h4>
+<p>When there is a contractual isolation requirement (NDA, sensitive client data), independent synchronization (a different cloud account), or selective read sharing without exposing the rest. The typical case is <code>30-clients/</code>.</p>
+</div>
+<div class="decision-card stop">
+<h4>A separate physical vault is overkill</h4>
+<p>When you are just starting, when domains exchange context frequently, or when you are a single person using a single machine. Start with folders in the same vault; promote later if the pain justifies it.</p>
+</div>
+</div>
+
+<!-- ============================================== -->
+<!-- 06b - MULTIMODAL ASSETS -->
+<!-- ============================================== -->
+
+<h2><span class="num">06b / Multimodal</span>Assets in the vault</h2>
+
+<p>The vault is Markdown by default. But multimodal support does not require changing the architecture — it only requires a convention for where assets live and how they are referenced.</p>
+
+<p>Multimodal support is a capability of the LLM configured in the agent, not of the agent itself. The agent passes the file, the LLM processes it. Check the provider's updated documentation:</p>
+
+<ul>
+<li>Anthropic: <a href="https://docs.anthropic.com">docs.anthropic.com</a></li>
+<li>Google: <a href="https://ai.google.dev">ai.google.dev</a></li>
+<li>OpenAI: <a href="https://platform.openai.com/docs">platform.openai.com/docs</a></li>
+<li>Zhipu/GLM: <a href="https://docs.z.ai">docs.z.ai</a></li>
+<li>MoonshotAI/Kimi: <a href="https://platform.moonshot.cn">platform.moonshot.cn</a></li>
+<li>xAI/Grok: <a href="https://docs.x.ai">docs.x.ai</a></li>
+</ul>
+
+<p>All major LLMs today support at least images and PDFs. Audio and video vary by provider.</p>
+
+<p><strong>Asset structure in the vault:</strong></p>
+
+<pre><code>/federated-memory
+  /20-domains/
+    /engineering/
+      /assets/
+        arquitetura-v2.png
+        decisao-banco.pdf
+    /writing/
+      /assets/
+        exemplos-visuais/
+  /10-projects/
+    /project-a/
+      /assets/
+        wireframes/
+        screenshots/
+        bugs/
+          bug-001/
+            screenshot-erro.png
+            tentativa-01-failed.md
+            tentativa-02-success.md
+</code></pre>
+
+<p><strong>Markdown reference rule:</strong> every asset is referenced in the <code>.md</code> file of the same domain or project. The Context Pack points to the <code>.md</code>. The agent loads the asset when the <code>.md</code> references it.</p>
+
+<p>Example in a <code>DECISION.md</code>:</p>
+
+<pre><code>Reference diagram: ./assets/arquitetura-v2.png
+The agent should load this image when analyzing stack decisions.
+</code></pre>
+
+<div class="callout warn">
+<div class="label">Rule for large assets</div>
+<p>Videos, datasets and files above 10MB should not live in the vault. Reference by URL or external path. The vault must remain lightweight and versionable.</p>
+</div>
+
+<!-- ============================================== -->
+<!-- 07 - AGENT.MD -->
+<!-- ============================================== -->
+
+<h2><span class="num">07 / Contract</span>AGENT.md: the most important piece</h2>
+
+<p>The <code>AGENT.md</code> is not a giant prompt. It is the contract that teaches any agent how to consume the memory without making a mess. It lives in <code>00-global/AGENT.md</code>.</p>
+
+<pre><code># AGENT.md
+
+Purpose:
+This repository contains the federated memory used by AI agents.
+The memory is owned by the human user. Agents are consumers,
+not owners.
+
+Rules:
+1. Do not load the entire memory base.
+2. Start from the relevant Context Pack in /60-context-packs/.
+3. If no Context Pack exists, ask which domain is relevant.
+4. Permanent writes are forbidden outside /90-inbox/ in any
+   execution mode (interactive, headless, scheduled).
+5. Memory conflicts: the most recent entry with status: approved
+   wins. Entries with status: superseded stay in history but are
+   ignored at runtime. Never infer winner by file timestamp alone.
+6. When unsure, create a suggested memory entry in
+   /90-inbox/suggested-memory.md instead of guessing.
+
+Folders:
+- 00-global, 10-projects, 20-domains, 30-clients, 40-workflows,
+  50-skills, 60-context-packs, 70-decisions, 80-agent-adapters,
+  90-inbox, 99-archive
+
+Decision frontmatter (in /70-decisions/):
+- id, date, status (approved | superseded | pending), supersedes,
+  domain, owner</code></pre>
+
+<div class="callout tip">
+<div class="label">Why this works</div>
+<p>Hermes Agent loads context files like <code>AGENTS.md</code> and <code>.hermes.md</code> when assembling the system prompt. If you place your <code>AGENT.md</code> in the path Hermes reads, or reference it from its <code>AGENTS.md</code>, your rules apply automatically.</p>
+</div>
+
+<!-- ============================================== -->
+<!-- 08 - ADAPTERS -->
+<!-- ============================================== -->
+
+<h2><span class="num">08 / Adapters</span>Per-tool translation</h2>
+
+<p>Each agent has its own context file convention. The adapter is short. It does not replace <code>AGENT.md</code>. It just points to it.</p>
+
+<figure>
+<svg viewBox="0 0 760 360" xmlns="http://www.w3.org/2000/svg">
+  <text x="380" y="32" text-anchor="middle" font-family="Fraunces, serif" font-size="22" font-style="italic" fill="#14110F">One contract, multiple adapters</text>
+  <text x="380" y="54" text-anchor="middle" font-family="JetBrains Mono, monospace" font-size="11" fill="#6B6258" letter-spacing="1">THE SOURCE NEVER CHANGES · ONLY THE TRANSLATION</text>
+
+  <!-- AGENT.md -->
+  <rect x="280" y="100" width="200" height="70" fill="#14110F" stroke="#14110F" stroke-width="2"/>
+  <text x="380" y="130" text-anchor="middle" font-family="JetBrains Mono, monospace" font-size="16" font-weight="600" fill="#F4EFE6">AGENT.md</text>
+  <text x="380" y="152" text-anchor="middle" font-family="JetBrains Mono, monospace" font-size="10" fill="#B89455">NEUTRAL SOURCE</text>
+
+  <!-- Lines -->
+  <line x1="320" y1="170" x2="120" y2="240" stroke="#5C4A3A" stroke-width="1.5"/>
+  <line x1="360" y1="170" x2="290" y2="240" stroke="#5C4A3A" stroke-width="1.5"/>
+  <line x1="400" y1="170" x2="470" y2="240" stroke="#5C4A3A" stroke-width="1.5"/>
+  <line x1="440" y1="170" x2="640" y2="240" stroke="#5C4A3A" stroke-width="1.5"/>
+
+  <!-- Adapter boxes -->
+  <rect x="50" y="240" width="140" height="60" fill="#F4EFE6" stroke="#0A4F4A" stroke-width="1.5"/>
+  <text x="120" y="265" text-anchor="middle" font-family="JetBrains Mono, monospace" font-size="13" font-weight="600" fill="#14110F">CLAUDE.md</text>
+  <text x="120" y="283" text-anchor="middle" font-family="Manrope, sans-serif" font-size="11" fill="#6B6258">Claude Code</text>
+
+  <rect x="220" y="240" width="140" height="60" fill="#F4EFE6" stroke="#0A4F4A" stroke-width="1.5"/>
+  <text x="290" y="265" text-anchor="middle" font-family="JetBrains Mono, monospace" font-size="13" font-weight="600" fill="#14110F">codex.md</text>
+  <text x="290" y="283" text-anchor="middle" font-family="Manrope, sans-serif" font-size="11" fill="#6B6258">Codex</text>
+
+  <rect x="390" y="240" width="140" height="60" fill="#F4EFE6" stroke="#0A4F4A" stroke-width="1.5"/>
+  <text x="460" y="265" text-anchor="middle" font-family="JetBrains Mono, monospace" font-size="13" font-weight="600" fill="#14110F">.cursor/rules</text>
+  <text x="460" y="283" text-anchor="middle" font-family="Manrope, sans-serif" font-size="11" fill="#6B6258">Cursor</text>
+
+  <rect x="560" y="240" width="140" height="60" fill="#F4EFE6" stroke="#0A4F4A" stroke-width="1.5"/>
+  <text x="630" y="265" text-anchor="middle" font-family="JetBrains Mono, monospace" font-size="13" font-weight="600" fill="#14110F">AGENTS.md</text>
+  <text x="630" y="283" text-anchor="middle" font-family="Manrope, sans-serif" font-size="11" fill="#6B6258">Hermes / Antigravity</text>
+
+  <text x="380" y="340" text-anchor="middle" font-family="Manrope, sans-serif" font-size="12" fill="#6B6258" font-style="italic">Rule: adapters only translate. AGENT.md is always the source.</text>
+</svg>
+<figcaption>Figure 3 — Adapters per agent</figcaption>
+</figure>
+
+<p>Example adapter for Claude Code:</p>
+
+<pre><code># CLAUDE.md
+
+Read the shared memory protocol at:
+../00-global/AGENT.md
+
+For this project, start with:
+../10-projects/project-a/PROJECT_CONTEXT.md
+
+Use Context Packs before reading raw notes:
+../60-context-packs/architecture-review.md
+
+Do not modify permanent memory directly.
+If a new memory seems useful, write a suggestion to:
+../90-inbox/suggested-memory.md</code></pre>
+
+<!-- ============================================== -->
+<!-- 09 - CONTEXT PACKS WITH REAL EXAMPLE -->
+<!-- ============================================== -->
+
+<h2><span class="num">09 / Packages</span>Context Packs with a filled example</h2>
+
+<p>Without a Context Pack, the agent needs to dig through the vault. With a Context Pack, it receives a lean, task-oriented package. Reduces noise, improves consistency, prevents cross-domain contamination.</p>
+
+<figure>
+<svg viewBox="0 0 760 380" xmlns="http://www.w3.org/2000/svg">
+  <text x="380" y="32" text-anchor="middle" font-family="Fraunces, serif" font-size="22" font-style="italic" fill="#14110F">Anatomy of a Context Pack</text>
+  <text x="380" y="54" text-anchor="middle" font-family="JetBrains Mono, monospace" font-size="11" fill="#6B6258" letter-spacing="1">A SHORT FILE WITH THE MINIMUM SUFFICIENT CONTEXT</text>
+
+  <!-- Input -->
+  <rect x="40" y="160" width="120" height="60" fill="#C24A2A" stroke="#14110F" stroke-width="1.5"/>
+  <text x="100" y="185" text-anchor="middle" font-family="Manrope, sans-serif" font-size="13" font-weight="700" fill="#F4EFE6">Input</text>
+  <text x="100" y="203" text-anchor="middle" font-family="JetBrains Mono, monospace" font-size="9" fill="#F4EFE6" opacity="0.9">REQUEST OR TASK</text>
+
+  <!-- Arrow -->
+  <path d="M 160 190 L 220 190" stroke="#14110F" stroke-width="1.5" marker-end="url(#arrowhead1)"/>
+  <defs>
+    <marker id="arrowhead1" markerWidth="10" markerHeight="10" refX="8" refY="3" orient="auto">
+      <polygon points="0 0, 8 3, 0 6" fill="#14110F"/>
+    </marker>
+    <marker id="arrowhead2" markerWidth="10" markerHeight="10" refX="8" refY="3" orient="auto">
+      <polygon points="0 0, 8 3, 0 6" fill="#14110F"/>
+    </marker>
+  </defs>
+
+  <!-- Pack body -->
+  <rect x="240" y="90" width="280" height="240" fill="#F4EFE6" stroke="#14110F" stroke-width="2"/>
+  <rect x="240" y="90" width="280" height="36" fill="#14110F"/>
+  <text x="380" y="113" text-anchor="middle" font-family="JetBrains Mono, monospace" font-size="12" font-weight="600" fill="#F4EFE6">context-pack: linkedin-writing</text>
+
+  <!-- Fields -->
+  <text x="260" y="148" font-family="JetBrains Mono, monospace" font-size="11" font-weight="600" fill="#0A4F4A">Goal</text>
+  <text x="500" y="148" text-anchor="end" font-family="Manrope, sans-serif" font-size="11" fill="#6B6258">which task to solve</text>
+
+  <text x="260" y="178" font-family="JetBrains Mono, monospace" font-size="11" font-weight="600" fill="#0A4F4A">Use</text>
+  <text x="500" y="178" text-anchor="end" font-family="Manrope, sans-serif" font-size="11" fill="#6B6258">notes, decisions, patterns</text>
+
+  <text x="260" y="208" font-family="JetBrains Mono, monospace" font-size="11" font-weight="600" fill="#C24A2A">Avoid</text>
+  <text x="500" y="208" text-anchor="end" font-family="Manrope, sans-serif" font-size="11" fill="#6B6258">contexts outside the domain</text>
+
+  <text x="260" y="238" font-family="JetBrains Mono, monospace" font-size="11" font-weight="600" fill="#0A4F4A">Sources</text>
+  <text x="500" y="238" text-anchor="end" font-family="Manrope, sans-serif" font-size="11" fill="#6B6258">links to original notes</text>
+
+  <text x="260" y="268" font-family="JetBrains Mono, monospace" font-size="11" font-weight="600" fill="#0A4F4A">Output</text>
+  <text x="500" y="268" text-anchor="end" font-family="Manrope, sans-serif" font-size="11" fill="#6B6258">expected format</text>
+
+  <text x="260" y="298" font-family="JetBrains Mono, monospace" font-size="11" font-weight="600" fill="#C24A2A">Confidence</text>
+  <text x="500" y="298" text-anchor="end" font-family="Manrope, sans-serif" font-size="11" fill="#6B6258">temporal validity degree</text>
+
+  <!-- Arrow out -->
+  <path d="M 520 190 L 600 190" stroke="#14110F" stroke-width="1.5" marker-end="url(#arrowhead2)"/>
+
+  <!-- Output -->
+  <rect x="610" y="160" width="120" height="60" fill="#0A4F4A" stroke="#14110F" stroke-width="1.5"/>
+  <text x="670" y="185" text-anchor="middle" font-family="Manrope, sans-serif" font-size="13" font-weight="700" fill="#F4EFE6">Output</text>
+  <text x="670" y="203" text-anchor="middle" font-family="JetBrains Mono, monospace" font-size="9" fill="#B89455">READY CONTEXT</text>
+
+  <text x="380" y="365" text-anchor="middle" font-family="Manrope, sans-serif" font-size="12" fill="#6B6258" font-style="italic">The Context Pack does not copy the vault. It points, summarizes and limits.</text>
+</svg>
+<figcaption>Figura 4 — Anatomy of a Context Pack</figcaption>
+</figure>
+
+<h3>Filled example: <code>linkedin-writing.md</code></h3>
+
+<pre><code># Context Pack: linkedin-writing
+
+Goal:
+Help an AI agent draft LinkedIn posts in André's voice for
+the technology and AI community.
+
+Use:
+- /20-domains/writing/STYLE_GUIDE.md
+- /20-domains/writing/voice-examples/*.md
+- /20-domains/writing/hooks-that-worked.md
+- Last 5 entries from /20-domains/writing/recent-posts.md
+
+Avoid:
+- /20-domains/engineering/*  (different vocabulary)
+- /10-projects/*  (unless explicitly mentioned)
+- Generic LinkedIn templates from external sources
+- Em dashes (—). Never. Forbidden.
+
+Sources of truth:
+- Voice: informal, irreverent, Brazilian Portuguese
+- Structure: strong opening hook, conclusion-first
+- Length: 800-1500 characters
+- Tone: critical, myth-busting, no flattery
+
+Output expected:
+- Single post, ready to publish
+- No subtitle or headers inside the post
+- No hashtag list at the end unless requested
+- No em dashes under any circumstance
+
+Confidence / validity:
+- Style guide reviewed monthly. Last update: see file metadata.
+- Voice examples should not be older than 90 days.
+
+Source notes:
+- /20-domains/writing/STYLE_GUIDE.md
+- /20-domains/writing/hooks-that-worked.md</code></pre>
+
+<div class="callout">
+<div class="label">Validation: the feedback v1 was missing</div>
+<p>Each v2 Context Pack includes the <code>Validation:</code> field. Hermes logs each use in <code>/99-archive/pack-usage.log</code> with a classified result (useful / partial / bad); three consecutive bad marks flag the pack for review. Additionally, when delivering the pack, Hermes inspects the <code>mtime</code> of files listed under <code>Use:</code> — if any is older than 90 days (default, configurable per pack), the output gets a temporal validity warning. Bad packs have a finite half-life; old content deserves checking before becoming the basis for new decisions.</p>
+</div>
+
+<!-- ============================================== -->
+<!-- 09b - HERMES FOUR ROLES (v2.0 addition) -->
+<!-- ============================================== -->
+
+<h2><span class="num">09b / Active Core</span>The four roles of Hermes</h2>
+
+<p>v1 of this guide called Hermes a "lightweight orchestrator". Practice showed this characterization underestimated the role. Without an active component mediating access to context, three structural problems remain open: quality feedback requires per-use logging; conflict resolution requires status inspection; write policy requires enforcement on the call path. None of these functions belong to the agent — they all belong to the core.</p>
+
+<p>In v2, Hermes plays four roles. They are not optional — they are what turns an organized folder into an architecture.</p>
+
+<h3>1. Context router</h3>
+<p>Classifies the task, identifies the relevant domain, selects the appropriate Context Pack, delivers the minimum necessary package. The agent does not choose what to read — it receives what was routed. This is the role v1 already recognized.</p>
+
+<h3>2. Memory manager with feedback loop</h3>
+<p>Each pack use is logged in <code>/99-archive/pack-usage.log</code> with a classified result. Three consecutive "bad" marks flag the pack for review. The improvement cycle is mechanical, not dependent on user habit. Without this, bad packs survive indefinitely because nobody is forced to look.</p>
+
+<h3>3. Scope controller (conflict resolution)</h3>
+<p>Applies the memory conflict rule when assembling context: ignores entries with <code>status: superseded</code>, prioritizes the most recent with <code>status: approved</code>, flags the absence of status as a block. The agent never sees the conflict — it sees only the winning version or a direct question for the human.</p>
+
+<pre><code># Example decision in /70-decisions/
+---
+id: db-engine-postgres
+date: 2026-03-15
+status: approved
+supersedes: [db-engine-mysql]
+domain: engineering
+owner: andre
+---
+
+# Decision: PostgreSQL as main database
+
+## Context
+MySQL does not support the JSONB and recursive CTE features we
+need. We evaluated the migration 2 months ago.
+
+## Decision
+Postgres 16 as main database starting 2026-Q2.</code></pre>
+
+<p>The old decision with <code>id: db-engine-mysql</code> automatically gets <code>status: superseded</code> and stays in history. Hermes ignores it when assembling a Context Pack that loads engineering decisions.</p>
+
+<h3>4. Declarative policy engine</h3>
+<p>Write policy is configured once in Hermes — not in each adapter, not in each MCP call:</p>
+
+<pre><code># hermes.policy.yml (exemplo)
+write_policy:
+  default: deny
+  allow:
+    - path: "/90-inbox/**"
+      mode: "append"
+  enforcement: "all-modes"   # interactive, headless, scheduled
+  on_violation: "convert_to_inbox_suggestion"</code></pre>
+
+<p>Reading: open. Permanent writing: forbidden outside <code>/90-inbox/</code>, in any mode. Any request outside the scope is converted into an inbox suggestion, even in headless execution. The policy is declarative and auditable: a single file describes what is and is not allowed.</p>
+
+<div class="callout warn">
+<div class="label">Derived principle</div>
+<p>Federated memory without an active core is just an organized folder. The core is what turns a file structure into an architecture: it enforces policy, measures quality and resolves conflict. Without it, the principles become good intentions.</p>
+</div>
+
+<!-- ============================================== -->
+<!-- 09c - AUTO CAPTURE VIA HOOKS -->
+<!-- ============================================== -->
+
+<h2><span class="num">09c / Automatic capture</span>Inbox without manual intervention</h2>
+
+<p>The biggest curation bottleneck is remembering to ask the agent to save something important. Hermes solves this with lifecycle hooks: <code>sync_turn</code>, <code>prefetch</code> and <code>shutdown</code>.</p>
+
+<p>Configured correctly, Hermes detects relevant patterns during the session — decision made, bug resolved, preference identified, recurring pattern — and automatically writes a suggestion to <code>/90-inbox/suggested-memory.md</code>.</p>
+
+<p>The human does not need to ask. The inbox feeds itself. Human approval remains as a quality filter. Capture is automatic. Curation is risk-proportional.</p>
+
+<p><strong>Configuration example:</strong></p>
+
+<pre><code># hermes.hooks.yml
+hooks:
+  sync_turn:
+    - trigger: "decision_detected"
+      action: "append_to_inbox"
+      target: "/90-inbox/suggested-memory.md"
+    - trigger: "bug_resolved"
+      action: "append_to_inbox"
+      target: "/90-inbox/suggested-memory.md"
+    - trigger: "preference_identified"
+      action: "append_to_inbox"
+      target: "/90-inbox/suggested-memory.md"
+</code></pre>
+
+<h3>Simple hooks for Claude Code (without Hermes)</h3>
+
+<p>For automatic capture without Hermes, Claude Code supports hooks via <code>.claude/hooks.json</code> na raiz do vault. O hook <code>PostToolUse</code> dispara um script Node que lê o output do agente, aplica regex para identificar padrões relevantes e anexa uma sugestão classificada em <code>/90-inbox/suggested-memory.md</code>.</p>
+
+<p>Create <code>template/.claude/hooks.json</code> with the content:</p>
+
+<pre><code>{
+  "hooks": {
+    "PostToolUse": [
+      {
+        "matcher": ".*",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "node scripts/capture-to-inbox.mjs"
+          }
+        ]
+      }
+    ]
+  }
+}
+</code></pre>
+
+<p>The <code>scripts/capture-to-inbox.mjs</code> script uses simple heuristics (regex on common strings) to identify three patterns:</p>
+
+<ul>
+<li><strong>Decision:</strong> "decidi", "decidimos", "resolved to", "decision:" → <code>confidence: verified</code>, <code>risk: medium</code></li>
+<li><strong>Preference:</strong> "prefiro", "prefere", "I prefer", "preference:" → <code>confidence: preference</code>, <code>risk: low</code></li>
+<li><strong>Bug resolved:</strong> "resolvido", "fixed", "bug resolved", "solved" → <code>confidence: verified</code>, <code>risk: low</code></li>
+</ul>
+
+<p>If no pattern is found, the script does nothing. There are no external dependencies beyond Node.js built-in. The review ritual (<code>scripts/review-inbox.{sh,ps1}</code>) processes what the hook recorded — with TTL for <code>verified+low</code> and risk filtering.</p>
+
+<div class="callout warn">
+<div class="label">Automatic capture ≠ absence of curation</div>
+<p>Automatic capture does not eliminate human curation. It eliminates the bottleneck of remembering to ask. The inbox grows on its own. The review ritual remains the quality control mechanism, proportional to risk, not mandatory for everything.</p>
+</div>
+
+<!-- ============================================== -->
+<!-- 10 - HERMES INSTALATION -->
+<!-- ============================================== -->
+
+<h2><span class="num">10 / Installation</span>Hermes: installation and configuration</h2>
+
+<p>Hermes Agent is the NousResearch framework we will use as the core. It has a conversation loop, tool calling, persistent memory, deployment in CLI, Telegram, Discord, WhatsApp and editor integrations via Agent Client Protocol. It already reads files like <code>SOUL.md</code>, <code>MEMORY.md</code>, <code>USER.md</code> and <code>AGENTS.md</code> when assembling the system prompt — meaning your federated architecture can be loaded natively without glue code.</p>
+
+<h3>Basic installation</h3>
+
+<pre><code># clone and setup
+git clone https://github.com/NousResearch/hermes-agent.git
+cd hermes-agent
+python -m venv .venv
+source .venv/bin/activate
+pip install -e .
+
+# run
+hermes</code></pre>
+
+<h3>Pointing Hermes to federated memory</h3>
+
+<p>Hermes reads context files from the working directory. Two paths:</p>
+
+<ol>
+<li><strong>Simple path.</strong> Run Hermes from the <code>federated-memory/</code> directory. It will read the <code>AGENTS.md</code> and any <code>.hermes.md</code> present.</li>
+<li><strong>Explicit path.</strong> Create an <code>AGENTS.md</code> at the vault root referencing your <code>00-global/AGENT.md</code>:</li>
+</ol>
+
+<pre><code># AGENTS.md (raiz do vault, lido automaticamente pelo Hermes)
+
+This is a federated memory base. Read the consumption protocol
+before doing anything:
+
+  00-global/AGENT.md
+
+Before responding to any task:
+1. Identify the domain (writing, engineering, automation, etc).
+2. Load the corresponding Context Pack from /60-context-packs/.
+3. Never write to /00-global/ or /20-domains/ without explicit
+   human approval.
+4. New memory suggestions go to /90-inbox/suggested-memory.md.</code></pre>
+
+<h3>Configuring persistent memory</h3>
+
+<p>Hermes has a memory plugin system with lifecycle hooks (<code>sync_turn</code>, <code>prefetch</code>, <code>shutdown</code>). For federated memory, you do not need the full plugin at first: just let Hermes read the base as context and write suggestions to the inbox via your own CLI tool.</p>
+
+<div class="callout warn">
+<div class="label">Rule for Hermes</div>
+<p>Hermes can choose context. Hermes cannot decide on its own what is permanent truth. Configure the memory plugin in "suggestion" mode, never in "direct write" mode.</p>
+</div>
+
+<!-- ============================================== -->
+<!-- 11 - OBSIDIAN MCP -->
+<!-- ============================================== -->
+
+<h2><span class="num">11 / Access</span>Obsidian via MCP in practice</h2>
+
+<p>So that external agents (Claude Desktop, Cursor, other MCP clients) can query the same base without each implementing its own reader, we expose the vault via MCP server. There are two community-ready approaches.</p>
+
+<h3>Option A — Via Local REST API plugin</h3>
+
+<p>Install the "Local REST API" plugin in Obsidian. The plugin starts a local HTTP endpoint. An MCP server connects to this endpoint and exposes standardized tools.</p>
+
+<p>Typical exposed tools:</p>
+<ul>
+<li><code>list_vault_files</code> — lists vault files</li>
+<li><code>search_vault</code> — search by content</li>
+<li><code>create_vault_file</code> — creates file (use with restriction in <code>/90-inbox/</code>)</li>
+<li><code>read_vault_file</code> — reads a specific file</li>
+</ul>
+
+<p><strong>Advantage.</strong> More reliable than pointing the agent directly at a directory, because tools are pre-defined. <strong>Disadvantage.</strong> Requires Obsidian to be open.</p>
+
+<h3>Option B — MCP server with direct filesystem</h3>
+
+<p>Implementations like <code>obsidian-mcp-server</code> access the vault directly on the filesystem, without needing Obsidian running. Works with the app closed, on a server, or via SSH.</p>
+
+<p><strong>Advantage.</strong> App-independent. <strong>Disadvantage.</strong> No access to Obsidian features (Dataview, plugins, resolved links), only raw Markdown.</p>
+
+<h3>MCP client configuration (Claude Desktop example)</h3>
+
+<pre><code>{
+  "mcpServers": {
+    "obsidian-memory": {
+      "command": "node",
+      "args": [
+        "/caminho/para/obsidian-mcp-server/build/index.js",
+        "/caminho/para/federated-memory"
+      ]
+    }
+  }
+}</code></pre>
+
+<div class="callout warn">
+<div class="label">Scope warning</div>
+<p>Exposing memory as a tool also exposes risk. Configure write permissions only for <code>/90-inbox/</code>. The folders <code>/00-global/</code>, <code>/20-domains/</code> and <code>/10-projects/</code> should be read-only for any agent. Interoperability without governance becomes an attack surface.</p>
+</div>
+
+<!-- ============================================== -->
+<!-- 12 - OPERATIONAL FLOW -->
+<!-- ============================================== -->
+
+<h2><span class="num">12 / Flow</span>How a request becomes execution</h2>
+
+<figure>
+<svg viewBox="0 0 760 460" xmlns="http://www.w3.org/2000/svg">
+  <text x="380" y="32" text-anchor="middle" font-family="Fraunces, serif" font-size="22" font-style="italic" fill="#14110F">Operational flow</text>
+  <text x="380" y="54" text-anchor="middle" font-family="JetBrains Mono, monospace" font-size="11" fill="#6B6258" letter-spacing="1">FROM REQUEST TO EXECUTION WITH GOVERNANCE</text>
+
+  <!-- Top row -->
+  <g>
+    <rect x="40" y="110" width="110" height="60" fill="#0A4F4A" stroke="#14110F" stroke-width="1.5"/>
+    <text x="95" y="135" text-anchor="middle" font-family="Manrope, sans-serif" font-size="13" font-weight="700" fill="#F4EFE6">Request</text>
+    <text x="95" y="153" text-anchor="middle" font-family="JetBrains Mono, monospace" font-size="9" fill="#B89455">USER</text>
+
+    <path d="M 150 140 L 195 140" stroke="#14110F" stroke-width="1.5" marker-end="url(#ah1)"/>
+    <defs>
+      <marker id="ah1" markerWidth="10" markerHeight="10" refX="8" refY="3" orient="auto">
+        <polygon points="0 0, 8 3, 0 6" fill="#14110F"/>
+      </marker>
+      <marker id="ah2" markerWidth="10" markerHeight="10" refX="8" refY="3" orient="auto">
+        <polygon points="0 0, 8 3, 0 6" fill="#14110F"/>
+      </marker>
+      <marker id="ah3" markerWidth="10" markerHeight="10" refX="8" refY="3" orient="auto">
+        <polygon points="0 0, 8 3, 0 6" fill="#14110F"/>
+      </marker>
+      <marker id="ah4" markerWidth="10" markerHeight="10" refX="8" refY="3" orient="auto">
+        <polygon points="0 0, 8 3, 0 6" fill="#14110F"/>
+      </marker>
+      <marker id="ah5" markerWidth="10" markerHeight="10" refX="8" refY="3" orient="auto">
+        <polygon points="0 0, 8 3, 0 6" fill="#14110F"/>
+      </marker>
+    </defs>
+
+    <rect x="200" y="110" width="110" height="60" fill="#5C4A3A" stroke="#14110F" stroke-width="1.5"/>
+    <text x="255" y="135" text-anchor="middle" font-family="Manrope, sans-serif" font-size="13" font-weight="700" fill="#F4EFE6">Hermes</text>
+    <text x="255" y="153" text-anchor="middle" font-family="JetBrains Mono, monospace" font-size="9" fill="#B89455">CLASSIFIES</text>
+
+    <path d="M 310 140 L 355 140" stroke="#14110F" stroke-width="1.5" marker-end="url(#ah2)"/>
+
+    <rect x="360" y="110" width="110" height="60" fill="#C24A2A" stroke="#14110F" stroke-width="1.5"/>
+    <text x="415" y="135" text-anchor="middle" font-family="Manrope, sans-serif" font-size="13" font-weight="700" fill="#F4EFE6">Context Pack</text>
+    <text x="415" y="153" text-anchor="middle" font-family="JetBrains Mono, monospace" font-size="9" fill="#F4EFE6" opacity="0.85">SELECTS</text>
+
+    <path d="M 470 140 L 515 140" stroke="#14110F" stroke-width="1.5" marker-end="url(#ah3)"/>
+
+    <rect x="520" y="110" width="110" height="60" fill="#14110F" stroke="#14110F" stroke-width="1.5"/>
+    <text x="575" y="135" text-anchor="middle" font-family="Manrope, sans-serif" font-size="13" font-weight="700" fill="#F4EFE6">MCP</text>
+    <text x="575" y="153" text-anchor="middle" font-family="JetBrains Mono, monospace" font-size="9" fill="#B89455">DELIVERS</text>
+
+    <path d="M 630 140 L 675 140" stroke="#14110F" stroke-width="1.5" marker-end="url(#ah4)"/>
+
+    <rect x="680" y="110" width="60" height="60" fill="#0A4F4A" stroke="#14110F" stroke-width="1.5"/>
+    <text x="710" y="138" text-anchor="middle" font-family="Manrope, sans-serif" font-size="11" font-weight="700" fill="#F4EFE6">Agent</text>
+    <text x="710" y="153" text-anchor="middle" font-family="JetBrains Mono, monospace" font-size="9" fill="#B89455">EXEC</text>
+  </g>
+
+  <!-- Bottom data sources -->
+  <g>
+    <rect x="170" y="260" width="170" height="70" fill="#0A4F4A" stroke="#14110F" stroke-width="1.5"/>
+    <text x="255" y="285" text-anchor="middle" font-family="Manrope, sans-serif" font-size="13" font-weight="700" fill="#F4EFE6">Obsidian</text>
+    <text x="255" y="305" text-anchor="middle" font-family="JetBrains Mono, monospace" font-size="9" fill="#B89455">REVIEWED BASE</text>
+    <text x="255" y="320" text-anchor="middle" font-family="JetBrains Mono, monospace" font-size="9" fill="#B89455">DECISIONS + DOMAINS</text>
+
+    <rect x="460" y="260" width="170" height="70" fill="#6B7A4F" stroke="#14110F" stroke-width="1.5"/>
+    <text x="545" y="285" text-anchor="middle" font-family="Manrope, sans-serif" font-size="13" font-weight="700" fill="#F4EFE6">Graphiti</text>
+    <text x="545" y="305" text-anchor="middle" font-family="JetBrains Mono, monospace" font-size="9" fill="#F4EFE6" opacity="0.9">TEMPORAL UPGRADE</text>
+    <text x="545" y="320" text-anchor="middle" font-family="JetBrains Mono, monospace" font-size="9" fill="#F4EFE6" opacity="0.9">RELATIONS + HISTORY</text>
+  </g>
+
+  <!-- Connecting lines -->
+  <path d="M 255 260 L 255 175" stroke="#0A4F4A" stroke-width="1" stroke-dasharray="3 3"/>
+  <text x="265" y="225" font-family="JetBrains Mono, monospace" font-size="9" fill="#0A4F4A">curated knowledge</text>
+
+  <path d="M 545 260 L 575 175" stroke="#6B7A4F" stroke-width="1" stroke-dasharray="3 3"/>
+  <text x="555" y="225" font-family="JetBrains Mono, monospace" font-size="9" fill="#6B7A4F">history + relations</text>
+
+  <!-- Review loop -->
+  <rect x="280" y="380" width="200" height="50" fill="#B89455" stroke="#14110F" stroke-width="1.5"/>
+  <text x="380" y="405" text-anchor="middle" font-family="Manrope, sans-serif" font-size="13" font-weight="700" fill="#14110F">Human review</text>
+  <text x="380" y="420" text-anchor="middle" font-family="JetBrains Mono, monospace" font-size="9" fill="#14110F">APPROVES PERMANENT MEMORY</text>
+
+  <path d="M 710 170 Q 710 405 480 405" stroke="#C24A2A" stroke-width="1.5" stroke-dasharray="4 3" fill="none" marker-end="url(#ah5)"/>
+  <text x="640" y="395" font-family="JetBrains Mono, monospace" font-size="9" fill="#C24A2A">suggests via inbox</text>
+
+  <path d="M 280 405 Q 50 405 50 200 L 95 175" stroke="#0A4F4A" stroke-width="1.5" stroke-dasharray="4 3" fill="none"/>
+</svg>
+<figcaption>Figure 5 — Complete operational flow with governance loop</figcaption>
+</figure>
+
+<p>The agent never writes permanent memory. When it identifies something that deserves to become truth, it writes a suggestion to the inbox. The human reviews, approves, edits or rejects. Only after that does the memory enter the stable base.</p>
+
+<!-- ============================================== -->
+<!-- 12b - DEPLOYMENT REMOTO -->
+<!-- ============================================== -->
+
+<h2><span class="num">12b / Remote</span>Remote deployment: accessing memory from anywhere</h2>
+
+<p>So far everything runs locally. This works well for one machine. When you need two or more agents — on different machines — to access the same vault, the architecture needs a central point. That point is a VPS.</p>
+
+<p>The good news: the separation of concerns in federated memory already solves half the problem. The vault is just files. The MCP server is just a process. Moving to a remote server does not change the contracts — only where the processes run.</p>
+
+<h3>Where each component lives</h3>
+
+<figure>
+<svg viewBox="0 0 760 420" xmlns="http://www.w3.org/2000/svg" style="max-width:100%;display:block;margin:0 auto;">
+  <defs>
+    <marker id="arr-r" markerWidth="10" markerHeight="10" refX="8" refY="3" orient="auto">
+      <polygon points="0 0, 8 3, 0 6" fill="#14110F"/>
+    </marker>
+    <marker id="arr-r2" markerWidth="10" markerHeight="10" refX="8" refY="3" orient="auto">
+      <polygon points="0 0, 8 3, 0 6" fill="#0A4F4A"/>
+    </marker>
+    <marker id="arr-r3" markerWidth="10" markerHeight="10" refX="8" refY="3" orient="auto">
+      <polygon points="0 0, 8 3, 0 6" fill="#C24A2A"/>
+    </marker>
+  </defs>
+
+  <!-- VPS box -->
+  <rect x="260" y="30" width="240" height="340" rx="6" fill="#F4EFE6" stroke="#14110F" stroke-width="2"/>
+  <rect x="260" y="30" width="240" height="36" rx="6" fill="#14110F"/>
+  <rect x="260" y="54" width="240" height="12" fill="#14110F"/>
+  <text x="380" y="53" text-anchor="middle" font-family="JetBrains Mono, monospace" font-size="12" font-weight="600" fill="#F4EFE6">VPS (remote server)</text>
+
+  <!-- Obsidian vault -->
+  <rect x="285" y="90" width="190" height="50" fill="#0A4F4A" stroke="#14110F" stroke-width="1.5"/>
+  <text x="380" y="111" text-anchor="middle" font-family="Manrope, sans-serif" font-size="13" font-weight="700" fill="#F4EFE6">Vault (Obsidian)</text>
+  <text x="380" y="128" text-anchor="middle" font-family="JetBrains Mono, monospace" font-size="9" fill="#B89455">/vault/ — markdown files</text>
+
+  <!-- MCP server -->
+  <rect x="285" y="165" width="190" height="50" fill="#6B7A4F" stroke="#14110F" stroke-width="1.5"/>
+  <text x="380" y="186" text-anchor="middle" font-family="Manrope, sans-serif" font-size="13" font-weight="700" fill="#F4EFE6">MCP Server</text>
+  <text x="380" y="203" text-anchor="middle" font-family="JetBrains Mono, monospace" font-size="9" fill="#F4EFE6">port 3000 (localhost)</text>
+
+  <!-- Hermes -->
+  <rect x="285" y="240" width="190" height="50" fill="#B89455" stroke="#14110F" stroke-width="1.5"/>
+  <text x="380" y="261" text-anchor="middle" font-family="Manrope, sans-serif" font-size="13" font-weight="700" fill="#14110F">Hermes Agent</text>
+  <text x="380" y="278" text-anchor="middle" font-family="JetBrains Mono, monospace" font-size="9" fill="#14110F">optional — if running on VPS</text>
+
+  <!-- Git sync -->
+  <rect x="285" y="315" width="190" height="40" fill="#F4EFE6" stroke="#6B7A4F" stroke-width="1.5" stroke-dasharray="4 3"/>
+  <text x="380" y="335" text-anchor="middle" font-family="JetBrains Mono, monospace" font-size="10" fill="#6B7A4F">git pull / git push</text>
+  <text x="380" y="350" text-anchor="middle" font-family="JetBrains Mono, monospace" font-size="9" fill="#6B6258">sync between machines</text>
+
+  <!-- Máquina local esquerda -->
+  <rect x="30" y="160" width="180" height="80" rx="4" fill="#F4EFE6" stroke="#14110F" stroke-width="1.5"/>
+  <rect x="30" y="160" width="180" height="28" rx="4" fill="#14110F"/>
+  <rect x="30" y="176" width="180" height="12" fill="#14110F"/>
+  <text x="120" y="176" text-anchor="middle" font-family="JetBrains Mono, monospace" font-size="11" fill="#F4EFE6">local machine</text>
+  <text x="120" y="210" text-anchor="middle" font-family="Manrope, sans-serif" font-size="12" font-weight="600" fill="#14110F">Claude Code</text>
+  <text x="120" y="228" text-anchor="middle" font-family="JetBrains Mono, monospace" font-size="9" fill="#6B6258">points to remote MCP</text>
+
+  <!-- Claude Code → MCP (SSH tunnel) -->
+  <path d="M 210 200 L 285 200" stroke="#0A4F4A" stroke-width="1.5" marker-end="url(#arr-r2)"/>
+  <text x="247" y="193" text-anchor="middle" font-family="JetBrains Mono, monospace" font-size="9" fill="#0A4F4A">SSH tunnel</text>
+
+  <!-- Máquina local direita -->
+  <rect x="550" y="160" width="180" height="80" rx="4" fill="#F4EFE6" stroke="#14110F" stroke-width="1.5"/>
+  <rect x="550" y="160" width="180" height="28" rx="4" fill="#14110F"/>
+  <rect x="550" y="176" width="180" height="12" fill="#14110F"/>
+  <text x="640" y="176" text-anchor="middle" font-family="JetBrains Mono, monospace" font-size="11" fill="#F4EFE6">another agent / CI</text>
+  <text x="640" y="210" text-anchor="middle" font-family="Manrope, sans-serif" font-size="12" font-weight="600" fill="#14110F">Hermes / script</text>
+  <text x="640" y="228" text-anchor="middle" font-family="JetBrains Mono, monospace" font-size="9" fill="#6B6258">acessa MCP via API HTTP</text>
+
+  <!-- Outro agente → MCP (HTTP) -->
+  <path d="M 550 200 L 475 200" stroke="#C24A2A" stroke-width="1.5" marker-end="url(#arr-r3)"/>
+  <text x="512" y="193" text-anchor="middle" font-family="JetBrains Mono, monospace" font-size="9" fill="#C24A2A">HTTPS</text>
+
+  <!-- GitHub -->
+  <rect x="310" y="390" width="140" height="30" rx="4" fill="#14110F"/>
+  <text x="380" y="410" text-anchor="middle" font-family="JetBrains Mono, monospace" font-size="11" fill="#F4EFE6">GitHub (bare repo)</text>
+
+  <!-- sync arrows -->
+  <path d="M 380 355 L 380 390" stroke="#6B7A4F" stroke-width="1" stroke-dasharray="3 3" marker-end="url(#arr-r)"/>
+</svg>
+<figcaption>Figura 5b — Arquitetura remota: vault e MCP na VPS, agentes acessando de fora</figcaption>
+</figure>
+
+<table>
+<thead><tr><th>Component</th><th>Where roda</th><th>Motivo</th></tr></thead>
+<tbody>
+<tr><td>Vault (markdown files)</td><td>VPS</td><td>Single source of truth. No version conflict.</td></tr>
+<tr><td>MCP Server</td><td>VPS (porta local)</td><td>Nunca exposto diretamente. Acesso via tunnel.</td></tr>
+<tr><td>Hermes Agent</td><td>VPS ou local</td><td>If running on VPS, no transfer latency.</td></tr>
+<tr><td>Claude Code</td><td>Local machine</td><td>Human interface. Connects via SSH tunnel.</td></tr>
+<tr><td>Git remote</td><td>GitHub</td><td>Sincronização e histórico. Não é o vault primário.</td></tr>
+</tbody>
+</table>
+
+<h3>Sincronização via Git</h3>
+
+<p>O vault é um repositório Git normal. Cada máquina que precisa de uma cópia local faz clone e pull. A VPS é o origin.</p>
+
+<pre><code># Na VPS — configuração inicial
+git init --bare /vault-remote.git
+
+# No vault local — apontar para a VPS como origin
+git remote add origin ssh://usuario@sua-vps:/vault-remote.git
+git push -u origin main
+
+# Em outra máquina — clonar o vault
+git clone ssh://usuario@sua-vps:/vault-remote.git ~/vault
+
+# Sync routine (before working)
+git pull origin main
+
+# After inbox approvals
+git add 00-global/ 10-projects/ 20-domains/ 60-context-packs/
+git commit -m "feat: approved memory — [domínio]"
+git push origin main</code></pre>
+
+<div class="callout tip">
+<div class="label">Completion criterion</div>
+<p>Rode <code>git log --oneline -5</code> na VPS e em outra máquina. Os hashes devem ser idênticos. Se não forem, tem divergência — resolva antes de continuar.</p>
+</div>
+
+<h3>Remote access to MCP server</h3>
+
+<p>The MCP server should not be exposed directly to the internet. Two options:</p>
+
+<h4>Option A — SSH tunnel (recommended for personal use)</h4>
+
+<p>MCP runs on localhost on the VPS. You create a tunnel that maps the local port to your machine.</p>
+
+<pre><code># Cria tunnel: porta 3000 da VPS aparece como localhost:3000 na sua máquina
+ssh -L 3000:localhost:3000 usuario@sua-vps -N
+
+# Para manter em background
+ssh -L 3000:localhost:3000 usuario@sua-vps -fN
+
+# Para fechar
+kill $(lsof -t -i:3000)</code></pre>
+
+<p>With the tunnel active, Claude Code sees the remote MCP as if it were local. No additional configuration.</p>
+
+<h4>Option B — HTTPS with authentication (for multiple agents)</h4>
+
+<p>If more than one machine needs to access MCP simultaneously, put a reverse proxy (nginx or Caddy) in front with TLS and basic authentication.</p>
+
+<pre><code># Caddy — configuração mínima (~/.caddy/Caddyfile)
+mcp.seudominio.com {
+    basicauth /* {
+        agente $2a$14$HASH_GERADO_COM_caddy_hash
+    }
+    reverse_proxy localhost:3000
+}</code></pre>
+
+<div class="callout warn">
+<div class="label">Do not do this</div>
+<p>Do not expose the MCP server directly on a public port without authentication. MCP has read access (and inbox write access) to the entire vault. An open endpoint is an open vault.</p>
+</div>
+
+<h3>Claude Code connecting to remote MCP</h3>
+
+<p>With the SSH tunnel active, Claude Code does not know it is talking to a remote server. Configure normally pointing to localhost.</p>
+
+<pre><code># .claude/settings.json (na local machine)
+{
+  "mcpServers": {
+    "obsidian-vault": {
+      "command": "npx",
+      "args": ["-y", "mcp-obsidian"],
+      "env": {
+        "OBSIDIAN_API_URL": "http://localhost:3000",
+        "OBSIDIAN_API_KEY": "seu-token-aqui"
+      }
+    }
+  }
+}</code></pre>
+
+<p>Completion criterion: rode <code>/mcp</code> no Claude Code e veja o servidor listado como conectado. Peça para o agente ler um arquivo do vault. Se vier, o tunnel está funcionando.</p>
+
+<h3>Security considerations</h3>
+
+<table>
+<thead><tr><th>What to protect</th><th>How</th></tr></thead>
+<tbody>
+<tr><td>SSH access to VPS</td><td>SSH key mandatory. Disable password login (<code>PasswordAuthentication no</code> in sshd_config).</td></tr>
+<tr><td>MCP server token</td><td>Environment variable, never hardcoded. Use <code>.env</code> outside the vault.</td></tr>
+<tr><td>Writing to vault</td><td>MCP server with write permission restricted to <code>/90-inbox/</code>. Main vault read-only for the agent.</td></tr>
+<tr><td>Vault in Git</td><td>Private repository. Check <code>.gitignore</code> to avoid committing <code>.env</code> or tokens.</td></tr>
+<tr><td>MCP port</td><td>Never open on VPS firewall. Only accessible via tunnel or authenticated proxy.</td></tr>
+</tbody>
+</table>
+
+<pre><code># Verify that port 3000 is NOT publicly exposed
+# Na VPS:
+ss -tlnp | grep 3000
+# Deve mostrar: 127.0.0.1:3000 — se mostrar 0.0.0.0:3000, feche no firewall
+
+# UFW (Ubuntu)
+ufw deny 3000
+ufw allow 22  # SSH continua aberto</code></pre>
+
+<!-- ============================================== -->
+<!-- 12c - HARNESS ENGINEERING -->
+<!-- ============================================== -->
+
+<h2><span class="num">12c / Harness</span>Harness Engineering — the layer between agent and world</h2>
+
+<p>Harness Engineering is the discipline of connecting the agent to the environment in a controlled way: which tools it can use, how output is captured, how failures are handled. In federated memory, the harness is not a separate piece. It is distributed across the architecture.</p>
+
+<h3>Harness mapping in federated architecture</h3>
+
+<table>
+<thead><tr><th>Component</th><th>Function de harness</th></tr></thead>
+<tbody>
+<tr><td><code>MCP server</code></td><td>Exposes tools to the agent in a standardized way — defines the available toolset and enforces write permissions</td></tr>
+<tr><td><code>AGENT.md</code></td><td>Defines behavior rules (declarative harness) — the agent reads and applies before any action</td></tr>
+<tr><td>Adaptadores</td><td>Translate the neutral <code>AGENT.md</code> contract for each specific agent (Claude, Cursor, Windsurf...)</td></tr>
+<tr><td><code>capture-to-inbox.mjs</code></td><td>Captures agent output via PostToolUse hook — fills the inbox automatically without manual intervention</td></tr>
+<tr><td><code>SESSION.lock</code></td><td>Controls concurrent access per project — identifies agent, machine and user in each session</td></tr>
+<tr><td><code>review-inbox</code></td><td>Processes what the agent produced and decides the destination — complete audit trail in <code>/99-archive/review-log.md</code></td></tr>
+</tbody>
+</table>
+
+<h3>What v2 already implements</h3>
+
+<ul>
+<li><strong>Toolset via MCP</strong> com permissões de escrita restritas a <code>/90-inbox/</code> em qualquer modo de execução</li>
+<li><strong>Captura automática via hooks</strong> (PostToolUse → inbox) — o inbox se alimenta sem depender de memória do operador</li>
+<li><strong>Lock de sessão por projeto</strong> com identificação de agente, máquina e usuário (<code>SESSION.lock</code>)</li>
+<li><strong>Observabilidade básica</strong> via <code>session-log.md</code> (quem fez o quê, quando) e <code>review-log.md</code> (o que foi promovido ou rejeitado)</li>
+</ul>
+
+<h3>What enters in v3.0 (when the environment scales)</h3>
+
+<ul>
+<li><strong>Toolset por domínio:</strong> agente em <code>/30-clients/</code> acessa apenas ferramentas de cliente; agente em <code>/20-domains/engineering/</code> acessa apenas ferramentas de código. O MCP expõe conjuntos diferentes dependendo do contexto de entrada.</li>
+<li><strong>Observabilidade completa:</strong> tokens consumidos por sessão, tempo de execução, ferramentas mais usadas, taxa de sucesso de captura de memória. Métricas que mostram se o harness está funcionando — não só se o agente respondeu.</li>
+</ul>
+
+<div class="callout tip">
+<div class="label">Harness Engineering is not about controlling the agent</div>
+<p>It is about making the environment predictable enough for the agent to be reliable. Clear rules produce consistent behavior. An agent in an ambiguous environment is not more capable than one in a well-defined environment — just less predictable.</p>
+</div>
+
+<!-- ============================================== -->
+<!-- 12d - MENTE DE COLMEIA -->
+<!-- ============================================== -->
+
+<h2><span class="num">12d / Hive Mind</span>Hive Mind — shared knowledge between agents</h2>
+
+<p>As you add specialized agents to the ecosystem, a new problem arises: each agent learns useful things, creates skills, writes playbooks, makes technical decisions. If this knowledge stays isolated in each agent's private memory, the others will reinvent the wheel indefinitely.</p>
+
+<p>The hive mind solves this with a federated layer for reading and discovering knowledge between agents. Each agent can consult what others have published — without having access to anyone's private memory.</p>
+
+<h3>Three levels of memory</h3>
+
+<table>
+<thead><tr><th>Level</th><th>Where</th><th>Who accesses</th><th>What it contains</th></tr></thead>
+<tbody>
+<tr><td><strong>Private memory</strong></td><td><code>~/.hermes/</code> ou equivalente interno</td><td>Only the agent itself</td><td>Session learnings, operational preferences, internal history</td></tr>
+<tr><td><strong>Published knowledge</strong></td><td><code>/50-skills/published/</code></td><td>Any agent via MCP (read)</td><td>Skills, playbooks, templates, patterns approved or promoted by TTL</td></tr>
+<tr><td><strong>Approved knowledge</strong></td><td><code>/70-decisions/</code> e <code>/20-domains/</code></td><td>Any agent via MCP (read)</td><td>Formal decisions, domain principles, global rules</td></tr>
+</tbody>
+</table>
+
+<h3>Publication protocol</h3>
+
+<ol>
+<li><strong>Before creating:</strong> consulte <code>/50-skills/INDEX.md</code> — busque por tag ou domínio para evitar duplicação</li>
+<li><strong>Proposal:</strong> vai para <code>/90-inbox/</code> com <code>type: skill</code> e metadados completos (<code>author_agent</code>, <code>domain</code>, <code>confidence</code>, <code>risk</code>, <code>tags</code>)</li>
+<li><strong>Automatic classification</strong> por <code>confidence</code> + <code>risk</code>:
+  <ul>
+    <li><code>verified</code> + <code>low</code> → promovido automaticamente para <code>/published/</code> em 7 dias</li>
+    <li><code>verified</code> + <code>medium</code> → aprovação lazy do humano</li>
+    <li><code>hypothesis</code> → fica em <code>/proposed/</code> aguardando decisão humana</li>
+    <li><code>high</code> risk → aprovação explícita obrigatória</li>
+  </ul>
+</li>
+</ol>
+
+<h3>Fundamental rules</h3>
+
+<ul>
+<li><strong>Federated reading:</strong> any agent reads any shared area</li>
+<li><strong>Controlled writing:</strong> agent only writes to <code>/90-inbox/</code></li>
+<li>No agent directly alters another's memory</li>
+<li>Improvements become proposals, forks or new versions with <code>supersedes</code></li>
+<li><code>INDEX.md</code> é consultado antes de qualquer criação nova</li>
+</ul>
+
+<h3>Structure of /50-skills/</h3>
+
+<pre><code>50-skills/
+  INDEX.md              # navigable index by domain and agent
+  README.md             # protocol, mandatory metadata, rules
+  published/            # approved skills — read-only for agents
+  proposed/             # skills pending review
+  deprecated/           # old skills — never delete, keep traceability</code></pre>
+
+<div class="callout tip">
+<div class="label">The hive mind is not communication between agents</div>
+<p>It is accumulated knowledge that any agent can discover and reuse. The federated vault is the shared board. The blackboard pattern at scale — not as real-time memory, but as a repository of persistent learning.</p>
+</div>
+
+<!-- ============================================== -->
+<!-- 12e - PADRÕES RECORRENTES POR FERRAMENTA -->
+<!-- ============================================== -->
+
+<h2><span class="num">12e / Patterns</span>Recurring pattern memory per tool</h2>
+
+<p>Every tool has undocumented behaviors, known bugs and workarounds you discover in practice. Without structured memory, the agent repeats the same diagnosis every session — and you pay the cost in time and frustration. Worse: the workaround you discovered in one project does not reach the next.</p>
+
+<p>The solution: a per-tool pattern ledger in <code>/50-skills/tool-patterns/</code>, separate from project and client context. What the agent learns about Brandcraft in one project applies to all others.</p>
+
+<h3>The 3-tier mechanism</h3>
+
+<table>
+<thead>
+<tr><th>Tier</th><th>Occurrence</th><th>Status</th><th>What happens</th></tr>
+</thead>
+<tbody>
+<tr>
+  <td><strong>1</strong></td>
+  <td>1ª vez</td>
+  <td><code>observed</code></td>
+  <td>Agent records symptom in inbox with <code>type: tool_pattern</code>. Problem documented, optional workaround.</td>
+</tr>
+<tr>
+  <td><strong>2</strong></td>
+  <td>2ª vez</td>
+  <td><code>auto_fix</code></td>
+  <td>Agent finds the pattern in <code>tool-patterns/</code> and applies the documented fix <em>without asking</em>.</td>
+</tr>
+<tr>
+  <td><strong>3</strong></td>
+  <td>3ª+ vez</td>
+  <td><code>root_cause_pending</code></td>
+  <td>Trigger for root cause analysis. The problem is too recurrent to be just a workaround.</td>
+</tr>
+</tbody>
+</table>
+
+<p>Escalation is automatic: <code>node scripts/escalate-patterns.mjs</code> reads the inbox, increments the counter and updates the status. On the 3rd occurrence, the script explicitly alerts that human analysis is needed.</p>
+
+<h3>Scope: tool, not project</h3>
+
+<p>This is the distinction that makes the mechanism useful. Project memory stays in <code>/10-projects/</code>. Client memory in <code>/30-clients/</code>. Tool patterns stay in <code>/50-skills/tool-patterns/</code> — available to any project, without contaminating any specific context.</p>
+
+<pre><code>50-skills/
+├── published/          ← skills aprovadas (procedimentos)
+├── proposed/           ← skills aguardando aprovação
+├── deprecated/         ← histórico
+├── tool-patterns/      ← ledger por ferramenta  ← NOVO
+│   ├── README.md
+│   ├── brandcraft.md   ← 1 arquivo por ferramenta
+│   └── puppeteer.md
+└── INDEX.md</code></pre>
+
+<h3>Complete flow</h3>
+
+<ol>
+<li><strong>1st occurrence:</strong> agente encontra problema com o Brandcraft. Escreve no inbox:
+<pre><code>---
+type: tool_pattern
+tool: brandcraft
+symptom: API retorna rate limit em header não-padrão X-BrandCraft-Limit-Remaining
+fix: verificar X-BrandCraft-Limit-Remaining antes de X-RateLimit-Remaining
+confidence: verified
+risk: low
+---</code></pre>
+</li>
+<li><strong>Processes the pattern:</strong> <code>node scripts/escalate-patterns.mjs</code> cria <code>tool-patterns/brandcraft.md</code> com <code>status: observed</code>.</li>
+<li><strong>2nd occurrence (another project):</strong> agente consulta <code>tool-patterns/brandcraft.md</code>, encontra <code>status: auto_fix</code> e aplica o fix documentado sem diagnóstico.</li>
+<li><strong>3rd occurrence:</strong> script escala para <code>root_cause_pending</code> e alerta que o problema precisa ser resolvido na fonte — não só contornado.</li>
+</ol>
+
+<h3>O que NÃO é um tool_pattern</h3>
+
+<p>Não confundir com preferências do usuário (<code>preference</code>), fatos de projeto (<code>fact</code>) ou decisões formais (<code>decision</code>). Tool patterns são específicos de comportamentos de ferramentas externas — não de escolhas do usuário, não de contexto de negócio.</p>
+
+<div class="callout tip">
+<div class="label">Por que 3 tiers e não só "registra e resolve"?</div>
+<p>Porque o custo de intervenção deve escalar com a frequência. Na 1ª vez, o contexto ainda é raro — documentar é suficiente. Na 2ª vez, já é recorrente — automação é justificada. Na 3ª vez, é um padrão sistêmico — exige investigação da causa raiz, não mais um workaround.</p>
+</div>
+
+<!-- ============================================== -->
+<!-- 13 - GRAPHITI -->
+<!-- ============================================== -->
+
+<h2><span class="num">13 / Time</span>Graphiti: when memory needs history</h2>
+
+<p>Graphiti does not replace Obsidian. It enters when memory stops being just notes and starts requiring history, relations, events and changes. Some memories are stable facts. Others change over time. This difference is critical.</p>
+
+<figure>
+<svg viewBox="0 0 760 320" xmlns="http://www.w3.org/2000/svg">
+  <text x="380" y="32" text-anchor="middle" font-family="Fraunces, serif" font-size="22" font-style="italic" fill="#14110F">When Graphiti enters</text>
+  <text x="380" y="54" text-anchor="middle" font-family="JetBrains Mono, monospace" font-size="11" fill="#6B6258" letter-spacing="1">DECISIONS THAT EVOLVE OVER TIME</text>
+
+  <!-- Timeline -->
+  <line x1="80" y1="180" x2="680" y2="180" stroke="#14110F" stroke-width="2"/>
+
+  <!-- Decision A -->
+  <circle cx="140" cy="180" r="14" fill="#14110F"/>
+  <text x="140" y="186" text-anchor="middle" font-family="Manrope, sans-serif" font-size="13" font-weight="700" fill="#F4EFE6">A</text>
+  <text x="140" y="155" text-anchor="middle" font-family="JetBrains Mono, monospace" font-size="9" fill="#6B6258">JAN</text>
+  <text x="140" y="220" text-anchor="middle" font-family="Manrope, sans-serif" font-size="11" fill="#14110F" font-weight="600">Decision A</text>
+  <text x="140" y="237" text-anchor="middle" font-family="Manrope, sans-serif" font-size="10" fill="#6B6258">use separate vaults</text>
+
+  <!-- Decision B -->
+  <circle cx="320" cy="180" r="14" fill="#14110F"/>
+  <text x="320" y="186" text-anchor="middle" font-family="Manrope, sans-serif" font-size="13" font-weight="700" fill="#F4EFE6">B</text>
+  <text x="320" y="155" text-anchor="middle" font-family="JetBrains Mono, monospace" font-size="9" fill="#6B6258">MAR</text>
+  <text x="320" y="220" text-anchor="middle" font-family="Manrope, sans-serif" font-size="11" fill="#14110F" font-weight="600">Decision B</text>
+  <text x="320" y="237" text-anchor="middle" font-family="Manrope, sans-serif" font-size="10" fill="#6B6258">AGENT.md becomes contract</text>
+
+  <!-- Decision C -->
+  <circle cx="500" cy="180" r="14" fill="#14110F"/>
+  <text x="500" y="186" text-anchor="middle" font-family="Manrope, sans-serif" font-size="13" font-weight="700" fill="#F4EFE6">C</text>
+  <text x="500" y="155" text-anchor="middle" font-family="JetBrains Mono, monospace" font-size="9" fill="#6B6258">JUN</text>
+  <text x="500" y="220" text-anchor="middle" font-family="Manrope, sans-serif" font-size="11" fill="#14110F" font-weight="600">Decision C</text>
+  <text x="500" y="237" text-anchor="middle" font-family="Manrope, sans-serif" font-size="10" fill="#6B6258">Graphiti as upgrade</text>
+
+  <!-- Current state -->
+  <circle cx="660" cy="180" r="18" fill="#0A4F4A" stroke="#14110F" stroke-width="2"/>
+  <text x="660" y="186" text-anchor="middle" font-family="JetBrains Mono, monospace" font-size="10" font-weight="700" fill="#F4EFE6">NOW</text>
+  <text x="660" y="155" text-anchor="middle" font-family="JetBrains Mono, monospace" font-size="9" fill="#6B6258">ATUAL</text>
+  <text x="660" y="225" text-anchor="middle" font-family="Manrope, sans-serif" font-size="11" fill="#0A4F4A" font-weight="700">Current state</text>
+  <text x="660" y="241" text-anchor="middle" font-family="Manrope, sans-serif" font-size="10" fill="#6B6258">C replaces part of B</text>
+
+  <!-- Bottom what graphiti adds -->
+  <rect x="80" y="270" width="600" height="36" fill="#6B7A4F"/>
+  <text x="380" y="293" text-anchor="middle" font-family="JetBrains Mono, monospace" font-size="11" fill="#F4EFE6" letter-spacing="1">WHAT GRAPHITI ADDS: ENTITIES · RELATIONS · EVENTS · TEMPORAL VALIDITY · HISTORY</text>
+</svg>
+<figcaption>Figure 6 — Graphiti as optional temporal layer</figcaption>
+</figure>
+
+<p>Cases where Graphiti justifies the effort:</p>
+
+<ul>
+<li>Decisions that replace previous decisions and you need to track both.</li>
+<li>Relations between people, projects, clients, stacks and agents.</li>
+<li>Preferences that change over time (writing style evolves).</li>
+<li>Project events, meetings, changes, commitments.</li>
+<li>Queries like "what changed?" or "what is the most recent version of the truth?".</li>
+</ul>
+
+<div class="callout tip">
+<div class="label">When NOT to add Graphiti</div>
+<p>If your memory is predominantly stable facts (writing style, principles, patterns), Graphiti is overhead. Add it when temporal questions start appearing frequently and you feel Obsidian alone does not answer them.</p>
+</div>
+
+<h3>Before Graphiti: smaller implementations that already solve part of the problem</h3>
+
+<p>Algumas features que você colocaria no Graphiti já existem em ferramentas focadas apenas em decisões. O <strong>DecisionNode</strong> (<a href="https://github.com/decisionnode/DecisionNode">github.com/decisionnode/DecisionNode</a>) é um exemplo: armazena decisões como JSON estruturado com embeddings vetoriais, expõe via CLI e MCP server, tem history tracking, soft-delete (deprecate/activate) e conflict detection automático por similaridade semântica.</p>
+
+<p>It is a sub-system, not an alternative to federated architecture. It solves the decision module with semantic search; it does not cover Context Packs, domains, style guides or project context. But if your pain is specifically "agents do not remember architecture decisions made last week", DecisionNode can solve this before you need to spin up Graphiti.</p>
+
+<div class="callout">
+<div class="label">Pragmatic path</div>
+<p>Obsidian as the general base. DecisionNode for the structured decision sub-module with semantic search. Graphiti only when you need entity relations and change history at the temporal graph level. No need to spin up everything at once.</p>
+</div>
+
+<!-- ============================================== -->
+<!-- 14 - STEP BY STEP -->
+<!-- ============================================== -->
+
+<h2><span class="num">14 / Execution</span>Executable step by step</h2>
+
+<p>The steps below are sequential. Each has an objective completion criterion.</p>
+
+<h3>Step 1 — Create the vault</h3>
+
+<pre><code>mkdir federated-memory
+cd federated-memory
+mkdir -p 00-global 10-projects 20-domains 30-clients 40-workflows \
+         50-skills 60-context-packs 70-decisions 80-agent-adapters \
+         90-inbox 99-archive
+git init</code></pre>
+
+<p><strong>Done when:</strong> the folder structure exists and the git repository is initialized.</p>
+
+<h3>Step 2 — Write the AGENT.md</h3>
+
+<p>Copy the template from section 07 to <code>00-global/AGENT.md</code> and adjust the domain list to yours.</p>
+
+<p><strong>Done when:</strong> the file exists, lists your real domains, and you can explain each rule out loud.</p>
+
+<h3>Step 3 — Define real domains</h3>
+
+<p>Create a folder for each domain in <code>20-domains/</code>. Use the criterion from section 06: own vocabulary + outputs that should not mix with others.</p>
+
+<p><strong>Done when:</strong> you have between 3 and 6 domains. More than 8 is overhead. Fewer than 3 almost never justifies federated memory.</p>
+
+<h3>Step 4 — Three initial Context Packs</h3>
+
+<p>Crie em <code>60-context-packs/</code>:</p>
+
+<ul>
+<li><code>writing-style.md</code> — writing tasks in your style</li>
+<li><code>code-work.md</code> — code tasks with your conventions</li>
+<li><code>architecture-review.md</code> — architecture analysis</li>
+</ul>
+
+<p>Use the filled example from section 09 as a model. Each should fit on one screen.</p>
+
+<p><strong>Done when:</strong> the three packs exist, each has a goal, <em>Use</em> and <em>Avoid</em> lists, and the temporal validity field.</p>
+
+<h3>Step 5 — Adapter for the first agent</h3>
+
+<p>If using Claude Code, create <code>80-agent-adapters/claude/CLAUDE.md</code> pointing to <code>AGENT.md</code> and a default Context Pack. Use the template from section 08.</p>
+
+<p><strong>Done when:</strong> you can run Claude Code in the vault directory and it reads the adapter automatically.</p>
+
+<h3>Step 6 — Install Hermes</h3>
+
+<p>Use the instructions from section 10. Add an <code>AGENTS.md</code> at the vault root referencing <code>00-global/AGENT.md</code>.</p>
+
+<p><strong>Done when:</strong> when running <code>hermes</code> inside the directory, it responds respecting the "do not load everything" rule and using Context Packs.</p>
+
+<h3>Step 7 — Expose via MCP</h3>
+
+<p>Choose between Option A (Local REST API) or Option B (direct filesystem) from section 11. Configure in your preferred MCP client. Restrict writing to <code>/90-inbox/</code>.</p>
+
+<p><strong>Done when:</strong> an external agent (Claude Desktop, Cursor, ChatGPT with MCP) queries your vault and respects the write limits.</p>
+
+<h3>Step 8 — Validate with two different agents</h3>
+
+<p>Perform the same task with two different agents consuming the same memory. Check three things:</p>
+
+<ol>
+<li>Is the result voice-consistent between the two?</li>
+<li>Did neither contaminate the wrong domain?</li>
+<li>Did both respect the rule of only suggesting memory in the inbox?</li>
+</ol>
+
+<p><strong>Done when:</strong> all three answers are "yes". If any is "no", the problem is in the Context Pack, not the agent.</p>
+
+<h3>Step 9 — Add Graphiti if necessary</h3>
+
+<p>Only execute this step when you feel temporal pain: decisions replacing decisions, questions about history, information validity. Before that, it is over-engineering.</p>
+
+<!-- ============================================== -->
+<!-- 15 - GOVERNANCE -->
+<!-- ============================================== -->
+
+<h2><span class="num">15 / Discipline</span>Minimum governance</h2>
+
+<p>The biggest risk of persistent memory is not lack of information. It is excess information with undue authority. Every architecture needs to separate raw conversation, hypothesis, draft and permanent memory.</p>
+
+<figure>
+<svg viewBox="0 0 760 420" xmlns="http://www.w3.org/2000/svg">
+  <text x="380" y="32" text-anchor="middle" font-family="Fraunces, serif" font-size="22" font-style="italic" fill="#14110F">Minimum governance loop</text>
+  <text x="380" y="54" text-anchor="middle" font-family="JetBrains Mono, monospace" font-size="11" fill="#6B6258" letter-spacing="1">WITHOUT THIS, MEMORY BECOMES A LANDFILL WITH AUTHORITY</text>
+
+  <!-- Central principle -->
+  <circle cx="380" cy="220" r="50" fill="#14110F"/>
+  <text x="380" y="217" text-anchor="middle" font-family="Manrope, sans-serif" font-size="11" font-weight="700" fill="#F4EFE6">PRINCIPLE</text>
+  <text x="380" y="234" text-anchor="middle" font-family="JetBrains Mono, monospace" font-size="9" fill="#B89455">nothing becomes truth</text>
+  <text x="380" y="246" text-anchor="middle" font-family="JetBrains Mono, monospace" font-size="9" fill="#B89455">without approval</text>
+
+  <!-- 5 nodes in pentagon -->
+  <!-- Capture -->
+  <rect x="320" y="100" width="120" height="50" fill="#0A4F4A" stroke="#14110F" stroke-width="1.5"/>
+  <text x="380" y="120" text-anchor="middle" font-family="Manrope, sans-serif" font-size="13" font-weight="700" fill="#F4EFE6">Capture</text>
+  <text x="380" y="138" text-anchor="middle" font-family="JetBrains Mono, monospace" font-size="9" fill="#B89455">CONVERSATION, NOTE</text>
+
+  <!-- Triage -->
+  <rect x="550" y="170" width="120" height="50" fill="#5C4A3A" stroke="#14110F" stroke-width="1.5"/>
+  <text x="610" y="190" text-anchor="middle" font-family="Manrope, sans-serif" font-size="13" font-weight="700" fill="#F4EFE6">Triage</text>
+  <text x="610" y="208" text-anchor="middle" font-family="JetBrains Mono, monospace" font-size="9" fill="#B89455">HERMES SUGGESTS</text>
+
+  <!-- Draft -->
+  <rect x="500" y="320" width="120" height="50" fill="#C24A2A" stroke="#14110F" stroke-width="1.5"/>
+  <text x="560" y="340" text-anchor="middle" font-family="Manrope, sans-serif" font-size="13" font-weight="700" fill="#F4EFE6">Draft</text>
+  <text x="560" y="358" text-anchor="middle" font-family="JetBrains Mono, monospace" font-size="9" fill="#F4EFE6" opacity="0.9">GOES TO INBOX</text>
+
+  <!-- Review -->
+  <rect x="140" y="320" width="120" height="50" fill="#B89455" stroke="#14110F" stroke-width="1.5"/>
+  <text x="200" y="340" text-anchor="middle" font-family="Manrope, sans-serif" font-size="13" font-weight="700" fill="#14110F">Review</text>
+  <text x="200" y="358" text-anchor="middle" font-family="JetBrains Mono, monospace" font-size="9" fill="#14110F">HUMAN DECIDES</text>
+
+  <!-- Consolidate -->
+  <rect x="90" y="170" width="120" height="50" fill="#6B7A4F" stroke="#14110F" stroke-width="1.5"/>
+  <text x="150" y="190" text-anchor="middle" font-family="Manrope, sans-serif" font-size="13" font-weight="700" fill="#F4EFE6">Consolidation</text>
+  <text x="150" y="208" text-anchor="middle" font-family="JetBrains Mono, monospace" font-size="9" fill="#F4EFE6" opacity="0.9">BECOMES MEMORY</text>
+
+  <!-- Arrows (clockwise) -->
+  <path d="M 440 130 Q 530 130 580 175" stroke="#14110F" stroke-width="1.2" fill="none" marker-end="url(#g1)"/>
+  <path d="M 610 220 Q 610 290 580 320" stroke="#14110F" stroke-width="1.2" fill="none" marker-end="url(#g2)"/>
+  <path d="M 500 350 L 260 350" stroke="#14110F" stroke-width="1.2" marker-end="url(#g3)"/>
+  <path d="M 200 320 Q 130 290 150 220" stroke="#14110F" stroke-width="1.2" fill="none" marker-end="url(#g4)"/>
+  <path d="M 210 170 Q 280 130 320 130" stroke="#14110F" stroke-width="1.2" fill="none" marker-end="url(#g5)"/>
+
+  <defs>
+    <marker id="g1" markerWidth="8" markerHeight="8" refX="6" refY="2.5" orient="auto"><polygon points="0 0, 6 2.5, 0 5" fill="#14110F"/></marker>
+    <marker id="g2" markerWidth="8" markerHeight="8" refX="6" refY="2.5" orient="auto"><polygon points="0 0, 6 2.5, 0 5" fill="#14110F"/></marker>
+    <marker id="g3" markerWidth="8" markerHeight="8" refX="6" refY="2.5" orient="auto"><polygon points="0 0, 6 2.5, 0 5" fill="#14110F"/></marker>
+    <marker id="g4" markerWidth="8" markerHeight="8" refX="6" refY="2.5" orient="auto"><polygon points="0 0, 6 2.5, 0 5" fill="#14110F"/></marker>
+    <marker id="g5" markerWidth="8" markerHeight="8" refX="6" refY="2.5" orient="auto"><polygon points="0 0, 6 2.5, 0 5" fill="#14110F"/></marker>
+  </defs>
+</svg>
+<figcaption>Figure 7 — Five-stage governance loop</figcaption>
+</figure>
+
+<ul>
+<li>All new memory starts as a suggestion in <code>/90-inbox/</code>.</li>
+<li>Every permanent decision must have date, scope, source, status and approval owner.</li>
+<li>Old memories need to be archivable, replaceable or markable as obsolete.</li>
+<li>Agents consult memory but do not rewrite global principles without permission.</li>
+<li>Simple logs suffice at the start: who asked, what was read, what was changed, why.</li>
+</ul>
+
+<h3>Weekly inbox review ritual</h3>
+
+<p>Human approval only works if there is a set time to do it. Without a fixed ritual, <code>/90-inbox/</code> becomes a trash bin: suggestions pile up, nothing becomes memory, and agents keep repeating the same questions. Set aside a short weekly block — 20 to 40 minutes usually suffices — to process the inbox to zero.</p>
+
+<p>O repositório traz dois scripts equivalentes em <code>/scripts/</code> que conduzem a revisão entrada a entrada:</p>
+
+<pre><code># Linux / macOS
+VAULT_PATH=/caminho/do/vault ./scripts/review-inbox.sh
+
+# Windows (PowerShell)
+$env:VAULT_PATH = 'C:\caminho\do\vault'
+./scripts/review-inbox.ps1</code></pre>
+
+<p>For each pending suggestion the script shows the block and offers four decisions:</p>
+
+<ul>
+<li><strong>Approve (a):</strong> appends the entry to the file pointed to in <code>Suggested destination</code> and removes from inbox.</li>
+<li><strong>Edit (e):</strong> opens the entry in the editor (<code>$EDITOR</code> or <code>notepad</code>), adjusts text or destination and asks again.</li>
+<li><strong>Reject (r):</strong> discards the suggestion. Weak hypothesis does not become memory.</li>
+<li><strong>Defer (d):</strong> keeps in inbox for the next review. Useful when lacking context to decide.</li>
+</ul>
+
+<p>Every decision — including rejections and deferrals — is logged in <code>/99-archive/review-log.md</code> with date, domain, destination and summary. This log is what allows, weeks later, seeing how many suggestions became memory, how many were discarded and where agents err most frequently. If the rejection rate is high, the problem is not the inbox: it is the agent's capture rule.</p>
+
+<!-- ============================================== -->
+<!-- 16 - ANTI-PATTERNS -->
+<!-- ============================================== -->
+
+<h2><span class="num">16 / Common mistakes</span>Anti-patterns a evitar</h2>
+
+<table>
+<thead><tr><th>Anti-pattern</th><th>Symptom</th><th>Antidote</th></tr></thead>
+<tbody>
+<tr><td><strong>Super cérebro único</strong></td><td>Marketing puxa código, código puxa pesquisa, tudo mistura</td><td>Domínios isolados desde o dia um</td></tr>
+<tr><td><strong>Contexto sempre ativo</strong></td><td>Agente lento, alucinação, respostas fora do escopo</td><td>Context Packs por tarefa</td></tr>
+<tr><td><strong>Memória automática sem revisão</strong></td><td>Hipóteses viram fato, base degrada em semanas</td><td>Inbox obrigatório, aprovação humana</td></tr>
+<tr><td><strong>Adaptador como fonte principal</strong></td><td>Trocar de ferramenta exige reescrever tudo</td><td>AGENT.md é a fonte, adaptador só traduz</td></tr>
+<tr><td><strong>Orquestrador poderoso cedo demais</strong></td><td>Hermes/LangGraph fazendo coisa que ninguém entende</td><td>Começar com leitura direta, adicionar orquestração quando doer</td></tr>
+<tr><td><strong>MCP/API sem escopo</strong></td><td>Qualquer agente escreve em qualquer pasta</td><td>Escrita apenas em /90-inbox/, resto read-only</td></tr>
+</tbody>
+</table>
+
+<!-- ============================================== -->
+<!-- 17 - SUBSTITUTIONS -->
+<!-- ============================================== -->
+
+<h2><span class="num">17 / Trocas</span>Substituições sem mudar a arquitetura</h2>
+
+<p>A implementação de referência usa Obsidian + Hermes + MCP. A arquitetura, porém, foi pensada para ser portátil.</p>
+
+<p><strong>Alternativas ao Obsidian.</strong> Logseq, Foam, Dendron, VSCode com pastas Markdown, repositório Git puro. O requisito é ser legível, versionável e fácil de revisar por humano.</p>
+
+<p><strong>Alternativas ao Hermes.</strong> LangGraph para fluxos stateful com grafos explícitos, CrewAI para equipes de agentes por papel, Letta para agentes persistentes, Microsoft Agent Framework / AutoGen para multi-agente. O requisito é classificar tarefa, escolher domínio, selecionar Context Pack e entregar contexto sem virar dono da memória.</p>
+
+<p><strong>Alternativas ao MCP.</strong> Leitura direta de arquivos, CLI local, API REST. MCP é recomendado quando vários agentes precisam consumir a memória de modo padronizado.</p>
+
+<p><strong>Para o sub-módulo de decisões: DecisionNode.</strong> Se você quiser trocar os arquivos de <code>/70-decisions/</code> por algo com busca semântica e histórico automático, o <strong>DecisionNode</strong> (<a href="https://github.com/decisionnode/DecisionNode">github.com/decisionnode/DecisionNode</a>) faz exatamente isso: decisões em JSON, embeddings via Gemini, busca por cosine similarity, MCP server pronto para Claude Code, Cursor e Windsurf, conflict detection, soft-delete reversível. O requisito para usar como substituto permanece o mesmo: não pode gravar memória permanente without approval humana, e a regra de <code>status: approved/superseded</code> precisa ser respeitada. No DecisionNode, isso se traduz em configurar o agente em modo "strict" e revisar o que entra antes de ativar.</p>
+
+<h3>Centralizing systems / Life OS — o caminho oposto</h3>
+
+<p>Existe uma categoria de projetos que adota a abordagem inversa da federada: concentrar memória, automação, integrações e agentes em um único aplicativo monolítico. São frequentemente chamados de "Personal AI", "Life OS" ou "super-app de produtividade". Eles vencem em superfície de uso: UI pronta, integrações empacotadas, comunidade visível, curva de adoção quase nula.</p>
+
+<p>O custo aparece depois. A memória vive dentro do aplicativo, no formato do aplicativo. Trocar de ferramenta significa começar do zero. A arquitetura é, por design, centralizadora — exatamente o anti-pattern que motivou este guia. Não há contrato neutro; o adaptador é o produto. Não há <code>mtime</code> exposto; a verificação de validade temporal automática que o Hermes faz aqui não tem equivalente lá. A regra de conflito é definida pela UI, não por arquivo auditável.</p>
+
+<table>
+<thead><tr><th>Criterion</th><th>Federated memory (v2)</th><th>Centralizing systems / Life OS</th></tr></thead>
+<tbody>
+<tr><td>Adoption speed</td><td>Slow — requires learning the contract</td><td>Fast — install, connect, use</td></tr>
+<tr><td>Portability</td><td>Total (Markdown + Git)</td><td>Locked to app</td></tr>
+<tr><td>Sovereignty</td><td>User</td><td>Product</td></tr>
+<tr><td>Automatic temporal validity</td><td>Yes (file mtime)</td><td>Not available</td></tr>
+<tr><td>Switching cost</td><td>Switch adapter</td><td>Start over</td></tr>
+</tbody>
+</table>
+
+<p>For those who prioritize adoption speed over sovereignty, the centralizing path is the right choice. For those who prioritize portability and governance, it is a problem dressed as a solution.</p>
+
+<div class="callout">
+<div class="label">Criterion de substituição</div>
+<p>You can swap tools. You cannot swap the principles: separate domains, neutral contract, lean context, human approval, write policy restricted to inbox, deterministic conflict resolution, portability.</p>
+</div>
+
+<!-- ============================================== -->
+<!-- 18 - TEMPLATES -->
+<!-- ============================================== -->
+
+<h2><span class="num">18 / Templates</span>Ready-made templates to copy</h2>
+
+<h3>DECISION.md</h3>
+
+<pre><code># Decision: [título curto]
+
+Date: YYYY-MM-DD
+Scope: [domínio ou projeto]
+Status: proposed | approved | superseded | archived
+Source: [conversa, reunião, documento]
+Decision: [a decisão em uma frase]
+Reason: [por que decidiu isso]
+Impacts: [o que muda]
+Supersedes: [link para decisão anterior, se houver]
+Related context packs: [packs que devem refletir essa decisão]</code></pre>
+
+<h3>PROJECT_CONTEXT.md</h3>
+
+<pre><code># Project: [nome]
+
+Goal: [o que esse projeto deve resolver]
+Current status: [onde está agora]
+Stack: [tecnologias, ferramentas]
+Constraints: [limites técnicos, prazo, orçamento]
+Important files: [caminhos relevantes]
+Relevant domains: [quais domínios da memória se aplicam]
+Relevant context packs: [quais packs usar]
+Open questions: [o que ainda não foi decidido]
+Do not use: [o que NÃO trazer para esse projeto]</code></pre>
+
+<h3>MEMORY_UPDATE_PROPOSAL.md</h3>
+
+<pre><code># Memory Update Proposal
+
+Source: [conversa, agente, documento]
+Suggested domain: [domínio alvo]
+Suggested memory type: fact | decision | preference | workflow | risk
+Confidence: low | medium | high
+Why this should become memory: [justificativa]
+Proposed text: [o texto exato a virar memória]
+Human decision: approved | edited | rejected
+Reviewer: [nome]
+Decision date: YYYY-MM-DD</code></pre>
+
+<!-- ============================================== -->
+<!-- 19 - CHECKLIST -->
+<!-- ============================================== -->
+
+<h2><span class="num">19 / Validation</span>Implementation checklist</h2>
+
+<ul class="checklist">
+<li>Is there a clear and neutral <code>AGENT.md</code> without reference to specific tools?</li>
+<li>Are domains truly separated, with their own vocabulary?</li>
+<li>Are there at least three useful Context Packs, with goal, Use/Avoid lists and temporal validity?</li>
+<li>Is the first adapter (<code>CLAUDE.md</code>, <code>codex.md</code>, etc.) working?</li>
+<li>Does Hermes load the <code>AGENTS.md</code> from the vault root automatically?</li>
+<li>Does Hermes only route and suggest, without writing permanent memory on its own?</li>
+<li>Does <code>/90-inbox/suggested-memory.md</code> exist, receiving agent suggestions?</li>
+<li>Is there an explicit human approval rule before any writing to <code>/00-global/</code> or <code>/20-domains/</code>?</li>
+<li>Was the MCP server configured with write access restricted to <code>/90-inbox/</code>?</li>
+<li>Was the system tested with at least two different agents consuming the same base?</li>
+<li>Is there a plan for when to add Graphiti, and does it include "only when the temporal pain appears"?</li>
+</ul>
+
+<!-- ============================================== -->
+<!-- 20 - REFERENCES + CLOSING -->
+<!-- ============================================== -->
+
+<h2><span class="num">20 / Sources</span>References and closing</h2>
+
+<p>The references below anchor the technical components. The guide does not depend on a specific tool, but uses concepts and patterns from these ecosystems.</p>
+
+<ul>
+<li><strong>Hermes Agent — NousResearch.</strong> <a href="https://github.com/NousResearch/hermes-agent">github.com/NousResearch/hermes-agent</a> e <a href="https://hermes-agent.nousresearch.com/docs/">hermes-agent.nousresearch.com/docs</a></li>
+<li><strong>Model Context Protocol.</strong> <a href="https://modelcontextprotocol.io">modelcontextprotocol.io</a></li>
+<li><strong>Obsidian MCP servers (comunidade).</strong> Implementações via Local REST API plugin ou via filesystem direto.</li>
+<li><strong>Claude Code Memory.</strong> <a href="https://docs.claude.com/en/docs/claude-code/memory">docs.claude.com/en/docs/claude-code/memory</a></li>
+<li><strong>Graphiti — Zep.</strong> <a href="https://help.getzep.com/graphiti/graphiti/overview">help.getzep.com/graphiti</a></li>
+<li><strong>DecisionNode.</strong> <a href="https://github.com/decisionnode/DecisionNode">github.com/decisionnode/DecisionNode</a> — implementação de referência para o sub-módulo de decisões com embeddings e busca semântica via MCP.</li>
+<li><strong>Letta — Stateful agents.</strong> <a href="https://docs.letta.com/guides/core-concepts/stateful-agents/">docs.letta.com</a></li>
+<li><strong>CrewAI.</strong> <a href="https://docs.crewai.com">docs.crewai.com</a></li>
+<li><strong>Microsoft Agent Framework.</strong> <a href="https://learn.microsoft.com/en-us/agent-framework/">learn.microsoft.com/agent-framework</a></li>
+</ul>
+
+<div class="divider">CLOSING</div>
+
+<p class="lead">Persistent memory is only useful when isolation exists. Without isolation, the system gets large, slow and confusing. With separate domains, neutral contract, Context Packs and blackboard as coordination pattern, memory becomes infrastructure. Not accumulated noise.</p>
+
+<p><strong>Final thesis.</strong> Do not create a super brain. Create a federated memory: human at the origin, segmented by domain, routed by Hermes, exposed by MCP and consumed by any agent. Agents do not need to talk to each other. The shared board is already the coordination.</p>
+
+<p><strong>A note on convergence.</strong> Tools like DecisionNode, developed independently, reached conclusions similar to this guide: structured decisions, multi-agent via MCP, auditable history, implicit blackboard pattern. This is not a coincidence. It is a sign that the problem is real and the architectural direction is correct. The market is converging toward federated memory. This guide tries to name the pattern before it becomes just a product feature.</p>
+
+<div style="margin-top: 80px; padding-top: 32px; border-top: 1px solid var(--line-soft); text-align: center;">
+<p style="font-family: 'JetBrains Mono', monospace; font-size: 11px; text-transform: uppercase; letter-spacing: 0.15em; color: var(--ink-mute); margin: 0;">
+Federated Memory for AI Agents · Guide v2.0<br>
+André Almeida · andrealmeidadc.com
+</p>
+</div>
+
+</div>
+
+</body>
+</html>

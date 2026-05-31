@@ -94,9 +94,11 @@ O núcleo inspeciona o `mtime` dos arquivos listados em cada Context Pack. Se al
 ```
 /
 ├── whitepaper/
-│   └── whitepaper-memoria-federada-ptbr.html
+│   ├── whitepaper-memoria-federada-ptbr.html
+│   └── whitepaper-en.html
 ├── guia/
-│   └── memoria-federada-v2.html
+│   ├── memoria-federada-v2.html
+│   └── guia-en.html
 ├── template/
 │   ├── 00-global/AGENT.md
 │   ├── 10-projects/
@@ -144,8 +146,15 @@ O diretório `/template/` é um vault clonável. Copie, adapte os domínios para
 
 Os artefatos são arquivos HTML estilizados. Como o GitHub mostra apenas o código-fonte de HTML, use os links abaixo via **raw.githack.com**, que renderiza o HTML diretamente no navegador:
 
+### Português
+
 - 📄 [Whitepaper (PT-BR)](https://raw.githack.com/AndreAlmeidaDC/federated-memory/master/whitepaper/whitepaper-memoria-federada-ptbr.html)
 - 📘 [Guia de implementação](https://raw.githack.com/AndreAlmeidaDC/federated-memory/master/guia/memoria-federada-v2.html)
+
+### English
+
+- 📄 [Whitepaper (EN)](https://raw.githack.com/AndreAlmeidaDC/federated-memory/master/whitepaper/whitepaper-en.html)
+- 📘 [Implementation Guide (EN)](https://raw.githack.com/AndreAlmeidaDC/federated-memory/master/guia/guia-en.html)
 
 Alternativa local: clone o repositório e abra os arquivos `.html` direto no navegador.
 
@@ -159,8 +168,13 @@ cd federated-memory
 
 Para leitura offline, impressão ou anotação, os artefatos também estão disponíveis em PDF como assets da [página de releases do GitHub](https://github.com/AndreAlmeidaDC/federated-memory/releases):
 
+**PT-BR**
 - `whitepaper-memoria-federada-ptbr-v1.0.pdf`
 - `guia-implementacao-v2.0.pdf`
+
+**English (v2.5)**
+- `whitepaper-en-v2.1.pdf`
+- `guia-en-v2.5.pdf`
 
 Os PDFs são gerados a partir dos HTML via Puppeteer. Para regenerar localmente: `npm install puppeteer` e depois `node scripts/build-pdfs.mjs` (script único, multiplataforma).
 

@@ -15,7 +15,8 @@ Além disso, o repositório distribui um **template clonável** de vault e adapt
 
 ### Whitepaper
 
-- `whitepaper/whitepaper-memoria-federada-ptbr.html` — **v2.1**
+- `whitepaper/whitepaper-memoria-federada-ptbr.html` — **v2.1** (PT-BR)
+- `whitepaper/whitepaper-en.html` — **v2.1** (EN) — tradução externa, mesma pasta que o original
 - Princípio 5 reformulado: humano como auditor de última instância (não aprovação obrigatória)
 - Inclui seção de limitações conhecidas com 5 limitações e mitigações documentadas:
   - Lim 1 (rollback): mitigada pelo pre-action logging
@@ -30,7 +31,8 @@ Além disso, o repositório distribui um **template clonável** de vault e adapt
 
 ### Guia de implementação
 
-- `guia/memoria-federada-v2.html` — **v2.3 com 20+ seções incluindo 06b (multimodal/assets), 09c (captura automática via hooks Hermes + Claude Code), 12c (Harness Engineering) e 12d (Mente de Colmeia)**
+- `guia/memoria-federada-v2.html` — **v2.3 com 20+ seções incluindo 06b (multimodal/assets), 09c (captura automática via hooks Hermes + Claude Code), 12c (Harness Engineering) e 12d (Mente de Colmeia)** (PT-BR)
+- `guia/guia-en.html` — **v2.5** (EN) — tradução externa, mesma pasta que o original
 - Diagramas SVG inline (sem dependência de imagens externas)
 - Hermes como **núcleo ativo** com 4 papéis: roteador, gerenciador de memória com feedback, controlador de escopo, policy engine declarativo
 - Inclui seção 12b de **deployment remoto** (VPS, SSH tunnel, MCP via Caddy)
@@ -120,7 +122,7 @@ Arquivos adicionados ao template:
 
 ### Releases publicadas
 
-- **v2.5.0** (atual) — Memória de padrões recorrentes por ferramenta: escalate-patterns, tool-patterns/, protocolo 3 tiers, seção 12e no guia
+- **v2.5.0** (atual) — Memória de padrões recorrentes por ferramenta: escalate-patterns, tool-patterns/, protocolo 3 tiers, seção 12e no guia; versões em inglês do whitepaper e do guia (`whitepaper-en.html`, `guia-en.html`, PDFs em `releases/v2.5/`)
 - v2.4.0 — Pre-action log, review_date, promote-skills/update-index, whitepaper com mitigações
 - v2.3.0 — Mente de Colmeia: estrutura 50-skills, AGENT.md, seção 12d, whitepaper atualizado
 - v2.2.0 — SESSION.lock + Harness Engineering (seção 12c) + ROADMAP v3.0 expandido
@@ -142,7 +144,7 @@ Arquivos adicionados ao template:
 
 ## Backlog restante
 
-- Versão em inglês do whitepaper (branch `wip/english`, após validação PT-BR)
+- ~~Versão em inglês do whitepaper~~ ✅ Entregue em v2.5.0 (`whitepaper/whitepaper-en.html` + `guia/guia-en.html`)
 - Validação real do QUICKSTART na máquina do André antes de divulgar amplamente
 - **v3.0**: Graphiti + FTS5 + embeddings + worker local quando vault escalar; Harness Engineering avançado com toolset por domínio e observabilidade completa; **implementação real da mente de colmeia** (automação de promoção entre published/proposed/deprecated com scripts equivalentes ao review-inbox)
 - Pack-usage logger no Hermes — implementação de referência do logging de uso
