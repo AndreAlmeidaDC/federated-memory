@@ -100,7 +100,7 @@ O núcleo inspeciona o `mtime` dos arquivos listados em cada Context Pack. Se al
 │   ├── memoria-federada-v2.html
 │   └── guia-en.html
 ├── template/
-│   ├── 00-global/AGENT.md
+│   ├── 00-global/         AGENT.md (contrato do agente), RULES.md (regras globais empresa/dev)
 │   ├── 10-projects/
 │   ├── 20-domains/
 │   ├── 30-clients/
