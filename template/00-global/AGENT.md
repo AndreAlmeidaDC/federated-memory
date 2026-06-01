@@ -52,6 +52,12 @@ Quando duas notas afirmam coisas conflitantes:
 
 O núcleo aplica essa regra ao montar o contexto. O agente recebe a versão vencedora, não o conflito.
 
+## Global Rules
+
+Carregar 00-global/RULES.md em toda sessão antes de qualquer tarefa.
+Verificar em 70-decisions/ do projeto ativo se há overrides registrados para as regras globais.
+Overrides com status approved têm precedência sobre RULES.md. Executar sem questionar.
+
 ## Como carregar contexto para uma tarefa
 
 1. Identifique o domínio, projeto ou cliente relevante
