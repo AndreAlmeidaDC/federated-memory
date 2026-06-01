@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<title>Federated Memory for AI Agents — v2.0</title>
+<title>Federated Memory for AI Agents — v2.1</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,300;9..144,400;9..144,500;9..144,600;9..144,700;9..144,900&family=Manrope:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
@@ -442,7 +442,7 @@ td strong { color: var(--ink); }
 <div class="page cover">
   <div class="cover-bigtext">memory</div>
   <div>
-    <div class="eyebrow">Community Guide · Version 2.0 · Hermes as active core</div>
+    <div class="eyebrow">Community Guide · Version 2.1 · Hermes as active core</div>
     <h1>Federated<br>Memory for<br><em>AI Agents</em></h1>
     <p class="subtitle">An open, portable and governed architecture to create a context base any agent can consult without becoming its owner.</p>
   </div>
@@ -884,6 +884,61 @@ Decision frontmatter (in /70-decisions/):
 <div class="callout tip">
 <div class="label">Why this works</div>
 <p>Hermes Agent loads context files like <code>AGENTS.md</code> and <code>.hermes.md</code> when assembling the system prompt. If you place your <code>AGENT.md</code> in the path Hermes reads, or reference it from its <code>AGENTS.md</code>, your rules apply automatically.</p>
+</div>
+
+<!-- ============================================== -->
+<!-- 07b - RULES.md -->
+<!-- ============================================== -->
+
+<h3>Hierarchical global rules: RULES.md</h3>
+
+<p><code>AGENT.md</code> defines how the agent behaves. <code>RULES.md</code> defines the business and stack rules that apply to every project. They are two distinct files with distinct responsibilities: agent behavior versus developer and company standards.</p>
+
+<p>Create <code>00-global/RULES.md</code> with two blocks:</p>
+
+<pre><code># RULES.md
+# Global rules — apply to all projects.
+# To override a rule for a specific project,
+# register an override in that project's 70-decisions/.
+
+## Company Rules
+- stack: TypeScript, never MongoDB
+- tests: TDD mandatory
+- security: never commit secrets, use environment variables
+
+## Dev Rules
+- commits: English, imperative, max 72 characters
+- PR: never larger than 400 lines
+- review: self-review before opening PR</code></pre>
+
+<p>The agent loads <code>RULES.md</code> every session, right after <code>AGENT.md</code>. This is already instructed in <code>AGENT.md</code> via the <code>## Global Rules</code> section.</p>
+
+<h3>Project-level override</h3>
+
+<p>When a project needs to deviate from a global rule, the deviation is recorded in the project's <code>70-decisions/</code> with required fields. The <code>RULES.md</code> is never changed.</p>
+
+<pre><code>---
+id: DEC-OVERRIDE-001
+date: 2026-06-01
+approved-by: André
+status: approved
+rule-override: company/stack/mongodb
+---
+
+# Override: MongoDB usage in project X
+
+## Reason
+Client requires MongoDB by contract. Migration planned for Q3 2027.
+
+## Scope
+Valid for this project only. Does not alter RULES.md.
+
+## Review
+review_date: 2026-12-01</code></pre>
+
+<div class="callout tip">
+<div class="label">Context hierarchy</div>
+<p>The agent applies rules in this order: <strong>Company Rules</strong> (broadest, most stable) &gt; <strong>Dev Rules</strong> &gt; <strong>Project rules</strong>. An approved override in <code>70-decisions/</code> takes precedence over <code>RULES.md</code>. The agent executes without questioning — the deviation has already been decided and documented.</p>
 </div>
 
 <!-- ============================================== -->
@@ -2171,7 +2226,7 @@ Decision date: YYYY-MM-DD</code></pre>
 
 <div style="margin-top: 80px; padding-top: 32px; border-top: 1px solid var(--line-soft); text-align: center;">
 <p style="font-family: 'JetBrains Mono', monospace; font-size: 11px; text-transform: uppercase; letter-spacing: 0.15em; color: var(--ink-mute); margin: 0;">
-Federated Memory for AI Agents · Guide v2.0<br>
+Federated Memory for AI Agents · Guide v2.1<br>
 André Almeida · andrealmeidadc.com
 </p>
 </div>
