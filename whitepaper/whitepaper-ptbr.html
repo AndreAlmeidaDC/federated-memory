@@ -346,10 +346,10 @@ sup {
 <!-- ========== COVER ========== -->
 
 <div class="cover">
-  <div class="cover-right-text">Memória Federada · Whitepaper · v2.1 · 2026</div>
+  <div class="cover-right-text">Memória Federada · Whitepaper · v2.2 · 2026</div>
 
   <div class="cover-top">
-    <div class="cover-label">Whitepaper · Arquitetura de Agentes de IA · v2.1</div>
+    <div class="cover-label">Whitepaper · Arquitetura de Agentes de IA · v2.2</div>
 
     <h1>Memória<br>
     <strong>Federada</strong><br>
@@ -361,7 +361,7 @@ sup {
 
   <div class="cover-meta">
     André Almeida · andrealmeidadc.com<br>
-    Versão 2.1 · maio 2026<br>
+    Versão 2.2 · junho 2026<br>
     Licença: CC BY 4.0
   </div>
 </div>
@@ -458,7 +458,7 @@ sup {
       <td class="no">Não disponível por design</td>
     </tr>
     <tr>
-      <td><strong>Memória Federada (v2.1)</strong></td>
+      <td><strong>Memória Federada (v2.2)</strong></td>
       <td class="yes">Total</td>
       <td class="yes">Por domínio</td>
       <td class="yes">Proporcional ao risco (automática para baixo risco, humana para hipóteses e alto risco)</td>
@@ -494,7 +494,7 @@ sup {
     <p><strong>Isolamento por domínio.</strong> Contextos de domínios distintos — marketing, engenharia, escrita, pesquisa — não devem compartilhar o mesmo espaço semântico. Contaminação entre domínios é prevenida por estrutura, não por instrução ao agente.</p>
   </li>
   <li>
-    <p><strong>Contrato neutro de consumo.</strong> Um arquivo de contrato central descreve como qualquer agente deve consumir a memória. Adaptadores específicos por ferramenta traduzem esse contrato, mas não o substituem.</p>
+    <p><strong>Contrato neutro de consumo.</strong> Um arquivo de contrato central descreve como qualquer agente deve consumir a memória. Adaptadores específicos por ferramenta traduzem esse contrato, mas não o substituem. O contrato tem hierarquia: regras da empresa e do dev vivem em <code>00-global/RULES.md</code> e valem para todos os projetos; quando um projeto precisa sair de uma regra, registra um override em <code>70-decisions/</code> com motivo, responsável e data. Override aprovado tem precedência, e o desvio fica rastreável.</p>
   </li>
   <li>
     <p><strong>Contexto mínimo suficiente.</strong> O agente recebe o contexto necessário para a tarefa em execução, não o histórico completo. Context Packs são a unidade de entrega: pacotes enxutos, orientados à tarefa, com escopo explícito do que usar e do que evitar.</p>
@@ -668,7 +668,7 @@ sup {
 <div class="colophon">
   <div>
     Memória Federada para Agentes de IA<br>
-    Whitepaper v2.1 · André Almeida
+    Whitepaper v2.2 · André Almeida
   </div>
   <div style="text-align: right;">
     andrealmeidadc.com<br>

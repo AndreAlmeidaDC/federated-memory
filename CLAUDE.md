@@ -15,7 +15,7 @@ Além disso, o repositório distribui um **template clonável** de vault e adapt
 
 ### Whitepaper
 
-- `whitepaper/whitepaper-memoria-federada-ptbr.html` — **v2.1** (PT-BR)
+- `whitepaper/whitepaper-ptbr.html` — **v2.1** (PT-BR)
 - `whitepaper/whitepaper-en.html` — **v2.1** (EN) — tradução externa, mesma pasta que o original
 - Princípio 5 reformulado: humano como auditor de última instância (não aprovação obrigatória)
 - Inclui seção de limitações conhecidas com 5 limitações e mitigações documentadas:
@@ -31,7 +31,7 @@ Além disso, o repositório distribui um **template clonável** de vault e adapt
 
 ### Guia de implementação
 
-- `guia/memoria-federada-v2.html` — **v2.3 com 20+ seções incluindo 06b (multimodal/assets), 09c (captura automática via hooks Hermes + Claude Code), 12c (Harness Engineering) e 12d (Mente de Colmeia)** (PT-BR)
+- `guia/guia-ptbr.html` — **v2.3 com 20+ seções incluindo 06b (multimodal/assets), 09c (captura automática via hooks Hermes + Claude Code), 12c (Harness Engineering) e 12d (Mente de Colmeia)** (PT-BR)
 - `guia/guia-en.html` — **v2.5** (EN) — tradução externa, mesma pasta que o original
 - Diagramas SVG inline (sem dependência de imagens externas)
 - Hermes como **núcleo ativo** com 4 papéis: roteador, gerenciador de memória com feedback, controlador de escopo, policy engine declarativo

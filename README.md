@@ -94,10 +94,10 @@ O núcleo inspeciona o `mtime` dos arquivos listados em cada Context Pack. Se al
 ```
 /
 ├── whitepaper/
-│   ├── whitepaper-memoria-federada-ptbr.html
+│   ├── whitepaper-ptbr.html
 │   └── whitepaper-en.html
 ├── guia/
-│   ├── memoria-federada-v2.html
+│   ├── guia-ptbr.html
 │   └── guia-en.html
 ├── template/
 │   ├── 00-global/         AGENT.md (contrato do agente), RULES.md (regras globais empresa/dev)
@@ -148,8 +148,8 @@ Os artefatos são arquivos HTML estilizados. Como o GitHub mostra apenas o códi
 
 ### Português
 
-- 📄 [Whitepaper (PT-BR)](https://raw.githack.com/AndreAlmeidaDC/federated-memory/master/whitepaper/whitepaper-memoria-federada-ptbr.html)
-- 📘 [Guia de implementação](https://raw.githack.com/AndreAlmeidaDC/federated-memory/master/guia/memoria-federada-v2.html)
+- 📄 [Whitepaper (PT-BR)](https://raw.githack.com/AndreAlmeidaDC/federated-memory/master/whitepaper/whitepaper-ptbr.html)
+- 📘 [Guia de implementação](https://raw.githack.com/AndreAlmeidaDC/federated-memory/master/guia/guia-ptbr.html)
 
 ### English
 
@@ -240,8 +240,8 @@ A arquitetura é agnóstica de ferramenta. Obsidian pode ser substituído por qu
 
 **Se preferir mais contexto antes de implementar:**
 
-1. Leia o [whitepaper](https://raw.githack.com/AndreAlmeidaDC/federated-memory/master/whitepaper/whitepaper-memoria-federada-ptbr.html) para entender a tese
-2. Leia o [guia de implementação](https://raw.githack.com/AndreAlmeidaDC/federated-memory/master/guia/memoria-federada-v2.html) para ver a arquitetura em detalhe
+1. Leia o [whitepaper](https://raw.githack.com/AndreAlmeidaDC/federated-memory/master/whitepaper/whitepaper-ptbr.html) para entender a tese
+2. Leia o [guia de implementação](https://raw.githack.com/AndreAlmeidaDC/federated-memory/master/guia/guia-ptbr.html) para ver a arquitetura em detalhe
 3. Volte ao QUICKSTART.md e execute as 8 etapas
 
 **Setup automático:**

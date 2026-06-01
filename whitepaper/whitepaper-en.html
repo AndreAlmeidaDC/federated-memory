@@ -346,10 +346,10 @@ sup {
 <!-- ========== COVER ========== -->
 
 <div class="cover">
-  <div class="cover-right-text">Federated Memory · Whitepaper · v2.1 · 2026</div>
+  <div class="cover-right-text">Federated Memory · Whitepaper · v2.2 · 2026</div>
 
   <div class="cover-top">
-    <div class="cover-label">Whitepaper · AI Agent Architecture · v2.1</div>
+    <div class="cover-label">Whitepaper · AI Agent Architecture · v2.2</div>
 
     <h1>Federated<br>
     <strong>Memory</strong><br>
@@ -361,7 +361,7 @@ sup {
 
   <div class="cover-meta">
     André Almeida · andrealmeidadc.com<br>
-    Version 2.1 · May 2026<br>
+    Version 2.2 · June 2026<br>
     License: CC BY 4.0
   </div>
 </div>
@@ -458,7 +458,7 @@ sup {
       <td class="no">Not available by design</td>
     </tr>
     <tr>
-      <td><strong>Federated Memory (v2.1)</strong></td>
+      <td><strong>Federated Memory (v2.2)</strong></td>
       <td class="yes">Total</td>
       <td class="yes">Per domain</td>
       <td class="yes">Risk-proportional (automatic for low risk, human for hypotheses and high risk)</td>
@@ -494,7 +494,7 @@ sup {
     <p><strong>Domain isolation.</strong> Context from distinct domains — marketing, engineering, writing, research — should not share the same semantic space. Cross-domain contamination is prevented by structure, not by instruction to the agent.</p>
   </li>
   <li>
-    <p><strong>Neutral consumption contract.</strong> A central contract file describes how any agent should consume the memory. Tool-specific adapters translate this contract but do not replace it.</p>
+    <p><strong>Neutral consumption contract.</strong> A central contract file describes how any agent should consume the memory. Tool-specific adapters translate this contract but do not replace it. The contract is hierarchical: company and dev rules live in <code>00-global/RULES.md</code> and apply across all projects; when a project needs to deviate from a rule, it registers an override in <code>70-decisions/</code> with the reason, responsible party, and date. An approved override takes precedence, and the deviation remains traceable.</p>
   </li>
   <li>
     <p><strong>Minimum sufficient context.</strong> The agent receives the context needed for the task at hand, not the full history. Context Packs are the delivery unit: lean, task-oriented packages with an explicit scope of what to use and what to avoid.</p>
@@ -671,7 +671,7 @@ sup {
 <div class="colophon">
   <div>
     Federated Memory for AI Agents<br>
-    Whitepaper v2.1 · André Almeida
+    Whitepaper v2.2 · André Almeida
   </div>
   <div style="text-align: right;">
     andrealmeidadc.com<br>
