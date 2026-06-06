@@ -398,7 +398,7 @@ sup {
 
 <h3>Memória nativa de ferramentas</h3>
 
-<p>Claude Code tem <code>CLAUDE.md</code> e um sistema de memória local. Cursor tem regras de projeto. Windsurf tem memórias internas do Cascade. Cada implementação funciona bem dentro da ferramenta que a criou — e falha completamente fora dela. Se você usa Claude Code de manhã e Cursor à tarde para o mesmo projeto, as duas têm memórias diferentes, possivelmente conflitantes, sem mecanismo de sincronização ou governança. A memória pertence à ferramenta, não ao projeto, não ao usuário.</p>
+<p>Claude Code tem <code>CLAUDE.md</code> e um sistema de memória local. Cursor tem regras de projeto. Windsurf tem memórias internas do Cascade. Cada implementação funciona bem dentro da ferramenta que a criou, e falha completamente fora dela. Se você usa Claude Code de manhã e Cursor à tarde para o mesmo projeto, as duas têm memórias diferentes, possivelmente conflitantes, sem mecanismo de sincronização ou governança. A memória pertence à ferramenta, não ao projeto, não ao usuário. Isso vale até para um agente que se pretendia usar como base da arquitetura: o Hermes mantém memória própria (SQLite, MEMORY.md), que compete com o vault federado em vez de servi-lo. Memória nativa, por melhor que seja, puxa o contexto de volta para dentro da ferramenta.</p>
 
 <h3>Sistemas de memória como serviço</h3>
 
@@ -410,7 +410,7 @@ sup {
 
 <div class="callout warn">
   <div class="label">O padrão comum</div>
-  <p>Em todas as abordagens existentes, a memória é um componente interno do sistema de agência. O agente guarda, o agente roteia, o agente executa. Essa concentração é a raiz do problema, não uma propriedade inevitável da arquitetura.</p>
+  <p>Em todas as abordagens existentes, a memória é um componente interno do sistema de agência. O agente guarda o contexto e o mesmo agente o executa. Essa concentração é a raiz do problema, não uma propriedade inevitável da arquitetura.</p>
 </div>
 
 <table>

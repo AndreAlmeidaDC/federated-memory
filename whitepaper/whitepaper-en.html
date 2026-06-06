@@ -398,7 +398,7 @@ sup {
 
 <h3>Native tool memory</h3>
 
-<p>Claude Code has <code>CLAUDE.md</code> and a local memory system. Cursor has project rules. Windsurf has Cascade's internal memories. Each implementation works well inside the tool that created it — and fails completely outside it. If you use Claude Code in the morning and Cursor in the afternoon for the same project, the two have different, possibly conflicting memories, with no synchronization or governance mechanism. Memory belongs to the tool, not the project, not the user.</p>
+<p>Claude Code has <code>CLAUDE.md</code> and a local memory system. Cursor has project rules. Windsurf has Cascade's internal memories. Each implementation works well inside the tool that created it, and fails completely outside it. If you use Claude Code in the morning and Cursor in the afternoon for the same project, the two have different, possibly conflicting memories, with no synchronization or governance mechanism. Memory belongs to the tool, not the project, not the user. This holds even for an agent we meant to use as the base of the architecture: Hermes keeps its own memory (SQLite, MEMORY.md), which competes with the federated vault instead of serving it. Native memory, however good, pulls context back inside the tool.</p>
 
 <h3>Memory-as-a-service systems</h3>
 
@@ -410,7 +410,7 @@ sup {
 
 <div class="callout warn">
   <div class="label">The common pattern</div>
-  <p>In all existing approaches, memory is an internal component of the agency system. The agent stores, the agent routes, the agent executes. This concentration is the root of the problem, not an inevitable property of the architecture.</p>
+  <p>In all existing approaches, memory is an internal component of the agency system. The agent stores the context and the same agent executes with it. This concentration is the root of the problem, not an inevitable property of the architecture.</p>
 </div>
 
 <table>
