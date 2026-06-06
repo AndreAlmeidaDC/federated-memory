@@ -2065,39 +2065,41 @@ $env:VAULT_PATH = 'C:\caminho\do\vault'
 <!-- 17 - SUBSTITUTIONS -->
 <!-- ============================================== -->
 
-<h2><span class="num">17 / Trocas</span>Substituições sem mudar a arquitetura</h2>
+<h2><span class="num">17 / Swaps</span>Replacements without changing the architecture</h2>
 
-<p>A implementação de referência usa Obsidian + Hermes + MCP. A arquitetura, porém, foi pensada para ser portátil.</p>
+<p>The reference implementation uses a Markdown vault versioned with Git. The architecture, however, was designed to be portable, and any part can be swapped without touching the contract.</p>
 
-<p><strong>Alternativas ao Obsidian.</strong> Logseq, Foam, Dendron, VSCode com pastas Markdown, repositório Git puro. O requisito é ser legível, versionável e fácil de revisar por humano.</p>
+<p><strong>Alternatives to Obsidian.</strong> Logseq, Foam, Dendron, VSCode with Markdown folders, bare Git repository. The requirement is to be readable, versionable, and easy for humans to review.</p>
 
-<p><strong>Alternativas ao Hermes.</strong> LangGraph para fluxos stateful com grafos explícitos, CrewAI para equipes de agentes por papel, Letta para agentes persistentes, Microsoft Agent Framework / AutoGen para multi-agente. O requisito é classificar tarefa, escolher domínio, selecionar Context Pack e entregar contexto sem virar dono da memória.</p>
+<p><strong>Other client agents.</strong> LangGraph for stateful flows with explicit graphs, CrewAI for role-based agent teams, Letta for persistent agents, Microsoft Agent Framework / AutoGen for multi-agent, Hermes. The requirement is to classify the task, choose the domain, select the Context Pack, and deliver context without becoming the owner of memory.</p>
 
-<p><strong>Alternativas ao MCP.</strong> Leitura direta de arquivos, CLI local, API REST. MCP é recomendado quando vários agentes precisam consumir a memória de modo padronizado.</p>
+<p><strong>Access layer.</strong> Direct file reading, local CLI, REST API. MCP is recommended when multiple agents need to consume memory in a standardized way.</p>
 
-<p><strong>Para o sub-módulo de decisões: DecisionNode.</strong> Se você quiser trocar os arquivos de <code>/70-decisions/</code> por algo com busca semântica e histórico automático, o <strong>DecisionNode</strong> (<a href="https://github.com/decisionnode/DecisionNode">github.com/decisionnode/DecisionNode</a>) faz exatamente isso: decisões em JSON, embeddings via Gemini, busca por cosine similarity, MCP server pronto para Claude Code, Cursor e Windsurf, conflict detection, soft-delete reversível. O requisito para usar como substituto permanece o mesmo: não pode gravar memória permanente without approval humana, e a regra de <code>status: approved/superseded</code> precisa ser respeitada. No DecisionNode, isso se traduz em configurar o agente em modo "strict" e revisar o que entra antes de ativar.</p>
+<p><strong>Machine synchronization.</strong> Git natively solves cross-machine sync: push on one machine, pull on another. Proprietary sync (iCloud, Dropbox, Notion) works but adds an intermediary that may conflict with Git's resolution model. The recommended path is Git + remote repository.</p>
 
-<h3>Centralizing systems / Life OS — o caminho oposto</h3>
+<p><strong>For the decisions sub-module: DecisionNode.</strong> If you want to replace the files in <code>/70-decisions/</code> with something that has semantic search and automatic history, <strong>DecisionNode</strong> (<a href="https://github.com/decisionnode/DecisionNode">github.com/decisionnode/DecisionNode</a>) does exactly that: decisions in JSON, embeddings via Gemini, cosine similarity search, MCP server ready for Claude Code, Cursor, and Windsurf, conflict detection, reversible soft-delete. The requirement for using it as a replacement remains the same: it cannot write permanent memory without human approval, and the <code>status: approved/superseded</code> rule must be respected. In DecisionNode, this means configuring the agent in "strict" mode and reviewing what enters before activating.</p>
 
-<p>Existe uma categoria de projetos que adota a abordagem inversa da federada: concentrar memória, automação, integrações e agentes em um único aplicativo monolítico. São frequentemente chamados de "Personal AI", "Life OS" ou "super-app de produtividade". Eles vencem em superfície de uso: UI pronta, integrações empacotadas, comunidade visível, curva de adoção quase nula.</p>
+<h3>Centralizing systems / Life OS — the opposite path</h3>
 
-<p>O custo aparece depois. A memória vive dentro do aplicativo, no formato do aplicativo. Trocar de ferramenta significa começar do zero. A arquitetura é, por design, centralizadora — exatamente o anti-pattern que motivou este guia. Não há contrato neutro; o adaptador é o produto. Não há <code>mtime</code> exposto; a verificação de validade temporal automática que o Hermes faz aqui não tem equivalente lá. A regra de conflito é definida pela UI, não por arquivo auditável.</p>
+<p>There is a category of projects that takes the inverse approach to federated: concentrate memory, automation, integrations, and agents into a single monolithic application. They are often called "Personal AI", "Life OS", or "productivity super-app". They win on surface usability: ready-made UI, packaged integrations, visible community, near-zero adoption curve.</p>
+
+<p>The cost appears later. Memory lives inside the application, in the application's format. Switching tools means starting from scratch. The architecture is, by design, centralizing — exactly the anti-pattern that motivated this guide. There is no neutral contract; the adapter is the product. There is no exposed <code>mtime</code>; temporal validity inspection requires manual review — the client agent, or a hook, does here what the application does not expose. The conflict rule is defined by the UI, not by an auditable file.</p>
 
 <table>
-<thead><tr><th>Criterion</th><th>Federated memory (v2)</th><th>Centralizing systems / Life OS</th></tr></thead>
+<thead><tr><th>Criterion</th><th>Federated memory</th><th>Centralizing systems / Life OS</th></tr></thead>
 <tbody>
 <tr><td>Adoption speed</td><td>Slow — requires learning the contract</td><td>Fast — install, connect, use</td></tr>
 <tr><td>Portability</td><td>Total (Markdown + Git)</td><td>Locked to app</td></tr>
 <tr><td>Sovereignty</td><td>User</td><td>Product</td></tr>
-<tr><td>Automatic temporal validity</td><td>Yes (file mtime)</td><td>Not available</td></tr>
-<tr><td>Switching cost</td><td>Switch adapter</td><td>Start over</td></tr>
+<tr><td>Temporal validity by inspection</td><td>Yes (file mtime)</td><td>Not available</td></tr>
+<tr><td>Switching cost</td><td>Swap adapter</td><td>Start over</td></tr>
 </tbody>
 </table>
 
 <p>For those who prioritize adoption speed over sovereignty, the centralizing path is the right choice. For those who prioritize portability and governance, it is a problem dressed as a solution.</p>
 
 <div class="callout">
-<div class="label">Criterion de substituição</div>
+<div class="label">Substitution criterion</div>
 <p>You can swap tools. You cannot swap the principles: separate domains, neutral contract, lean context, human approval, write policy restricted to inbox, deterministic conflict resolution, portability.</p>
 </div>
 

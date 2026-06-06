@@ -2067,13 +2067,15 @@ $env:VAULT_PATH = 'C:\caminho\do\vault'
 
 <h2><span class="num">17 / Trocas</span>Substituições sem mudar a arquitetura</h2>
 
-<p>A implementação de referência usa Obsidian + Hermes + MCP. A arquitetura, porém, foi pensada para ser portátil.</p>
+<p>A implementação de referência usa um vault Markdown versionado em Git. A arquitetura, porém, foi pensada para ser portátil, e qualquer parte pode ser trocada sem mexer no contrato.</p>
 
 <p><strong>Alternativas ao Obsidian.</strong> Logseq, Foam, Dendron, VSCode com pastas Markdown, repositório Git puro. O requisito é ser legível, versionável e fácil de revisar por humano.</p>
 
-<p><strong>Alternativas ao Hermes.</strong> LangGraph para fluxos stateful com grafos explícitos, CrewAI para equipes de agentes por papel, Letta para agentes persistentes, Microsoft Agent Framework / AutoGen para multi-agente. O requisito é classificar tarefa, escolher domínio, selecionar Context Pack e entregar contexto sem virar dono da memória.</p>
+<p><strong>Outros agentes clientes.</strong> LangGraph para fluxos stateful com grafos explícitos, CrewAI para equipes de agentes por papel, Letta para agentes persistentes, Microsoft Agent Framework / AutoGen para multi-agente, Hermes. O requisito é classificar tarefa, escolher domínio, selecionar Context Pack e entregar contexto sem virar dono da memória.</p>
 
-<p><strong>Alternativas ao MCP.</strong> Leitura direta de arquivos, CLI local, API REST. MCP é recomendado quando vários agentes precisam consumir a memória de modo padronizado.</p>
+<p><strong>Camada de acesso.</strong> Leitura direta de arquivos, CLI local, API REST. MCP é recomendado quando vários agentes precisam consumir a memória de modo padronizado.</p>
+
+<p><strong>Sincronização entre máquinas.</strong> Git resolve nativamente o sync entre máquinas: push em uma, pull em outra. Sync proprietário (iCloud, Dropbox, Notion) funciona, mas adiciona um intermediário que pode conflitar com o modelo de resolução do Git. O caminho recomendado é Git + repositório remoto.</p>
 
 <p><strong>Para o sub-módulo de decisões: DecisionNode.</strong> Se você quiser trocar os arquivos de <code>/70-decisions/</code> por algo com busca semântica e histórico automático, o <strong>DecisionNode</strong> (<a href="https://github.com/decisionnode/DecisionNode">github.com/decisionnode/DecisionNode</a>) faz exatamente isso: decisões em JSON, embeddings via Gemini, busca por cosine similarity, MCP server pronto para Claude Code, Cursor e Windsurf, conflict detection, soft-delete reversível. O requisito para usar como substituto permanece o mesmo: não pode gravar memória permanente sem aprovação humana, e a regra de <code>status: approved/superseded</code> precisa ser respeitada. No DecisionNode, isso se traduz em configurar o agente em modo "strict" e revisar o que entra antes de ativar.</p>
 
@@ -2081,15 +2083,15 @@ $env:VAULT_PATH = 'C:\caminho\do\vault'
 
 <p>Existe uma categoria de projetos que adota a abordagem inversa da federada: concentrar memória, automação, integrações e agentes em um único aplicativo monolítico. São frequentemente chamados de "Personal AI", "Life OS" ou "super-app de produtividade". Eles vencem em superfície de uso: UI pronta, integrações empacotadas, comunidade visível, curva de adoção quase nula.</p>
 
-<p>O custo aparece depois. A memória vive dentro do aplicativo, no formato do aplicativo. Trocar de ferramenta significa começar do zero. A arquitetura é, por design, centralizadora — exatamente o anti-pattern que motivou este guia. Não há contrato neutro; o adaptador é o produto. Não há <code>mtime</code> exposto; a verificação de validade temporal automática que o Hermes faz aqui não tem equivalente lá. A regra de conflito é definida pela UI, não por arquivo auditável.</p>
+<p>O custo aparece depois. A memória vive dentro do aplicativo, no formato do aplicativo. Trocar de ferramenta significa começar do zero. A arquitetura é, por design, centralizadora — exatamente o anti-pattern que motivou este guia. Não há contrato neutro; o adaptador é o produto. Não há <code>mtime</code> exposto; a verificação de validade temporal exige inspeção manual de mtime — o agente cliente, ou um hook, faz aqui o que o aplicativo não expõe. A regra de conflito é definida pela UI, não por arquivo auditável.</p>
 
 <table>
-<thead><tr><th>Critério</th><th>Memória federada (v2)</th><th>Sistemas centralizadores / Life OS</th></tr></thead>
+<thead><tr><th>Critério</th><th>Memória federada</th><th>Sistemas centralizadores / Life OS</th></tr></thead>
 <tbody>
 <tr><td>Velocidade de adoção</td><td>Lenta — exige aprender o contrato</td><td>Rápida — instalou, conectou, usou</td></tr>
 <tr><td>Portabilidade</td><td>Total (Markdown + Git)</td><td>Presa ao aplicativo</td></tr>
 <tr><td>Soberania</td><td>Do usuário</td><td>Do produto</td></tr>
-<tr><td>Validade temporal automática</td><td>Sim (mtime de arquivo)</td><td>Não disponível</td></tr>
+<tr><td>Validade temporal por inspeção</td><td>Sim (mtime de arquivo)</td><td>Não disponível</td></tr>
 <tr><td>Custo de troca</td><td>Trocar adaptador</td><td>Recomeçar</td></tr>
 </tbody>
 </table>
