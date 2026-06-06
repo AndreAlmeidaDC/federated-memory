@@ -524,7 +524,7 @@ td strong { color: var(--ink); }
 
 <h2><span class="num">02 / Scope</span>What this guide builds</h2>
 
-<p>Reference implementation using Obsidian + Hermes + MCP. The architecture, however, is not locked to these tools. The goal is a portable memory layer for any current or future agent.</p>
+<p>Reference implementation using a Markdown vault versioned in Git. The architecture, however, is not locked to any tool. The goal is a portable memory layer for any current or future agent.</p>
 
 <ul>
 <li>Knowledge base in Markdown, human-readable and versionable in Git.</li>
@@ -532,8 +532,8 @@ td strong { color: var(--ink); }
 <li><code>AGENT.md</code> as a neutral contract, with no dependency on Claude Code, Codex, Cursor or any executor.</li>
 <li>Context Packs from the start, because memory only becomes useful when delivered as lean context.</li>
 <li>Short per-tool adapters (<code>CLAUDE.md</code>, <code>codex.md</code>, Cursor rules).</li>
-<li>Hermes as local router and orchestrator with memory plugins.</li>
-<li>MCP server for Obsidian, exposing the vault in a standardized way for multiple agents.</li>
+<li>Git as the spine of versioning and cross-machine synchronization.</li>
+<li>MCP server as an optional layer, exposing the vault in a standardized way for multiple agents.</li>
 <li>Graphiti as a temporal upgrade when relations and changes over time matter.</li>
 </ul>
 
