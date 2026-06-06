@@ -688,7 +688,9 @@ sup {
 
 <p>Esta arquitetura recusa quatro caminhos. Recusa <em>backend hospedado como serviço</em> — quebra a soberania. Recusa <em>memória automática sem revisão</em> — é o anti-pattern central. Recusa <em>adaptador único universal</em> — cada agente tem convenções próprias, um adaptador genérico vira o pior denominador comum. Recusa <em>RAG no caminho crítico</em> — embeddings ajudam na busca, nunca substituem Markdown como fonte.</p>
 
-<p>O que esta arquitetura aceita: ser mais lenta de adotar do que um aplicativo monolítico; exigir disciplina de curadoria que ferramentas automáticas não exigem; pedir ao usuário que aprenda o contrato antes de delegar. O preço da soberania é a participação ativa.</p>
+<p>O que esta arquitetura aceita: ser mais lenta de adotar do que um aplicativo monolítico; exigir disciplina de curadoria que ferramentas automáticas não exigem; pedir ao usuário que aprenda o contrato antes de delegar; e operar, por padrão, no modo cooperativo, onde a governança de escrita é contrato e não trava. Enforcement contra um agente hostil não é função do contrato: é hardening de sistema operacional, fora do escopo padrão e disponível para quem precisar (seção 08). O preço da soberania é a participação ativa.</p>
+
+<p>Uma escolha de mecanismo decorre disso. Um sync proprietário, como o Obsidian Sync, resolve sincronização em tempo real, mas não versiona e amarra a base a um fornecedor. Por isso a arquitetura de referência usa Git: ele sincroniza e versiona numa peça só, com mecanismo aberto, e a sincronização contínua proprietária fica como camada opcional por cima, nunca como espinha.</p>
 
 <hr>
 

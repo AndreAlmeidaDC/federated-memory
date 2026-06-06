@@ -688,7 +688,9 @@ sup {
 
 <p>This architecture refuses four paths. It refuses a <em>hosted backend as a service</em> — it breaks sovereignty. It refuses <em>automatic memory without review</em> — it is the central anti-pattern. It refuses a <em>single universal adapter</em> — each agent has its own conventions, and a generic adapter becomes the worst common denominator. It refuses <em>RAG on the critical path</em> — embeddings help with search, but never replace Markdown as the source.</p>
 
-<p>What this architecture accepts: being slower to adopt than a monolithic application; requiring curation discipline that automatic tools do not; asking the user to learn the contract before delegating. The price of sovereignty is active participation.</p>
+<p>What this architecture accepts: being slower to adopt than a monolithic application; requiring curation discipline that automatic tools do not; asking the user to learn the contract before delegating; and operating, by default, in cooperative mode, where write governance is contract and not a lock. Enforcement against a hostile agent is not the contract's job: it is operating system hardening, outside the default scope and available to whoever needs it (section 08). The price of sovereignty is active participation.</p>
+
+<p>One mechanism choice follows from this. A proprietary sync, such as Obsidian Sync, solves real-time synchronization but does not version and ties the base to a vendor. That is why the reference architecture uses Git: it synchronizes and versions in a single piece, with an open mechanism, and proprietary continuous sync stays as an optional layer on top, never as the spine.</p>
 
 <hr>
 
