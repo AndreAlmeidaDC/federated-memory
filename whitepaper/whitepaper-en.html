@@ -519,34 +519,61 @@ sup {
 <p>The principle of human approval works when the human is in front of the screen. The problem begins when the agent runs in automatic mode — scheduled, headless, in CI. v1.0 had no clear answer for this case. v2.0 establishes the rule as policy of the core itself, not as instruction to the agent: reading is always allowed across the entire vault; permanent writing is forbidden outside <code>/90-inbox/</code>, in any execution mode. The one enforcing this rule is not the agent (which can ignore it), but the active core that mediates the calls.</p>
 
 <!-- SECTION 5 -->
-<h2><span class="section-num">05 · The Active Core</span>Hermes is no longer optional.</h2>
+<h2><span class="section-num">05 · The Agent as Client</span>Memory is passive. Agents are interchangeable.</h2>
 
-<p>In v1.0, Hermes was described as a "lightweight router" — a useful but replaceable component, swappable for direct file reading. Practice showed this characterization underestimated the role. Without an active component mediating access to context, the three gaps above are impossible to close: quality feedback requires per-use logging; conflict resolution requires status inspection; write policy requires enforcement on the call path. None of these functions belong to the agent — they all belong to a dedicated core.</p>
+<p>v2 described Hermes as an active core that mediated access to context, enforced policy and resolved conflict. Field testing and the official Hermes documentation showed that this component does not exist as described: Hermes is a full code agent with its own memory, not a gatekeeper that mediates other agents. The characterization was wrong. This section replaces it.</p>
 
-<p>Hermes plays four roles in v2.0:</p>
+<p>Before the correction, three layers must be separated, the ones readers confuse all the time, and whose confusion is the architectural error of section 03:</p>
 
-<h3>Context router</h3>
+<ul>
+<li><strong>Model (LLM):</strong> the brain that reasons (nemotron, Claude, GPT).</li>
+<li><strong>Code agent (harness):</strong> Claude Code, Cursor, Codex, Hermes. Runs the loop, uses tools, reads and writes files.</li>
+<li><strong>Federated memory:</strong> the Markdown vault. Passive, sovereign, portable.</li>
+</ul>
 
-<p>Classifies the task, identifies the relevant domain, selects the appropriate Context Pack, delivers the minimum necessary package. This is the role v1.0 recognized. The agent does not choose what to read — it receives what was routed.</p>
+<p>The correction is simple. Federated memory is passive and sovereign: a set of versioned Markdown files. It does not route, does not enforce policy, does not mediate anything. Code agents are interchangeable clients that read and write in that vault, guided by a contract (<code>AGENT.md</code>) and by the folder structure. Hermes is one of them. None is the core.</p>
 
-<h3>Memory manager with feedback loop</h3>
+<p>The four functions v2 assigned to a core still exist, but live elsewhere:</p>
 
-<p>Each use of a pack is logged in <code>/99-archive/pack-usage.log</code> with a classified result (useful, partial, bad). Three consecutive bad marks flag the pack for review. The improvement cycle is mechanical, not dependent on user habit.</p>
+<ul>
+<li><strong>Read routing:</strong> it is the agent itself pulling what it needs, guided by the contract and by static versioned files. There is no central router.</li>
+<li><strong>Conflict resolution:</strong> it is structural, not behavioral. The rule <code>status: approved</code> beats <code>superseded</code> (section 04) lives in the files themselves. Any agent reading the vault applies the same rule, because it is in the data, not in a component.</li>
+<li><strong>Quality feedback and capture:</strong> they come from the client agent's hooks, tool-agnostic, not from a central manager.</li>
+<li><strong>Write policy:</strong> it is the contract, in cooperative mode. It is not a policy engine. The <code>hermes.policy.yml</code> described in v2 does not exist in the real Hermes.</li>
+</ul>
 
-<h3>Scope controller</h3>
+<h3>Git is the spine, not a core</h3>
 
-<p>Applies the memory conflict rule when assembling context: ignores entries with <code>status: superseded</code>, prioritizes the most recent with <code>status: approved</code>, flags the absence of status as a block. The agent never sees the conflict — it sees only the winning version or a question for the human.</p>
+<p>What holds the architecture together is Git. The vault is a Git repository. The agent works on a clone: it reads with <code>pull</code>, writes with <code>commit</code> and <code>push</code>. In a single piece, Git delivers cross-machine synchronization, versioning, authorship, diff and rollback, with an open and neutral mechanism that does not break sovereignty nor lock you to a vendor.</p>
 
-<h3>Declarative policy engine</h3>
+<h3>The maturity ladder</h3>
 
-<p>Write policy is configured once in Hermes — not in each adapter, not in each MCP call. Reading: open. Permanent writing: forbidden outside <code>/90-inbox/</code>. Any request outside the scope is converted into a suggestion for the inbox, even in headless execution. The policy is declarative and auditable: a single file describes what is and is not allowed.</p>
+<p>The architecture grows in steps, under pain, not by default:</p>
+
+<ul>
+<li><strong>Recommended floor:</strong> Markdown vault + Git + contract governance. Serves everything from solo local use to technical multi-machine, with auditing already built in.</li>
+<li><strong>Under pain of real time or non-technical user:</strong> add continuous synchronization (Obsidian Sync, Syncthing) on top, keeping Git for versioning.</li>
+<li><strong>Under pain of volume or concurrency:</strong> an MCP server as common access and a dedicated backend (Graphiti as an index derived from the Markdown, not a replacement).</li>
+<li><strong>Under the need for enforcement against a hostile agent:</strong> operating system isolation.</li>
+</ul>
+
+<p>Climbing a step buys scale and search. It does not buy write discipline for free: that is always the OS or custom code, at any step.</p>
+
+<h3>Threat model</h3>
+
+<p>Hence the threat model, declared openly:</p>
+
+<ul>
+<li><strong>Cooperative mode (default):</strong> assumes agents that cooperate. Contract governance is enough. It is the recommended floor and the main scope of this paper.</li>
+<li><strong>Adversarial mode (optional):</strong> if the agent can be hostile, the contract is not enough. Enforcement comes from below the agent: a container with a read-only mount except for <code>/90-inbox/</code>, or a separate user with no write access to protected folders. It never comes from the agent's side.</li>
+</ul>
 
 <div class="callout">
   <div class="label">Derived principle</div>
-  <p>Federated memory without an active core is just an organized folder. The core is what turns a file structure into an architecture: it enforces policy, measures quality and resolves conflict. Without it, the principles become good intentions.</p>
+  <p>Passive memory is not a weakness: it is the condition of sovereignty. A vault that depends on an active core to exist is tied to that core. A vault that is just versioned files belongs to the user and works with any agent. When enforcement is needed, it comes from the operating system, below the agent, never from the agent itself.</p>
 </div>
 
-<p>Multimodal support is accommodated by the <code>/assets/</code> structure per domain and project. The ability to process images, audio and PDFs depends on the LLM configured in the agent — not on the agent itself. Check the provider documentation for current capabilities.</p>
+<p>Multimodal support is accommodated by the <code>/assets/</code> structure per domain and project. The ability to process images, audio and PDFs depends on the LLM configured in the agent, not on the agent itself. Check the provider documentation for current capabilities.</p>
 
 <!-- SECTION 6 -->
 <h2><span class="section-num">06 · The Differentiator</span>Automatic temporal validity through file inspection.</h2>

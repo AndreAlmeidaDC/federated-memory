@@ -519,34 +519,61 @@ sup {
 <p>O princípio de aprovação humana funciona quando o humano está na frente da tela. O problema começa quando o agente roda em modo automático — agendado, headless, em CI. A v1.0 não tinha resposta clara para esse caso. A v2.0 estabelece a regra como política do próprio núcleo, não como instrução ao agente: leitura é sempre permitida em todo o vault; escrita permanente é proibida fora de <code>/90-inbox/</code>, em qualquer modo de execução. Quem aplica essa regra não é o agente (que pode ignorar), mas o núcleo ativo que media as chamadas.</p>
 
 <!-- SECTION 5 -->
-<h2><span class="section-num">05 · O Núcleo Ativo</span>Hermes deixa de ser opcional.</h2>
+<h2><span class="section-num">05 · O Agente como Cliente</span>A memória é passiva. Os agentes são intercambiáveis.</h2>
 
-<p>Na v1.0, Hermes foi descrito como "roteador leve" — um componente útil mas substituível por leitura direta de arquivos. A prática mostrou que essa caracterização subestimava o papel. Sem um componente ativo que medeia o acesso ao contexto, os três gaps acima são impossíveis de fechar: feedback de qualidade exige logging por uso; resolução de conflito exige inspeção de status; política de escrita exige enforcement no caminho da chamada. Nenhuma dessas funções pertence ao agente — todas pertencem a um núcleo dedicado.</p>
+<p>A v2 descreveu o Hermes como um núcleo ativo que mediava o acesso ao contexto, aplicava política e resolvia conflito. Teste de campo e a documentação oficial do Hermes mostraram que esse componente não existe como descrito: o Hermes é um agente de código completo, com memória própria, não um porteiro que medeia outros agentes. A caracterização estava errada. Esta seção a substitui.</p>
 
-<p>Hermes desempenha quatro papéis na v2.0:</p>
+<p>Antes da correção, é preciso separar três camadas que leitores confundem o tempo todo, e cuja confusão é o erro arquitetural da seção 03:</p>
 
-<h3>Roteador de contexto</h3>
+<ul>
+<li><strong>Modelo (LLM):</strong> o cérebro que raciocina (nemotron, Claude, GPT).</li>
+<li><strong>Agente de código (harness):</strong> Claude Code, Cursor, Codex, Hermes. Roda o loop, usa ferramentas, lê e escreve arquivos.</li>
+<li><strong>Memória federada:</strong> o vault Markdown. Passiva, soberana, portátil.</li>
+</ul>
 
-<p>Classifica a tarefa, identifica o domínio relevante, seleciona o Context Pack apropriado, entrega o pacote mínimo necessário. É o papel que a v1.0 reconheceu. O agente não escolhe o que ler — recebe o que foi roteado.</p>
+<p>A correção é simples. A memória federada é passiva e soberana: um conjunto de arquivos Markdown versionados. Ela não roteia, não aplica política, não medeia nada. Os agentes de código são clientes intercambiáveis que leem e escrevem nesse vault guiados por um contrato (<code>AGENT.md</code>) e pela estrutura de pastas. O Hermes é um deles. Nenhum é o núcleo.</p>
 
-<h3>Gerenciador de memória com loop de feedback</h3>
+<p>As quatro funções que a v2 atribuía a um núcleo continuam existindo, mas em outro lugar:</p>
 
-<p>Cada uso de um pack é logado em <code>/99-archive/pack-usage.log</code> com resultado classificado (útil, parcial, ruim). Três marcações ruins consecutivas flaggam o pack para revisão. O ciclo de melhoria é mecânico, não dependente de hábito do usuário.</p>
+<ul>
+<li><strong>Roteamento de leitura:</strong> é o próprio agente puxando o que precisa, guiado pelo contrato e por arquivos estáticos versionados. Não há roteador central.</li>
+<li><strong>Resolução de conflito:</strong> é estrutural, não comportamental. A regra <code>status: approved</code> vence <code>superseded</code> (seção 04) mora nos próprios arquivos. Qualquer agente que leia o vault aplica a mesma regra, porque ela está nos dados, não num componente.</li>
+<li><strong>Feedback de qualidade e captura:</strong> vêm de hooks do agente cliente, agnósticos de ferramenta, não de um gerenciador central.</li>
+<li><strong>Política de escrita:</strong> é o contrato, no modo cooperativo. Não é um policy engine. O <code>hermes.policy.yml</code> descrito na v2 não existe no Hermes real.</li>
+</ul>
 
-<h3>Controlador de escopo</h3>
+<h3>Git é a espinha, não um núcleo</h3>
 
-<p>Aplica a regra de conflito de memória ao montar o contexto: ignora entradas com <code>status: superseded</code>, prioriza a mais recente com <code>status: approved</code>, sinaliza ausência de status como bloqueio. O agente nunca vê o conflito — vê apenas a versão vencedora ou uma pergunta para o humano.</p>
+<p>O que sustenta a arquitetura é o Git. O vault é um repositório Git. O agente trabalha num clone: lê com <code>pull</code>, escreve com <code>commit</code> e <code>push</code>. Numa peça só, o Git entrega sincronização entre máquinas, versionamento, autoria, diff e rollback, com um mecanismo aberto e neutro que não fere a soberania nem amarra a um fornecedor.</p>
 
-<h3>Policy engine declarativo</h3>
+<h3>A escada de maturidade</h3>
 
-<p>Política de escrita é configurada uma vez no Hermes — não em cada adaptador, não em cada chamada de MCP. Leitura: liberada. Escrita permanente: proibida fora de <code>/90-inbox/</code>. Qualquer pedido fora do escopo é convertido em sugestão para o inbox, mesmo em execução headless. A política é declarativa e auditável: um único arquivo descreve o que pode e o que não pode.</p>
+<p>A arquitetura cresce por degraus, sob dor, não por padrão:</p>
+
+<ul>
+<li><strong>Piso recomendado:</strong> vault Markdown + Git + governança por contrato. Serve do uso solo local ao multi-máquina técnico, já com auditoria embutida.</li>
+<li><strong>Sob dor de tempo real ou usuário não técnico:</strong> somar sincronização contínua (Obsidian Sync, Syncthing) por cima, mantendo o Git para versão.</li>
+<li><strong>Sob dor de volume ou concorrência:</strong> um MCP server como acesso comum e um backend dedicado (Graphiti como índice derivado dos Markdown, não substituto).</li>
+<li><strong>Sob necessidade de enforcement contra agente hostil:</strong> isolamento de sistema operacional.</li>
+</ul>
+
+<p>Subir de degrau dá escala e busca. Não dá disciplina de escrita de graça: isso é sempre OS ou código próprio, em qualquer degrau.</p>
+
+<h3>Modelo de ameaça</h3>
+
+<p>Daí o modelo de ameaça, declarado abertamente:</p>
+
+<ul>
+<li><strong>Modo cooperativo (padrão):</strong> assume agentes que cooperam. A governança por contrato basta. É o piso recomendado e o escopo principal deste paper.</li>
+<li><strong>Modo adversarial (opcional):</strong> se o agente pode ser hostil, contrato não basta. O enforcement vem de baixo do agente: container com mount read-only exceto no <code>/90-inbox/</code>, ou usuário separado sem escrita nas pastas protegidas. Nunca vem do lado do agente.</li>
+</ul>
 
 <div class="callout">
   <div class="label">Princípio derivado</div>
-  <p>Memória federada sem núcleo ativo é apenas uma pasta organizada. O núcleo é o que transforma uma estrutura de arquivos em uma arquitetura: ele aplica política, mede qualidade e resolve conflito. Sem ele, os princípios viram boas intenções.</p>
+  <p>Memória passiva não é fraqueza: é a condição da soberania. Um vault que depende de um núcleo ativo para existir está amarrado a esse núcleo. Um vault que é só arquivos versionados pertence ao usuário e funciona com qualquer agente. Quando enforcement é necessário, ele vem do sistema operacional, abaixo do agente, nunca do próprio agente.</p>
 </div>
 
-<p>Suporte multimodal é acomodado pela estrutura de <code>/assets/</code> por domínio e projeto. A capacidade de processar imagens, áudio e PDFs depende do LLM configurado no agente — não do agente em si. Consulte a documentação do provider para capacidades atuais.</p>
+<p>Suporte multimodal é acomodado pela estrutura de <code>/assets/</code> por domínio e projeto. A capacidade de processar imagens, áudio e PDFs depende do LLM configurado no agente, não do agente em si. Consulte a documentação do provider para capacidades atuais.</p>
 
 <!-- SECTION 6 -->
 <h2><span class="section-num">06 · Diferencial</span>Validade temporal automática por inspeção de arquivos.</h2>
