@@ -1862,7 +1862,7 @@ risk: low
 
 <h3>Before Graphiti: smaller implementations that already solve part of the problem</h3>
 
-<p>Algumas features que você colocaria no Graphiti já existem em ferramentas focadas apenas em decisões. O <strong>DecisionNode</strong> (<a href="https://github.com/decisionnode/DecisionNode">github.com/decisionnode/DecisionNode</a>) é um exemplo: armazena decisões como JSON estruturado com embeddings vetoriais, expõe via CLI e MCP server, tem history tracking, soft-delete (deprecate/activate) e conflict detection automático por similaridade semântica.</p>
+<p>Some features you would put in Graphiti already exist in tools focused only on decisions. <strong>DecisionNode</strong> (<a href="https://github.com/decisionnode/DecisionNode">github.com/decisionnode/DecisionNode</a>) is one example: it stores decisions as structured JSON with vector embeddings, exposes them via CLI and an MCP server, has history tracking, soft-delete (deprecate/activate) and automatic conflict detection by semantic similarity.</p>
 
 <p>It is a sub-system, not an alternative to federated architecture. It solves the decision module with semantic search; it does not cover Context Packs, domains, style guides or project context. But if your pain is specifically "agents do not remember architecture decisions made last week", DecisionNode can solve this before you need to spin up Graphiti.</p>
 
@@ -2054,12 +2054,12 @@ $env:VAULT_PATH = 'C:\path\to\vault'
 <table>
 <thead><tr><th>Anti-pattern</th><th>Symptom</th><th>Antidote</th></tr></thead>
 <tbody>
-<tr><td><strong>Super cérebro único</strong></td><td>Marketing puxa código, código puxa pesquisa, tudo mistura</td><td>Domínios isolados desde o dia um</td></tr>
-<tr><td><strong>Contexto sempre ativo</strong></td><td>Agente lento, alucinação, respostas fora do escopo</td><td>Context Packs por tarefa</td></tr>
-<tr><td><strong>Memória automática sem revisão</strong></td><td>Hipóteses viram fato, base degrada em semanas</td><td>Inbox obrigatório, aprovação humana</td></tr>
-<tr><td><strong>Adaptador como fonte principal</strong></td><td>Trocar de ferramenta exige reescrever tudo</td><td>AGENT.md é a fonte, adaptador só traduz</td></tr>
-<tr><td><strong>Orquestrador poderoso cedo demais</strong></td><td>Hermes/LangGraph fazendo coisa que ninguém entende</td><td>Começar com leitura direta, adicionar orquestração quando doer</td></tr>
-<tr><td><strong>MCP/API sem escopo</strong></td><td>Qualquer agente escreve em qualquer pasta</td><td>Escrita apenas em /90-inbox/, resto read-only</td></tr>
+<tr><td><strong>Single super brain</strong></td><td>Marketing pulls code, code pulls research, everything mixes</td><td>Isolated domains from day one</td></tr>
+<tr><td><strong>Always-on context</strong></td><td>Slow agent, hallucination, out-of-scope answers</td><td>Context Packs per task</td></tr>
+<tr><td><strong>Automatic memory without review</strong></td><td>Hypotheses turn into facts, the base degrades in weeks</td><td>Mandatory inbox, human approval</td></tr>
+<tr><td><strong>Adapter as the primary source</strong></td><td>Switching tools requires rewriting everything</td><td>AGENT.md is the source, the adapter only translates</td></tr>
+<tr><td><strong>Powerful orchestrator too early</strong></td><td>Hermes/LangGraph doing things no one understands</td><td>Start with direct reading, add orchestration when it hurts</td></tr>
+<tr><td><strong>Unscoped MCP/API</strong></td><td>Any agent writes to any folder</td><td>Write only to /90-inbox/, the rest read-only</td></tr>
 </tbody>
 </table>
 
@@ -2113,44 +2113,44 @@ $env:VAULT_PATH = 'C:\path\to\vault'
 
 <h3>DECISION.md</h3>
 
-<pre><code># Decision: [título curto]
+<pre><code># Decision: [short title]
 
 Date: YYYY-MM-DD
-Scope: [domínio ou projeto]
+Scope: [domain or project]
 Status: proposed | approved | superseded | archived
-Source: [conversa, reunião, documento]
-Decision: [a decisão em uma frase]
-Reason: [por que decidiu isso]
-Impacts: [o que muda]
-Supersedes: [link para decisão anterior, se houver]
-Related context packs: [packs que devem refletir essa decisão]</code></pre>
+Source: [conversation, meeting, document]
+Decision: [the decision in one sentence]
+Reason: [why this was decided]
+Impacts: [what changes]
+Supersedes: [link to previous decision, if any]
+Related context packs: [packs that should reflect this decision]</code></pre>
 
 <h3>PROJECT_CONTEXT.md</h3>
 
-<pre><code># Project: [nome]
+<pre><code># Project: [name]
 
-Goal: [o que esse projeto deve resolver]
-Current status: [onde está agora]
-Stack: [tecnologias, ferramentas]
-Constraints: [limites técnicos, prazo, orçamento]
-Important files: [caminhos relevantes]
-Relevant domains: [quais domínios da memória se aplicam]
-Relevant context packs: [quais packs usar]
-Open questions: [o que ainda não foi decidido]
-Do not use: [o que NÃO trazer para esse projeto]</code></pre>
+Goal: [what this project should solve]
+Current status: [where it stands now]
+Stack: [technologies, tools]
+Constraints: [technical limits, deadline, budget]
+Important files: [relevant paths]
+Relevant domains: [which memory domains apply]
+Relevant context packs: [which packs to use]
+Open questions: [what is still undecided]
+Do not use: [what NOT to bring into this project]</code></pre>
 
 <h3>MEMORY_UPDATE_PROPOSAL.md</h3>
 
 <pre><code># Memory Update Proposal
 
-Source: [conversa, agente, documento]
-Suggested domain: [domínio alvo]
+Source: [conversation, agent, document]
+Suggested domain: [target domain]
 Suggested memory type: fact | decision | preference | workflow | risk
 Confidence: low | medium | high
-Why this should become memory: [justificativa]
-Proposed text: [o texto exato a virar memória]
+Why this should become memory: [justification]
+Proposed text: [the exact text to become memory]
 Human decision: approved | edited | rejected
-Reviewer: [nome]
+Reviewer: [name]
 Decision date: YYYY-MM-DD</code></pre>
 
 <!-- ============================================== -->
@@ -2182,12 +2182,12 @@ Decision date: YYYY-MM-DD</code></pre>
 <p>The references below anchor the technical components. The guide does not depend on a specific tool, but uses concepts and patterns from these ecosystems.</p>
 
 <ul>
-<li><strong>Hermes Agent — NousResearch.</strong> <a href="https://github.com/NousResearch/hermes-agent">github.com/NousResearch/hermes-agent</a> e <a href="https://hermes-agent.nousresearch.com/docs/">hermes-agent.nousresearch.com/docs</a></li>
+<li><strong>Hermes Agent — NousResearch.</strong> <a href="https://github.com/NousResearch/hermes-agent">github.com/NousResearch/hermes-agent</a> and <a href="https://hermes-agent.nousresearch.com/docs/">hermes-agent.nousresearch.com/docs</a></li>
 <li><strong>Model Context Protocol.</strong> <a href="https://modelcontextprotocol.io">modelcontextprotocol.io</a></li>
-<li><strong>Obsidian MCP servers (comunidade).</strong> Implementações via Local REST API plugin ou via filesystem direto.</li>
+<li><strong>Obsidian MCP servers (community).</strong> Implementations via the Local REST API plugin or via direct filesystem.</li>
 <li><strong>Claude Code Memory.</strong> <a href="https://docs.claude.com/en/docs/claude-code/memory">docs.claude.com/en/docs/claude-code/memory</a></li>
 <li><strong>Graphiti — Zep.</strong> <a href="https://help.getzep.com/graphiti/graphiti/overview">help.getzep.com/graphiti</a></li>
-<li><strong>DecisionNode.</strong> <a href="https://github.com/decisionnode/DecisionNode">github.com/decisionnode/DecisionNode</a> — implementação de referência para o sub-módulo de decisões com embeddings e busca semântica via MCP.</li>
+<li><strong>DecisionNode.</strong> <a href="https://github.com/decisionnode/DecisionNode">github.com/decisionnode/DecisionNode</a>, reference implementation for the decisions sub-module with embeddings and semantic search via MCP.</li>
 <li><strong>Letta — Stateful agents.</strong> <a href="https://docs.letta.com/guides/core-concepts/stateful-agents/">docs.letta.com</a></li>
 <li><strong>CrewAI.</strong> <a href="https://docs.crewai.com">docs.crewai.com</a></li>
 <li><strong>Microsoft Agent Framework.</strong> <a href="https://learn.microsoft.com/en-us/agent-framework/">learn.microsoft.com/agent-framework</a></li>
