@@ -1730,19 +1730,19 @@ ufw allow 22  # SSH stays open</code></pre>
 <tbody>
 <tr>
   <td><strong>1</strong></td>
-  <td>1ª vez</td>
+  <td>1st time</td>
   <td><code>observed</code></td>
   <td>Agent records symptom in inbox with <code>type: tool_pattern</code>. Problem documented, optional workaround.</td>
 </tr>
 <tr>
   <td><strong>2</strong></td>
-  <td>2ª vez</td>
+  <td>2nd time</td>
   <td><code>auto_fix</code></td>
   <td>Agent finds the pattern in <code>tool-patterns/</code> and applies the documented fix <em>without asking</em>.</td>
 </tr>
 <tr>
   <td><strong>3</strong></td>
-  <td>3ª+ vez</td>
+  <td>3rd+ time</td>
   <td><code>root_cause_pending</code></td>
   <td>Trigger for root cause analysis. The problem is too recurrent to be just a workaround.</td>
 </tr>
@@ -1756,40 +1756,40 @@ ufw allow 22  # SSH stays open</code></pre>
 <p>This is the distinction that makes the mechanism useful. Project memory stays in <code>/10-projects/</code>. Client memory in <code>/30-clients/</code>. Tool patterns stay in <code>/50-skills/tool-patterns/</code> — available to any project, without contaminating any specific context.</p>
 
 <pre><code>50-skills/
-├── published/          ← skills aprovadas (procedimentos)
-├── proposed/           ← skills aguardando aprovação
-├── deprecated/         ← histórico
-├── tool-patterns/      ← ledger por ferramenta  ← NOVO
+├── published/          ← approved skills (procedures)
+├── proposed/           ← skills awaiting approval
+├── deprecated/         ← history
+├── tool-patterns/      ← per-tool ledger  ← NEW
 │   ├── README.md
-│   ├── brandcraft.md   ← 1 arquivo por ferramenta
+│   ├── brandcraft.md   ← 1 file per tool
 │   └── puppeteer.md
 └── INDEX.md</code></pre>
 
 <h3>Complete flow</h3>
 
 <ol>
-<li><strong>1st occurrence:</strong> agente encontra problema com o Brandcraft. Escreve no inbox:
+<li><strong>1st occurrence:</strong> the agent encounters a problem with Brandcraft. Writes to the inbox:
 <pre><code>---
 type: tool_pattern
 tool: brandcraft
-symptom: API retorna rate limit em header não-padrão X-BrandCraft-Limit-Remaining
-fix: verificar X-BrandCraft-Limit-Remaining antes de X-RateLimit-Remaining
+symptom: API returns rate limit in non-standard header X-BrandCraft-Limit-Remaining
+fix: check X-BrandCraft-Limit-Remaining before X-RateLimit-Remaining
 confidence: verified
 risk: low
 ---</code></pre>
 </li>
-<li><strong>Processes the pattern:</strong> <code>node scripts/escalate-patterns.mjs</code> cria <code>tool-patterns/brandcraft.md</code> com <code>status: observed</code>.</li>
-<li><strong>2nd occurrence (another project):</strong> agente consulta <code>tool-patterns/brandcraft.md</code>, encontra <code>status: auto_fix</code> e aplica o fix documentado sem diagnóstico.</li>
-<li><strong>3rd occurrence:</strong> script escala para <code>root_cause_pending</code> e alerta que o problema precisa ser resolvido na fonte — não só contornado.</li>
+<li><strong>Processes the pattern:</strong> <code>node scripts/escalate-patterns.mjs</code> creates <code>tool-patterns/brandcraft.md</code> with <code>status: observed</code>.</li>
+<li><strong>2nd occurrence (another project):</strong> the agent consults <code>tool-patterns/brandcraft.md</code>, finds <code>status: auto_fix</code> and applies the documented fix without re-diagnosing.</li>
+<li><strong>3rd occurrence:</strong> the script escalates to <code>root_cause_pending</code> and warns that the problem needs to be solved at the source, not just worked around.</li>
 </ol>
 
-<h3>O que NÃO é um tool_pattern</h3>
+<h3>What is NOT a tool_pattern</h3>
 
-<p>Não confundir com preferências do usuário (<code>preference</code>), fatos de projeto (<code>fact</code>) ou decisões formais (<code>decision</code>). Tool patterns são específicos de comportamentos de ferramentas externas — não de escolhas do usuário, não de contexto de negócio.</p>
+<p>Do not confuse with user preferences (<code>preference</code>), project facts (<code>fact</code>) or formal decisions (<code>decision</code>). Tool patterns are specific to external tool behaviors, not user choices, not business context.</p>
 
 <div class="callout tip">
-<div class="label">Por que 3 tiers e não só "registra e resolve"?</div>
-<p>Porque o custo de intervenção deve escalar com a frequência. Na 1ª vez, o contexto ainda é raro — documentar é suficiente. Na 2ª vez, já é recorrente — automação é justificada. Na 3ª vez, é um padrão sistêmico — exige investigação da causa raiz, não mais um workaround.</p>
+<div class="label">Why 3 tiers and not just "log and fix"?</div>
+<p>Because the cost of intervention should scale with frequency. The 1st time, the context is still rare, documenting is enough. The 2nd time, it is already recurring, automation is justified. The 3rd time, it is a systemic pattern, it requires root cause investigation, not another workaround.</p>
 </div>
 
 <!-- ============================================== -->
