@@ -469,17 +469,25 @@ sup {
 </table>
 
 <!-- SECTION 3 -->
-<h2><span class="section-num">03 · O Erro Arquitetural</span>Armazenamento, roteamento e execução não cabem no mesmo lugar.</h2>
+<h2><span class="section-num">03 · O Erro Arquitetural</span>Quem guarda o contexto não pode ser quem o executa.</h2>
 
-<p>O problema fundamental das abordagens existentes é a ausência de separação entre três funções distintas: <em>guardar</em> contexto, <em>rotear</em> contexto para o agente certo, e <em>executar</em> com base nesse contexto. Quando as três vivem no mesmo componente — o agente — qualquer falha em uma contamina as outras.</p>
+<p>Antes de descrever o erro, separe três camadas que leitores confundem o tempo todo. Confundi-las é a raiz do problema:</p>
 
-<p>Um agente que guarda sua própria memória tem incentivo estrutural para guardar demais: mais contexto parece mais seguro. Um agente que roteia seu próprio contexto não tem critério externo para decidir o que é relevante: traz tudo ou usa heurísticas opacas. Um agente que executa com base em memória que ele mesmo governou não tem mecanismo de auditoria: erros de memória viram erros de execução silenciosos.</p>
+<ul>
+<li><strong>Modelo (LLM):</strong> o cérebro que raciocina (nemotron, Claude, GPT). Não guarda nada entre sessões.</li>
+<li><strong>Agente de código (harness):</strong> Claude Code, Cursor, Codex, Hermes. Roda o loop, usa ferramentas, lê e escreve arquivos.</li>
+<li><strong>Memória:</strong> o contexto persistente. Onde ele mora, e quem manda nele, é a pergunta arquitetural.</li>
+</ul>
 
-<div class="pull">Um agente que guarda, roteia e executa com sua própria memória não tem como saber o que não sabe. E não tem como ser corrigido sem ser reiniciado.</div>
+<p>O erro das abordagens atuais é colocar a memória dentro do agente, fundindo duas funções que deveriam ser separadas: <em>guardar</em> o contexto e <em>executar</em> com base nele. Quando as duas vivem no mesmo componente, qualquer falha em uma contamina a outra.</p>
 
-<p>Sistemas de software maduros resolveram esse problema há décadas com separação de responsabilidades. Bancos de dados não executam lógica de negócio. Roteadores não armazenam conteúdo. Servidores de aplicação não gerenciam persistência diretamente. A arquitetura de agentes de IA ainda não internalizou esse princípio.</p>
+<p>Um agente que guarda a própria memória tem incentivo estrutural para guardar demais: mais contexto parece mais seguro. Um agente que executa com base em memória que ele mesmo governa não tem mecanismo de auditoria: erros de memória viram erros de execução silenciosos. E como a memória morre com a ferramenta, o contexto fica refém de quem o executa.</p>
 
-<p>Separar as três funções tem um corolário importante: o componente de roteamento não pode ser implícito. Não pode ser "o que sobra quando o agente decide ler um arquivo". Tem que ser explícito, ativo, com critério próprio, auditável. É esse papel que a v1.0 deste paper subestimou — e que a v2.0 corrige.</p>
+<div class="pull">Um agente que guarda e executa com a própria memória não tem como saber o que não sabe. E não tem como ser corrigido sem ser reiniciado.</div>
+
+<p>Sistemas de software maduros resolveram isso há décadas com separação de responsabilidades. Bancos de dados não executam lógica de negócio. Servidores de aplicação não gerenciam persistência diretamente. O dado vive fora do processo que o consome, versionado e auditável. A arquitetura de agentes de IA ainda não internalizou esse princípio.</p>
+
+<p>E o roteamento? Na v1.0 deste paper, a tentação foi tratar o roteamento como uma terceira função: um componente ativo e central que decidia o que o agente lê. Não é. O roteamento de leitura é o próprio agente puxando o que precisa, guiado pelo contrato e por arquivos estáticos versionados. Não há roteador central, e não precisa haver. O que dá auditoria e correção não é um roteador ativo, é a memória viver fora do agente, em arquivos versionados que qualquer cliente lê e qualquer humano inspeciona.</p>
 
 <!-- SECTION 4 -->
 <h2><span class="section-num">04 · A Proposta</span>Memória federada e os três gaps fechados.</h2>

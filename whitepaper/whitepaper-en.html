@@ -469,17 +469,25 @@ sup {
 </table>
 
 <!-- SECTION 3 -->
-<h2><span class="section-num">03 · The Architectural Error</span>Storage, routing and execution do not belong in the same place.</h2>
+<h2><span class="section-num">03 · The Architectural Error</span>Whoever stores context cannot be whoever executes it.</h2>
 
-<p>The fundamental problem of existing approaches is the absence of separation between three distinct functions: <em>storing</em> context, <em>routing</em> context to the right agent, and <em>executing</em> based on that context. When all three live in the same component — the agent — any failure in one contaminates the others.</p>
+<p>Before describing the error, separate three layers that readers confuse all the time. Confusing them is the root of the problem:</p>
 
-<p>An agent that stores its own memory has a structural incentive to store too much: more context feels safer. An agent that routes its own context has no external criterion to decide what is relevant: it brings everything or uses opaque heuristics. An agent that executes based on memory it governed itself has no audit mechanism: memory errors become silent execution errors.</p>
+<ul>
+<li><strong>Model (LLM):</strong> the brain that reasons (nemotron, Claude, GPT). It keeps nothing between sessions.</li>
+<li><strong>Code agent (harness):</strong> Claude Code, Cursor, Codex, Hermes. Runs the loop, uses tools, reads and writes files.</li>
+<li><strong>Memory:</strong> the persistent context. Where it lives, and who controls it, is the architectural question.</li>
+</ul>
 
-<div class="pull">An agent that stores, routes and executes with its own memory cannot know what it does not know. And it cannot be corrected without being restarted.</div>
+<p>The error of current approaches is placing memory inside the agent, fusing two functions that should be separate: <em>storing</em> context and <em>executing</em> based on it. When both live in the same component, any failure in one contaminates the other.</p>
 
-<p>Mature software systems solved this problem decades ago with separation of concerns. Databases do not execute business logic. Routers do not store content. Application servers do not manage persistence directly. AI agent architecture has not yet internalized this principle.</p>
+<p>An agent that stores its own memory has a structural incentive to store too much: more context feels safer. An agent that executes based on memory it governs itself has no audit mechanism: memory errors become silent execution errors. And because the memory dies with the tool, context is held hostage by whoever executes it.</p>
 
-<p>Separating the three functions has an important corollary: the routing component cannot be implicit. It cannot be "whatever is left when the agent decides to read a file". It has to be explicit, active, with its own criteria, auditable. This is the role v1.0 of this paper underestimated — and that v2.0 corrects.</p>
+<div class="pull">An agent that stores and executes with its own memory cannot know what it does not know. And it cannot be corrected without being restarted.</div>
+
+<p>Mature software systems solved this decades ago with separation of concerns. Databases do not execute business logic. Application servers do not manage persistence directly. Data lives outside the process that consumes it, versioned and auditable. AI agent architecture has not yet internalized this principle.</p>
+
+<p>And routing? In v1.0 of this paper, the temptation was to treat routing as a third function: an active and central component that decided what the agent reads. It is not. Read routing is the agent itself pulling what it needs, guided by the contract and by static versioned files. There is no central router, and there does not need to be. What provides auditing and correction is not an active router, it is memory living outside the agent, in versioned files that any client reads and any human inspects.</p>
 
 <!-- SECTION 4 -->
 <h2><span class="section-num">04 · The Proposal</span>Federated memory and the three closed gaps.</h2>
