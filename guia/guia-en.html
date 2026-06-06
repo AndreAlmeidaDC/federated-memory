@@ -1916,21 +1916,21 @@ git init</code></pre>
 
 <p><strong>Done when:</strong> the three packs exist, each has a goal, <em>Use</em> and <em>Avoid</em> lists, and the temporal validity field.</p>
 
-<h3>Step 5 — Adapter for the first agent</h3>
+<h3>Step 5 — Adapter and capture hook for the first agent</h3>
 
-<p>If using Claude Code, create <code>80-agent-adapters/claude/CLAUDE.md</code> pointing to <code>AGENT.md</code> and a default Context Pack. Use the template from section 08.</p>
+<p>If using Claude Code, create <code>80-agent-adapters/claude/CLAUDE.md</code> pointing to <code>AGENT.md</code> and a default Context Pack. Use the template from section 08. Also configure the capture hook in <code>.claude/settings.json</code> (PostToolUse running <code>scripts/capture-to-inbox.mjs</code>, per section 09c). For other clients, the adapter follows the same principle: point to the contract and wire a tool-agnostic capture hook.</p>
 
-<p><strong>Done when:</strong> you can run Claude Code in the vault directory and it reads the adapter automatically.</p>
+<p><strong>Done when:</strong> you can run the agent in the vault directory, it reads the adapter automatically, and relevant actions produce suggestions in <code>/90-inbox/suggested-memory.md</code> without manual intervention.</p>
 
-<h3>Step 6 — Install Hermes</h3>
+<h3>Step 6 (optional) — Connect Hermes as an additional client</h3>
 
-<p>Use the instructions from section 10. Add an <code>AGENTS.md</code> at the vault root referencing <code>00-global/AGENT.md</code>.</p>
+<p>Skip this step if you are not going to use Hermes. The floor from steps 1 to 5 is already enough for a single client. To connect Hermes as an additional client, use the instructions from section 10 and add an <code>AGENTS.md</code> at the vault root referencing <code>00-global/AGENT.md</code>.</p>
 
 <p><strong>Done when:</strong> when running <code>hermes</code> inside the directory, it responds respecting the "do not load everything" rule and using Context Packs.</p>
 
-<h3>Step 7 — Expose via MCP</h3>
+<h3>Step 7 (optional) — Expose via MCP</h3>
 
-<p>Choose between Option A (Local REST API) or Option B (direct filesystem) from section 11. Configure in your preferred MCP client. Restrict writing to <code>/90-inbox/</code>.</p>
+<p>Skip this step if you do not have multiple external agents consuming the same base. If you need it, choose between Option A (Local REST API) or Option B (direct filesystem) from section 11. Configure in your preferred MCP client. Restrict writing to <code>/90-inbox/</code>.</p>
 
 <p><strong>Done when:</strong> an external agent (Claude Desktop, Cursor, ChatGPT with MCP) queries your vault and respects the write limits.</p>
 
@@ -1946,7 +1946,7 @@ git init</code></pre>
 
 <p><strong>Done when:</strong> all three answers are "yes". If any is "no", the problem is in the Context Pack, not the agent.</p>
 
-<h3>Step 9 — Add Graphiti if necessary</h3>
+<h3>Step 9 (optional) — Add Graphiti</h3>
 
 <p>Only execute this step when you feel temporal pain: decisions replacing decisions, questions about history, information validity. Before that, it is over-engineering.</p>
 

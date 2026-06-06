@@ -1916,21 +1916,21 @@ git init</code></pre>
 
 <p><strong>Concluído quando:</strong> os três packs existem, cada um tem objetivo, listas <em>Use</em> e <em>Avoid</em>, e o campo de validade temporal.</p>
 
-<h3>Passo 5 — Adaptador para o primeiro agente</h3>
+<h3>Passo 5 — Adaptador e hook de captura para o primeiro agente</h3>
 
-<p>Se for Claude Code, crie <code>80-agent-adapters/claude/CLAUDE.md</code> apontando para o <code>AGENT.md</code> e para um Context Pack default. Use o template da seção 08.</p>
+<p>Se for Claude Code, crie <code>80-agent-adapters/claude/CLAUDE.md</code> apontando para o <code>AGENT.md</code> e para um Context Pack default. Use o template da seção 08. Configure também o hook de captura em <code>.claude/settings.json</code> (PostToolUse rodando <code>scripts/capture-to-inbox.mjs</code>, conforme a seção 09c). Para outros clientes, o adaptador segue o mesmo princípio: apontar para o contrato e ligar um hook de captura agnóstico.</p>
 
-<p><strong>Concluído quando:</strong> você consegue rodar o Claude Code no diretório do vault e ele lê o adaptador automaticamente.</p>
+<p><strong>Concluído quando:</strong> você consegue rodar o agente no diretório do vault, ele lê o adaptador automaticamente, e ações relevantes geram sugestões em <code>/90-inbox/suggested-memory.md</code> sem intervenção manual.</p>
 
-<h3>Passo 6 — Instalar Hermes</h3>
+<h3>Passo 6 (opcional) — Conectar o Hermes como cliente adicional</h3>
 
-<p>Use as instruções da seção 10. Adicione um <code>AGENTS.md</code> na raiz do vault que referencia o <code>00-global/AGENT.md</code>.</p>
+<p>Pule este passo se você não vai usar o Hermes. O piso dos passos 1 a 5 já é suficiente para um cliente único. Para conectar o Hermes como cliente adicional, use as instruções da seção 10 e adicione um <code>AGENTS.md</code> na raiz do vault que referencia o <code>00-global/AGENT.md</code>.</p>
 
 <p><strong>Concluído quando:</strong> ao rodar <code>hermes</code> dentro do diretório, ele responde respeitando a regra "não carregar tudo" e usando os Context Packs.</p>
 
-<h3>Passo 7 — Expor via MCP</h3>
+<h3>Passo 7 (opcional) — Expor via MCP</h3>
 
-<p>Escolha entre Opção A (Local REST API) ou Opção B (filesystem direto) da seção 11. Configure no seu cliente MCP de preferência. Restrinja escrita a <code>/90-inbox/</code>.</p>
+<p>Pule este passo se você não tem múltiplos agentes externos consumindo a mesma base. Caso precise, escolha entre Opção A (Local REST API) ou Opção B (filesystem direto) da seção 11. Configure no seu cliente MCP de preferência. Restrinja escrita a <code>/90-inbox/</code>.</p>
 
 <p><strong>Concluído quando:</strong> um agente externo (Claude Desktop, Cursor, ChatGPT com MCP) consulta seu vault e respeita os limites de escrita.</p>
 
@@ -1946,7 +1946,7 @@ git init</code></pre>
 
 <p><strong>Concluído quando:</strong> as três respostas são "sim". Se uma delas for "não", o problema está no Context Pack, não no agente.</p>
 
-<h3>Passo 9 — Adicionar Graphiti se necessário</h3>
+<h3>Passo 9 (opcional) — Adicionar Graphiti</h3>
 
 <p>Só execute este passo quando você sentir dor temporal: decisões substituindo decisões, perguntas sobre histórico, validade de informação. Antes disso, é over-engineering.</p>
 
