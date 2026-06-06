@@ -1476,7 +1476,7 @@ Before responding to any task:
   <rect x="550" y="176" width="180" height="12" fill="#14110F"/>
   <text x="640" y="176" text-anchor="middle" font-family="JetBrains Mono, monospace" font-size="11" fill="#F4EFE6">another agent / CI</text>
   <text x="640" y="210" text-anchor="middle" font-family="Manrope, sans-serif" font-size="12" font-weight="600" fill="#14110F">Hermes / script</text>
-  <text x="640" y="228" text-anchor="middle" font-family="JetBrains Mono, monospace" font-size="9" fill="#6B6258">acessa MCP via API HTTP</text>
+  <text x="640" y="228" text-anchor="middle" font-family="JetBrains Mono, monospace" font-size="9" fill="#6B6258">accesses MCP via HTTP API</text>
 
   <!-- Outro agente → MCP (HTTP) -->
   <path d="M 550 200 L 475 200" stroke="#C24A2A" stroke-width="1.5" marker-end="url(#arr-r3)"/>
@@ -1489,45 +1489,45 @@ Before responding to any task:
   <!-- sync arrows -->
   <path d="M 380 355 L 380 390" stroke="#6B7A4F" stroke-width="1" stroke-dasharray="3 3" marker-end="url(#arr-r)"/>
 </svg>
-<figcaption>Figura 5b — Arquitetura remota: vault e MCP na VPS, agentes acessando de fora</figcaption>
+<figcaption>Figure 5b, remote architecture: vault and MCP on the VPS, agents accessing from outside</figcaption>
 </figure>
 
 <table>
-<thead><tr><th>Component</th><th>Where roda</th><th>Motivo</th></tr></thead>
+<thead><tr><th>Component</th><th>Where it runs</th><th>Why</th></tr></thead>
 <tbody>
 <tr><td>Vault (markdown files)</td><td>VPS</td><td>Single source of truth. No version conflict.</td></tr>
-<tr><td>MCP Server</td><td>VPS (porta local)</td><td>Nunca exposto diretamente. Acesso via tunnel.</td></tr>
+<tr><td>MCP Server</td><td>VPS (local port)</td><td>Never directly exposed. Access via tunnel.</td></tr>
 <tr><td>Hermes Agent</td><td>VPS ou local</td><td>If running on VPS, no transfer latency.</td></tr>
 <tr><td>Claude Code</td><td>Local machine</td><td>Human interface. Connects via SSH tunnel.</td></tr>
-<tr><td>Git remote</td><td>GitHub</td><td>Sincronização e histórico. Não é o vault primário.</td></tr>
+<tr><td>Git remote</td><td>GitHub</td><td>Synchronization and history. Not the primary vault.</td></tr>
 </tbody>
 </table>
 
-<h3>Sincronização via Git</h3>
+<h3>Synchronization via Git</h3>
 
-<p>O vault é um repositório Git normal. Cada máquina que precisa de uma cópia local faz clone e pull. A VPS é o origin.</p>
+<p>The vault is a regular Git repository. Each machine that needs a local copy does clone and pull. The VPS is the origin.</p>
 
-<pre><code># Na VPS — configuração inicial
+<pre><code># On the VPS, initial setup
 git init --bare /vault-remote.git
 
-# No vault local — apontar para a VPS como origin
-git remote add origin ssh://usuario@sua-vps:/vault-remote.git
+# On the local vault, point to the VPS as origin
+git remote add origin ssh://user@your-vps:/vault-remote.git
 git push -u origin main
 
-# Em outra máquina — clonar o vault
-git clone ssh://usuario@sua-vps:/vault-remote.git ~/vault
+# On another machine, clone the vault
+git clone ssh://user@your-vps:/vault-remote.git ~/vault
 
 # Sync routine (before working)
 git pull origin main
 
 # After inbox approvals
 git add 00-global/ 10-projects/ 20-domains/ 60-context-packs/
-git commit -m "feat: approved memory — [domínio]"
+git commit -m "feat: approved memory, [domain]"
 git push origin main</code></pre>
 
 <div class="callout tip">
 <div class="label">Completion criterion</div>
-<p>Rode <code>git log --oneline -5</code> na VPS e em outra máquina. Os hashes devem ser idênticos. Se não forem, tem divergência — resolva antes de continuar.</p>
+<p>Run <code>git log --oneline -5</code> on the VPS and on another machine. The hashes must be identical. If they are not, there is divergence, resolve before continuing.</p>
 </div>
 
 <h3>Remote access to MCP server</h3>
@@ -1538,13 +1538,13 @@ git push origin main</code></pre>
 
 <p>MCP runs on localhost on the VPS. You create a tunnel that maps the local port to your machine.</p>
 
-<pre><code># Cria tunnel: porta 3000 da VPS aparece como localhost:3000 na sua máquina
-ssh -L 3000:localhost:3000 usuario@sua-vps -N
+<pre><code># Create tunnel: port 3000 on the VPS appears as localhost:3000 on your machine
+ssh -L 3000:localhost:3000 user@your-vps -N
 
-# Para manter em background
-ssh -L 3000:localhost:3000 usuario@sua-vps -fN
+# To keep it in the background
+ssh -L 3000:localhost:3000 user@your-vps -fN
 
-# Para fechar
+# To close
 kill $(lsof -t -i:3000)</code></pre>
 
 <p>With the tunnel active, Claude Code sees the remote MCP as if it were local. No additional configuration.</p>
@@ -1553,10 +1553,10 @@ kill $(lsof -t -i:3000)</code></pre>
 
 <p>If more than one machine needs to access MCP simultaneously, put a reverse proxy (nginx or Caddy) in front with TLS and basic authentication.</p>
 
-<pre><code># Caddy — configuração mínima (~/.caddy/Caddyfile)
-mcp.seudominio.com {
+<pre><code># Caddy, minimal configuration (~/.caddy/Caddyfile)
+mcp.yourdomain.com {
     basicauth /* {
-        agente $2a$14$HASH_GERADO_COM_caddy_hash
+        agent $2a$14$HASH_GENERATED_WITH_caddy_hash
     }
     reverse_proxy localhost:3000
 }</code></pre>
@@ -1570,7 +1570,7 @@ mcp.seudominio.com {
 
 <p>With the SSH tunnel active, Claude Code does not know it is talking to a remote server. Configure normally pointing to localhost.</p>
 
-<pre><code># .claude/settings.json (na local machine)
+<pre><code># .claude/settings.json (on the local machine)
 {
   "mcpServers": {
     "obsidian-vault": {
@@ -1578,13 +1578,13 @@ mcp.seudominio.com {
       "args": ["-y", "mcp-obsidian"],
       "env": {
         "OBSIDIAN_API_URL": "http://localhost:3000",
-        "OBSIDIAN_API_KEY": "seu-token-aqui"
+        "OBSIDIAN_API_KEY": "your-token-here"
       }
     }
   }
 }</code></pre>
 
-<p>Completion criterion: rode <code>/mcp</code> no Claude Code e veja o servidor listado como conectado. Peça para o agente ler um arquivo do vault. Se vier, o tunnel está funcionando.</p>
+<p>Completion criterion: run <code>/mcp</code> in Claude Code and see the server listed as connected. Ask the agent to read a file from the vault. If it returns, the tunnel is working.</p>
 
 <h3>Security considerations</h3>
 
@@ -1600,13 +1600,13 @@ mcp.seudominio.com {
 </table>
 
 <pre><code># Verify that port 3000 is NOT publicly exposed
-# Na VPS:
+# On the VPS:
 ss -tlnp | grep 3000
-# Deve mostrar: 127.0.0.1:3000 — se mostrar 0.0.0.0:3000, feche no firewall
+# Should show: 127.0.0.1:3000. If it shows 0.0.0.0:3000, block it in the firewall
 
 # UFW (Ubuntu)
 ufw deny 3000
-ufw allow 22  # SSH continua aberto</code></pre>
+ufw allow 22  # SSH stays open</code></pre>
 
 <!-- ============================================== -->
 <!-- 12c - HARNESS ENGINEERING -->
