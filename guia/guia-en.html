@@ -1116,23 +1116,23 @@ Source notes:
 </div>
 
 <!-- ============================================== -->
-<!-- 09b - HERMES FOUR ROLES (v2.0 addition) -->
+<!-- ============================================== -->
+<!-- 09b - THE AGENT AS CLIENT (v3) -->
 <!-- ============================================== -->
 
-<h2><span class="num">09b / Active Core</span>The four roles of Hermes</h2>
+<h2><span class="num">09b / The Agent as Client</span>Memory is passive, the agent is interchangeable</h2>
 
-<p>v1 of this guide called Hermes a "lightweight orchestrator". Practice showed this characterization underestimated the role. Without an active component mediating access to context, three structural problems remain open: quality feedback requires per-use logging; conflict resolution requires status inspection; write policy requires enforcement on the call path. None of these functions belong to the agent — they all belong to the core.</p>
+<p>v1 and v2 of this guide called Hermes a core: first a "lightweight orchestrator", then an "active core with four roles". Field testing and the official Hermes documentation showed that this core does not exist as described. Hermes is a full code agent with its own memory, not a gatekeeper that mediates other agents. This section corrects that.</p>
 
-<p>In v2, Hermes plays four roles. They are not optional — they are what turns an organized folder into an architecture.</p>
+<p>Separate three layers, because confusing them is the most common mistake: the model (the LLM that reasons), the code agent (Claude Code, Cursor, Codex, Hermes, which runs the loop and touches the files) and federated memory (the Markdown vault, passive and sovereign).</p>
 
-<h3>1. Context router</h3>
-<p>Classifies the task, identifies the relevant domain, selects the appropriate Context Pack, delivers the minimum necessary package. The agent does not choose what to read — it receives what was routed. This is the role v1 already recognized.</p>
+<p>Memory is passive. It does not route, does not enforce policy, does not mediate anything. Code agents are interchangeable clients that read and write in the vault, guided by <code>AGENT.md</code> and by the folder structure. Hermes is one of them. None is the core. The four functions v2 assigned to a core still happen, but elsewhere.</p>
 
-<h3>2. Memory manager with feedback loop</h3>
-<p>Each pack use is logged in <code>/99-archive/pack-usage.log</code> with a classified result. Three consecutive "bad" marks flag the pack for review. The improvement cycle is mechanical, not dependent on user habit. Without this, bad packs survive indefinitely because nobody is forced to look.</p>
+<h3>1. Read routing: the agent itself</h3>
+<p>The agent pulls what it needs, guided by the contract and by static versioned files. There is no central router deciding for it.</p>
 
-<h3>3. Scope controller (conflict resolution)</h3>
-<p>Applies the memory conflict rule when assembling context: ignores entries with <code>status: superseded</code>, prioritizes the most recent with <code>status: approved</code>, flags the absence of status as a block. The agent never sees the conflict — it sees only the winning version or a direct question for the human.</p>
+<h3>2. Conflict resolution: structural, in the data</h3>
+<p>The conflict rule is not in a component, it is in the files. The most recent entry with <code>status: approved</code> wins; <code>superseded</code> stays in history and is ignored at runtime. Any agent reading the vault applies the same rule, because it lives in the data.</p>
 
 <pre><code># Example decision in /70-decisions/
 ---
@@ -1153,25 +1153,17 @@ need. We evaluated the migration 2 months ago.
 ## Decision
 Postgres 16 as main database starting 2026-Q2.</code></pre>
 
-<p>The old decision with <code>id: db-engine-mysql</code> automatically gets <code>status: superseded</code> and stays in history. Hermes ignores it when assembling a Context Pack that loads engineering decisions.</p>
+<p>The old decision with <code>id: db-engine-mysql</code> gets <code>status: superseded</code> and stays in history. Any agent assembling an engineering Context Pack ignores it, with no core needed for that.</p>
 
-<h3>4. Declarative policy engine</h3>
-<p>Write policy is configured once in Hermes — not in each adapter, not in each MCP call:</p>
+<h3>3. Quality feedback and capture: client hooks</h3>
+<p>Pack usage logging and memory capture come from the client agent's hooks, tool-agnostic (section 09c), not from a central manager. Capture via hooks is the main path, not an alternative to Hermes.</p>
 
-<pre><code># hermes.policy.yml (exemplo)
-write_policy:
-  default: deny
-  allow:
-    - path: "/90-inbox/**"
-      mode: "append"
-  enforcement: "all-modes"   # interactive, headless, scheduled
-  on_violation: "convert_to_inbox_suggestion"</code></pre>
-
-<p>Reading: open. Permanent writing: forbidden outside <code>/90-inbox/</code>, in any mode. Any request outside the scope is converted into an inbox suggestion, even in headless execution. The policy is declarative and auditable: a single file describes what is and is not allowed.</p>
+<h3>4. Write policy: contract, not policy engine</h3>
+<p>In cooperative mode, the write policy is the contract: reading open, permanent writing outside <code>/90-inbox/</code> turned into a suggestion. There is no <code>hermes.policy.yml</code> with semantic triggers; that was an invention of the old positioning. Real enforcement, against a hostile agent, comes from the operating system, below the agent: a container with a read-only mount except for the inbox, or a separate user with no write access to protected folders.</p>
 
 <div class="callout warn">
 <div class="label">Derived principle</div>
-<p>Federated memory without an active core is just an organized folder. The core is what turns a file structure into an architecture: it enforces policy, measures quality and resolves conflict. Without it, the principles become good intentions.</p>
+<p>Passive memory is not a weakness, it is the condition of sovereignty. A vault that needs an active core is tied to that core. A vault that is just files versioned in Git belongs to the user and works with any agent. When enforcement is needed, it comes from the operating system, never from the agent's side.</p>
 </div>
 
 <!-- ============================================== -->

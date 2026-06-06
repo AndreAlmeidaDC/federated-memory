@@ -1116,23 +1116,23 @@ Source notes:
 </div>
 
 <!-- ============================================== -->
-<!-- 09b - HERMES FOUR ROLES (v2.0 addition) -->
+<!-- ============================================== -->
+<!-- 09b - O AGENTE COMO CLIENTE (v3) -->
 <!-- ============================================== -->
 
-<h2><span class="num">09b / Núcleo Ativo</span>Os quatro papéis do Hermes</h2>
+<h2><span class="num">09b / O Agente como Cliente</span>A memória é passiva, o agente é intercambiável</h2>
 
-<p>A v1 deste guia chamou o Hermes de "orquestrador leve". A prática mostrou que essa caracterização subestimava o papel. Sem um componente ativo que medeia o acesso ao contexto, três problemas estruturais ficam abertos: feedback de qualidade exige logging por uso; resolução de conflito exige inspeção de status; política de escrita exige enforcement no caminho da chamada. Nenhuma dessas funções pertence ao agente — todas pertencem ao núcleo.</p>
+<p>A v1 e a v2 deste guia chamaram o Hermes de núcleo: primeiro "orquestrador leve", depois "núcleo ativo com quatro papéis". Teste de campo e a documentação oficial do Hermes mostraram que esse núcleo não existe como descrito. O Hermes é um agente de código completo, com memória própria, não um porteiro que medeia outros agentes. Esta seção corrige isso.</p>
 
-<p>Na v2, Hermes desempenha quatro papéis. Eles não são opcionais — são o que transforma uma pasta organizada numa arquitetura.</p>
+<p>Separe três camadas, porque confundi-las é o erro mais comum: o modelo (o LLM que raciocina), o agente de código (Claude Code, Cursor, Codex, Hermes, que roda o loop e mexe nos arquivos) e a memória federada (o vault Markdown, passivo e soberano).</p>
 
-<h3>1. Roteador de contexto</h3>
-<p>Classifica a tarefa, identifica o domínio relevante, seleciona o Context Pack apropriado, entrega o pacote mínimo necessário. O agente não escolhe o que ler — recebe o que foi roteado. Esse é o papel que a v1 já reconhecia.</p>
+<p>A memória é passiva. Ela não roteia, não aplica política, não medeia nada. Os agentes de código são clientes intercambiáveis que leem e escrevem no vault guiados pelo <code>AGENT.md</code> e pela estrutura de pastas. O Hermes é um deles. Nenhum é o núcleo. As quatro funções que a v2 atribuía a um núcleo continuam acontecendo, mas em outro lugar.</p>
 
-<h3>2. Gerenciador de memória com loop de feedback</h3>
-<p>Cada uso de pack é logado em <code>/99-archive/pack-usage.log</code> com resultado classificado. Três marcações "ruim" consecutivas flaggam o pack pra revisão. O ciclo de melhoria é mecânico, não dependente de hábito do usuário. Sem isso, packs ruins sobrevivem indefinidamente porque ninguém é forçado a olhar.</p>
+<h3>1. Roteamento de leitura: o próprio agente</h3>
+<p>O agente puxa o que precisa, guiado pelo contrato e por arquivos estáticos versionados. Não há roteador central decidindo por ele.</p>
 
-<h3>3. Controlador de escopo (resolução de conflito)</h3>
-<p>Aplica a regra de conflito de memória ao montar o contexto: ignora entradas com <code>status: superseded</code>, prioriza a mais recente com <code>status: approved</code>, sinaliza ausência de status como bloqueio. O agente nunca vê o conflito — vê apenas a versão vencedora ou uma pergunta direta pro humano.</p>
+<h3>2. Resolução de conflito: estrutural, nos dados</h3>
+<p>A regra de conflito não está num componente, está nos arquivos. Vence a entrada mais recente com <code>status: approved</code>; <code>superseded</code> fica no histórico e é ignorada em runtime. Qualquer agente que leia o vault aplica a mesma regra, porque ela vive no dado.</p>
 
 <pre><code># Exemplo de decisão em /70-decisions/
 ---
@@ -1153,25 +1153,17 @@ precisamos. Avaliamos a migração há 2 meses.
 ## Decisão
 Postgres 16 como banco principal a partir de 2026-Q2.</code></pre>
 
-<p>A decisão antiga com <code>id: db-engine-mysql</code> ganha automaticamente <code>status: superseded</code> e fica no histórico. O Hermes ignora ela ao montar Context Pack que carregue decisões de engineering.</p>
+<p>A decisão antiga com <code>id: db-engine-mysql</code> ganha <code>status: superseded</code> e fica no histórico. Qualquer agente que monte um Context Pack de engineering ignora ela, sem precisar de um núcleo para isso.</p>
 
-<h3>4. Policy engine declarativo</h3>
-<p>Política de escrita é configurada uma vez no Hermes — não em cada adaptador, não em cada chamada de MCP:</p>
+<h3>3. Feedback de qualidade e captura: hooks do cliente</h3>
+<p>O logging de uso de pack e a captura de memória vêm de hooks do agente cliente, agnósticos de ferramenta (seção 09c), não de um gerenciador central. A captura por hooks é o caminho principal, não uma alternativa ao Hermes.</p>
 
-<pre><code># hermes.policy.yml (exemplo)
-write_policy:
-  default: deny
-  allow:
-    - path: "/90-inbox/**"
-      mode: "append"
-  enforcement: "all-modes"   # interactive, headless, scheduled
-  on_violation: "convert_to_inbox_suggestion"</code></pre>
-
-<p>Leitura: liberada. Escrita permanente: proibida fora de <code>/90-inbox/</code>, em qualquer modo. Qualquer pedido fora do escopo é convertido em sugestão pro inbox, mesmo em execução headless. A política é declarativa e auditável: um único arquivo descreve o que pode e o que não pode.</p>
+<h3>4. Política de escrita: contrato, não policy engine</h3>
+<p>No modo cooperativo, a política de escrita é o contrato: leitura liberada, escrita permanente fora de <code>/90-inbox/</code> convertida em sugestão. Não existe um <code>hermes.policy.yml</code> com triggers semânticos; isso foi invenção do posicionamento antigo. Enforcement de verdade, contra um agente hostil, vem do sistema operacional, abaixo do agente: container com mount read-only exceto no inbox, ou usuário separado sem escrita nas pastas protegidas.</p>
 
 <div class="callout warn">
 <div class="label">Princípio derivado</div>
-<p>Memória federada sem núcleo ativo é apenas uma pasta organizada. O núcleo é o que transforma uma estrutura de arquivos em arquitetura: aplica política, mede qualidade e resolve conflito. Sem ele, os princípios viram boas intenções.</p>
+<p>Memória passiva não é fraqueza, é a condição da soberania. Um vault que precisa de um núcleo ativo está amarrado a esse núcleo. Um vault que é só arquivos versionados em Git pertence ao usuário e funciona com qualquer agente. Quando enforcement é necessário, ele vem do sistema operacional, nunca do lado do agente.</p>
 </div>
 
 <!-- ============================================== -->
