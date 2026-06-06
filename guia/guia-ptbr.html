@@ -2197,7 +2197,7 @@ Decision date: YYYY-MM-DD</code></pre>
 
 <p class="lead">Memória persistente só é útil quando existe isolamento. Sem isolamento, o sistema fica grande, lento e confuso. Com domínios separados, contrato neutro, Context Packs e blackboard como padrão de coordenação, a memória vira infraestrutura. Não ruído acumulado.</p>
 
-<p><strong>Tese final.</strong> Não crie um super cérebro. Crie uma memória federada: humana na origem, segmentada por domínio, roteada por Hermes, exposta por MCP e consumida por qualquer agente. Os agentes não precisam conversar entre si. O quadro compartilhado já é a coordenação.</p>
+<p><strong>Tese final.</strong> Não crie um super cérebro. Crie uma memória federada: humana na origem, segmentada por domínio, com contrato neutro como interface e Git como espinha. Os agentes clientes leem o contrato, escrevem no inbox e nunca viram donos da memória. Eles não precisam conversar entre si. O quadro compartilhado já é a coordenação.</p>
 
 <p><strong>Uma nota sobre convergência.</strong> Ferramentas como o DecisionNode, desenvolvidas independentemente, chegaram a conclusões parecidas com as deste guia: decisões estruturadas, multi-agente via MCP, histórico auditável, padrão blackboard implícito. Isso não é coincidência. É sinal de que o problema é real e que a direção arquitetural está certa. O mercado está convergindo para memória federada. Este guia tenta nomear o padrão antes que ele vire apenas feature de produto.</p>
 
