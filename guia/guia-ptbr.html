@@ -1216,14 +1216,16 @@ Postgres 16 como banco principal a partir de 2026-Q2.</code></pre>
 </div>
 
 <!-- ============================================== -->
-<!-- 10 - HERMES INSTALATION -->
+<!-- 10 - CONECTAR UM AGENTE CLIENTE (v3) -->
 <!-- ============================================== -->
 
-<h2><span class="num">10 / Instalação</span>Hermes: instalação e configuração</h2>
+<h2><span class="num">10 / Instalação</span>Conectar um agente cliente ao vault</h2>
 
-<p>Hermes Agent é o framework do NousResearch que vamos usar como núcleo. Tem loop de conversação, chamada de ferramentas, memória persistente, deployment em CLI, Telegram, Discord, WhatsApp e integrações de editor via Agent Client Protocol. E ele já lê arquivos como <code>SOUL.md</code>, <code>MEMORY.md</code>, <code>USER.md</code> e <code>AGENTS.md</code> ao montar o prompt do sistema — o que significa que a sua arquitetura federada pode ser carregada nativamente sem código glue.</p>
+<p>A instalação que importa é a do vault: uma pasta Markdown que vira repositório Git, com o <code>AGENT.md</code> e a estrutura de pastas. Isso está no passo a passo da seção 14 e não depende de agente nenhum. Os agentes de código (Claude Code, Cursor, Codex, Hermes) são clientes intercambiáveis que você aponta para esse vault. Esta seção mostra como conectar um cliente, usando o Hermes como exemplo porque ele lê o contrato nativamente. O mesmo princípio vale para os outros, via adaptadores (seção 08).</p>
 
-<h3>Instalação básica</h3>
+<h3>O Hermes como cliente</h3>
+
+<p>Hermes Agent é o framework do NousResearch. Tem loop de conversação, chamada de ferramentas, memória própria e deployment em CLI, Telegram, Discord, WhatsApp e editores via Agent Client Protocol. O que o torna um cliente conveniente para esta arquitetura é que ele já lê arquivos como <code>AGENTS.md</code>, <code>SOUL.md</code> e <code>MEMORY.md</code> ao montar o prompt do sistema, então o contrato federado entra sem código glue. Note que a memória própria do Hermes (<code>MEMORY.md</code>) é dele, não do vault: ela compete com a memória soberana se você deixar. O objetivo é apontar o Hermes para o vault, não deixar o vault virar memória interna do Hermes.</p>
 
 <pre><code># clone e setup
 git clone https://github.com/NousResearch/hermes-agent.git
@@ -1232,17 +1234,13 @@ python -m venv .venv
 source .venv/bin/activate
 pip install -e .
 
-# rodar
+# rodar a partir do vault, para que ele leia o contrato
+cd /caminho/do/seu/federated-memory
 hermes</code></pre>
 
-<h3>Apontando o Hermes para a memória federada</h3>
+<h3>Apontando o cliente para o contrato</h3>
 
-<p>O Hermes lê arquivos de contexto do diretório de trabalho. Dois caminhos:</p>
-
-<ol>
-<li><strong>Caminho simples.</strong> Rode o Hermes a partir do diretório <code>federated-memory/</code>. Ele vai ler o <code>AGENTS.md</code> e qualquer <code>.hermes.md</code> que estiver ali.</li>
-<li><strong>Caminho explícito.</strong> Crie um <code>AGENTS.md</code> na raiz do vault que referencia o seu <code>00-global/AGENT.md</code>:</li>
-</ol>
+<p>O Hermes lê arquivos de contexto do diretório de trabalho. Rode o Hermes a partir da raiz do vault e deixe um <code>AGENTS.md</code> lá, que aponta para o seu contrato em <code>00-global/AGENT.md</code>:</p>
 
 <pre><code># AGENTS.md (raiz do vault, lido automaticamente pelo Hermes)
 
@@ -1258,13 +1256,13 @@ Before responding to any task:
    human approval.
 4. New memory suggestions go to /90-inbox/suggested-memory.md.</code></pre>
 
-<h3>Configurando memória persistente</h3>
+<h3>Captura de sugestões</h3>
 
-<p>O Hermes tem sistema de plugins de memória com hooks de ciclo de vida (<code>sync_turn</code>, <code>prefetch</code>, <code>shutdown</code>). Para a memória federada, você não precisa do plugin completo no começo: basta deixar o Hermes ler a base como contexto e gravar sugestões no inbox via uma ferramenta CLI sua.</p>
+<p>Para alimentar o inbox sem ação manual, use a captura por hooks do agente cliente, descrita na seção 09c. No Claude Code isso é um hook <code>PostToolUse</code> em <code>.claude/settings.json</code>. Em qualquer cliente, o princípio é o mesmo: um script que grava sugestões em <code>/90-inbox/suggested-memory.md</code>, nunca direto na memória aprovada. Você não precisa de nada além disso para começar.</p>
 
 <div class="callout warn">
-<div class="label">Regra para o Hermes</div>
-<p>Hermes pode escolher contexto. Hermes não pode decidir sozinho o que é verdade permanente. Configure o plugin de memória em modo "sugestão", nunca em modo "gravação direta".</p>
+<div class="label">A regra que vale para qualquer cliente</div>
+<p>O cliente pode escolher e carregar contexto. O cliente não decide sozinho o que vira verdade permanente. Escrita permanente fora de <code>/90-inbox/</code> é sugestão, não gravação. Se o cliente pode ser hostil, isso não se garante por contrato: garante-se por isolamento de sistema operacional (seção 09b).</p>
 </div>
 
 <!-- ============================================== -->

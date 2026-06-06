@@ -1216,14 +1216,16 @@ Postgres 16 as main database starting 2026-Q2.</code></pre>
 </div>
 
 <!-- ============================================== -->
-<!-- 10 - HERMES INSTALATION -->
+<!-- 10 - CONNECT A CLIENT AGENT (v3) -->
 <!-- ============================================== -->
 
-<h2><span class="num">10 / Installation</span>Hermes: installation and configuration</h2>
+<h2><span class="num">10 / Installation</span>Connect a client agent to the vault</h2>
 
-<p>Hermes Agent is the NousResearch framework we will use as the core. It has a conversation loop, tool calling, persistent memory, deployment in CLI, Telegram, Discord, WhatsApp and editor integrations via Agent Client Protocol. It already reads files like <code>SOUL.md</code>, <code>MEMORY.md</code>, <code>USER.md</code> and <code>AGENTS.md</code> when assembling the system prompt — meaning your federated architecture can be loaded natively without glue code.</p>
+<p>The installation that matters is the vault: a Markdown folder turned into a Git repository, with <code>AGENT.md</code> and the folder structure. That is covered in the step-by-step of section 14, and depends on no agent. The code agents (Claude Code, Cursor, Codex, Hermes) are interchangeable clients that you point at this vault. This section shows how to connect a client, using Hermes as the example because it reads the contract natively. The same principle applies to the others, via adapters (section 08).</p>
 
-<h3>Basic installation</h3>
+<h3>Hermes as a client</h3>
+
+<p>Hermes Agent is the NousResearch framework. It has a conversation loop, tool calling, its own memory and deployment in CLI, Telegram, Discord, WhatsApp and editors via Agent Client Protocol. What makes it a convenient client for this architecture is that it already reads files like <code>AGENTS.md</code>, <code>SOUL.md</code> and <code>MEMORY.md</code> when assembling the system prompt, so the federated contract loads with no glue code. Note that Hermes's own memory (<code>MEMORY.md</code>) is its own, not the vault's: it competes with sovereign memory if you let it. The goal is to point Hermes at the vault, not to let the vault become Hermes's internal memory.</p>
 
 <pre><code># clone and setup
 git clone https://github.com/NousResearch/hermes-agent.git
@@ -1232,19 +1234,15 @@ python -m venv .venv
 source .venv/bin/activate
 pip install -e .
 
-# run
+# run from the vault, so it reads the contract
+cd /path/to/your/federated-memory
 hermes</code></pre>
 
-<h3>Pointing Hermes to federated memory</h3>
+<h3>Pointing the client at the contract</h3>
 
-<p>Hermes reads context files from the working directory. Two paths:</p>
+<p>Hermes reads context files from the working directory. Run Hermes from the vault root and keep an <code>AGENTS.md</code> there that points to your contract in <code>00-global/AGENT.md</code>:</p>
 
-<ol>
-<li><strong>Simple path.</strong> Run Hermes from the <code>federated-memory/</code> directory. It will read the <code>AGENTS.md</code> and any <code>.hermes.md</code> present.</li>
-<li><strong>Explicit path.</strong> Create an <code>AGENTS.md</code> at the vault root referencing your <code>00-global/AGENT.md</code>:</li>
-</ol>
-
-<pre><code># AGENTS.md (raiz do vault, lido automaticamente pelo Hermes)
+<pre><code># AGENTS.md (vault root, read automatically by Hermes)
 
 This is a federated memory base. Read the consumption protocol
 before doing anything:
@@ -1258,13 +1256,13 @@ Before responding to any task:
    human approval.
 4. New memory suggestions go to /90-inbox/suggested-memory.md.</code></pre>
 
-<h3>Configuring persistent memory</h3>
+<h3>Capturing suggestions</h3>
 
-<p>Hermes has a memory plugin system with lifecycle hooks (<code>sync_turn</code>, <code>prefetch</code>, <code>shutdown</code>). For federated memory, you do not need the full plugin at first: just let Hermes read the base as context and write suggestions to the inbox via your own CLI tool.</p>
+<p>To feed the inbox with no manual action, use the client agent's hook-based capture, described in section 09c. In Claude Code that is a <code>PostToolUse</code> hook in <code>.claude/settings.json</code>. In any client the principle is the same: a script that writes suggestions to <code>/90-inbox/suggested-memory.md</code>, never directly to approved memory. You need nothing beyond that to start.</p>
 
 <div class="callout warn">
-<div class="label">Rule for Hermes</div>
-<p>Hermes can choose context. Hermes cannot decide on its own what is permanent truth. Configure the memory plugin in "suggestion" mode, never in "direct write" mode.</p>
+<div class="label">The rule that holds for any client</div>
+<p>The client can choose and load context. The client does not decide on its own what becomes permanent truth. Permanent writing outside <code>/90-inbox/</code> is a suggestion, not a write. If the client can be hostile, this is not guaranteed by contract: it is guaranteed by operating system isolation (section 09b).</p>
 </div>
 
 <!-- ============================================== -->
