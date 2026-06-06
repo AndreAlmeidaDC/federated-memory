@@ -1167,38 +1167,18 @@ Postgres 16 as main database starting 2026-Q2.</code></pre>
 </div>
 
 <!-- ============================================== -->
-<!-- 09c - AUTO CAPTURE VIA HOOKS -->
+<!-- 09c - AUTOMATIC CAPTURE VIA HOOKS (v3) -->
 <!-- ============================================== -->
 
 <h2><span class="num">09c / Automatic capture</span>Inbox without manual intervention</h2>
 
-<p>The biggest curation bottleneck is remembering to ask the agent to save something important. Hermes solves this with lifecycle hooks: <code>sync_turn</code>, <code>prefetch</code> and <code>shutdown</code>.</p>
+<p>The biggest curation bottleneck is remembering to ask the agent to save something important. Automatic capture solves this with the code agent's own hooks, independent of any central core. Since Claude Code is one of the architecture's clients, it serves as a concrete example, but the same pattern applies to any agent that exposes lifecycle hooks.</p>
 
-<p>Configured correctly, Hermes detects relevant patterns during the session — decision made, bug resolved, preference identified, recurring pattern — and automatically writes a suggestion to <code>/90-inbox/suggested-memory.md</code>.</p>
+<p>The <code>PostToolUse</code> hook fires after a tool call and passes the event context, via stdin, to a script. The script applies simple heuristics to identify relevant patterns (decision made, bug resolved, preference identified) and appends a classified suggestion to <code>/90-inbox/suggested-memory.md</code>. The human does not need to ask: the inbox feeds itself, and human approval remains a quality filter proportional to risk.</p>
 
-<p>The human does not need to ask. The inbox feeds itself. Human approval remains as a quality filter. Capture is automatic. Curation is risk-proportional.</p>
+<h3>Configuration in Claude Code</h3>
 
-<p><strong>Configuration example:</strong></p>
-
-<pre><code># hermes.hooks.yml
-hooks:
-  sync_turn:
-    - trigger: "decision_detected"
-      action: "append_to_inbox"
-      target: "/90-inbox/suggested-memory.md"
-    - trigger: "bug_resolved"
-      action: "append_to_inbox"
-      target: "/90-inbox/suggested-memory.md"
-    - trigger: "preference_identified"
-      action: "append_to_inbox"
-      target: "/90-inbox/suggested-memory.md"
-</code></pre>
-
-<h3>Simple hooks for Claude Code (without Hermes)</h3>
-
-<p>For automatic capture without Hermes, Claude Code supports hooks via <code>.claude/hooks.json</code> na raiz do vault. O hook <code>PostToolUse</code> dispara um script Node que lê o output do agente, aplica regex para identificar padrões relevantes e anexa uma sugestão classificada em <code>/90-inbox/suggested-memory.md</code>.</p>
-
-<p>Create <code>template/.claude/hooks.json</code> with the content:</p>
+<p>Claude Code hooks are declared in <code>.claude/settings.json</code>, under the <code>hooks</code> key, the same file that holds permissions. There is no separate <code>.claude/hooks.json</code>. In the vault template, add the hooks block to <code>template/.claude/settings.json</code>:</p>
 
 <pre><code>{
   "hooks": {
@@ -1217,6 +1197,8 @@ hooks:
 }
 </code></pre>
 
+<p>The <code>matcher</code> uses a regex over the tool name; <code>.*</code> fires after any call.</p>
+
 <p>The <code>scripts/capture-to-inbox.mjs</code> script uses simple heuristics (regex on common strings) to identify three patterns:</p>
 
 <ul>
@@ -1225,7 +1207,7 @@ hooks:
 <li><strong>Bug resolved:</strong> "resolvido", "fixed", "bug resolved", "solved" → <code>confidence: verified</code>, <code>risk: low</code></li>
 </ul>
 
-<p>If no pattern is found, the script does nothing. There are no external dependencies beyond Node.js built-in. The review ritual (<code>scripts/review-inbox.{sh,ps1}</code>) processes what the hook recorded — with TTL for <code>verified+low</code> and risk filtering.</p>
+<p>If no pattern is found, the script does nothing. There are no external dependencies beyond Node.js. The review ritual (<code>scripts/review-inbox.{sh,ps1}</code>) processes what the hook recorded, with TTL for <code>verified+low</code> and risk filtering.</p>
 
 <div class="callout warn">
 <div class="label">Automatic capture ≠ absence of curation</div>
