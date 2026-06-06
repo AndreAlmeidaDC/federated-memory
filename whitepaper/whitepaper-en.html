@@ -643,37 +643,37 @@ sup {
 <!-- SECTION 8 — Known limitations -->
 <h2><span class="section-num">08 · Known Limitations</span>What this architecture does not yet solve.</h2>
 
-<p>Adopting federated memory does not buy you every problem solved. Five limitations deserve to be acknowledged explicitly — not to justify the architecture, but to make clear where it ends and where the user needs to fill the gap.</p>
+<p>Adopting federated memory does not buy you every problem solved. Six limitations deserve to be acknowledged explicitly, not to justify the architecture, but to make clear where it ends and where the user needs to fill the gap.</p>
 
 <h3>1. Action rollback does not exist</h3>
 
-<p>The core enforces policy over what enters context and what can be written. It does not undo the action the agent already executed. If an agent, upon receiving a Context Pack, produces bad code, sends a wrong email or applies a change to an external system, the federated architecture has no way to revert it. Rollback remains a problem of the target system (Git for code, sent folder for email, transactions for databases). Federated memory improves the chance the agent does the right thing; it does not guarantee the action is reversible when it fails.</p>
+<p>The architecture governs what enters context and organizes what can be written, but it does not undo the action the agent already executed. If an agent, upon receiving a Context Pack, produces bad code, sends a wrong email or applies a change to an external system, federated memory has no way to revert it. Rollback remains a problem of the target system (Git for code, sent folder for email, transactions for databases). Federated memory improves the chance the agent does the right thing; it does not guarantee the action is reversible when it fails.</p>
 
-<p>This limitation is partially mitigated by pre-action logging: before executing high-risk actions, the agent records in <code>/99-archive/pre-action-log.md</code> the active context, the loaded pack, the executing agent and the target resource. It is not rollback — it is traceability. If something goes wrong, you know exactly what was active when the error happened. For reversible actions like code, Git covers rollback; the pre-action log covers the audit.</p>
+<p>This limitation is partially mitigated by two things. First, pre-action logging: before executing high-risk actions, the agent records in <code>/99-archive/pre-action-log.md</code> the active context, the loaded pack, the executing agent and the target resource. It is not rollback, it is traceability. Second, because the vault is a Git repository, every write to the memory itself is a reversible commit. For the memory, Git covers rollback; for the external action, the target system has to cover it.</p>
 
 <h3>2. Temporal validity is a warning, not a guarantee</h3>
 
-<p>Automatic <code>mtime</code> inspection warns when Context Pack files have passed the configured age threshold. The warning is informative, not blocking by default. Old content may still be valid; freshly updated content may be wrong. This limitation is mitigated by the <code>review_date</code> field in Context Packs and Decisions: beyond <code>mtime</code>, Hermes checks whether <code>next_review</code> has expired — independent of whether the file was modified. The human who reviews the content and confirms it is still valid updates <code>review_date</code> without altering the file. The system does not replace content review — it makes the point where review is needed more visible.</p>
+<p>The <code>mtime</code> inspection warns when Context Pack files have passed the configured age threshold. The warning is informative, not blocking by default. Old content may still be valid; freshly updated content may be wrong. The architecture does not replace content review, it makes the point where review is needed more visible. Confusing a <em>validity warning</em> with a <em>correctness guarantee</em> is an interpretation error the system does not prevent.</p>
 
-<h3>3. Governance depends on human discipline</h3>
+<p>This limitation is mitigated by the <code>review_date</code> field in Context Packs and Decisions. Instead of relying only on the file's <code>mtime</code>, the client agent, or a hook, checks whether <code>next_review</code> has expired, independent of whether the file was modified. The human who reviews the content and confirms it is still valid updates <code>review_date</code> without altering the file. The system distinguishes unmodified content from reviewed content.</p>
 
-<p>With automatic classification by <code>confidence</code> + <code>risk</code>, the inbox accumulates only hypotheses and high-risk decisions. Everything that is <code>verified</code> + <code>low</code> promotes automatically in 7 days. The human does not need to review what is routine — only what is uncertain or consequential. The real limitation is more precise: if you do not review the inbox, hypotheses and high-risk decisions do not become memory. The automatic flow keeps operating for the rest. The capture hooks (<code>sync_turn</code>, <code>prefetch</code>, <code>shutdown</code>) reduce dependence on manual action even further.</p>
+<h3>3. Curation depends on periodic human review</h3>
 
-<h3>4. Scale has not been tested — and need not be a ceiling</h3>
+<p>With automatic classification by <code>confidence</code> + <code>risk</code>, what is <code>verified</code> + <code>low</code> promotes on its own with TTL, and the inbox accumulates only hypotheses and high-risk decisions. The human dependency is restricted to that: if you never review the inbox, hypotheses and high-risk items never become memory, while the automatic flow keeps operating for the rest. Capture hooks (see the guide, section 09c) reduce the dependency on manual action, but do not eliminate review of the consequential cases. This is an assumed operating premise, not a hidden flaw: cooperative mode presupposes a human who does quality curation on what matters.</p>
 
-<p>The reference implementation was exercised at small scale (one person, few domains, a handful of projects). Behavior at medium or large scale is architectural projection, not field data. But scale is not a ceiling — it is a documented progression with concrete steps:</p>
+<h3>4. Scale was not tested, and need not be a ceiling</h3>
 
-<ul>
-  <li><strong>Small scale</strong> — single vault, Markdown, Hermes as core, MCP as interface. Works well for one person or a small team with well-separated domains.</li>
-  <li><strong>Medium scale</strong> — when temporal questions appear ("what changed?", "which decision is most recent?", "who decided what?"), Graphiti enters as a layer of relations and history over the existing vault. It does not replace Obsidian — it complements it, indexing what the Markdown already contains.</li>
-  <li><strong>Large scale</strong> — multiple physical vaults per client, team or project, each with its own Hermes and MCP. Graphiti becomes the only component with a cross-vault view, indexing decisions and relations that cross isolation boundaries.</li>
-</ul>
+<p>The reference implementation was exercised at small scale (one person, few domains, a handful of projects). Behavior at medium or large scale is architectural projection, not field data. But scale is not a ceiling, it is the maturity ladder described in section 05: the floor is a Markdown vault + Git; under pain of real time, continuous synchronization is added; under pain of volume, an MCP server as common access and Graphiti as an index derived from the Markdown come in; and physical isolation in multiple vaults appears when NDA or sensitive client data require it. Each step enters under concrete pain, not by anticipation.</p>
 
-<div class="pull">The scale limitation is not an architectural ceiling. It is a deliberate entry point. Graphiti enters when the vault needs temporal memory. Multiple vaults enter when physical isolation becomes necessary. The architecture grows with the pain, not before it.</div>
+<div class="pull">The scale limitation is not an architectural ceiling. It is a deliberate entry point. The architecture grows with the pain, not before it.</div>
 
-<h3>5. Hive mind: structure implemented, scale is v3.0</h3>
+<h3>5. Hive mind: structure implemented, scale is roadmap</h3>
 
-<p>The hive mind structure is implemented: <code>/50-skills/published/</code>, <code>/proposed/</code>, <code>/deprecated/</code>, <code>INDEX.md</code> and the publication protocol via inbox. The <code>promote-skills.mjs</code> and <code>update-index.mjs</code> scripts automate TTL promotion and index updates. What is still v3.0: integration with Graphiti for relations between skills, semantic search in the index, and a local worker that indexes automatically once the ecosystem of specialized agents grows enough for sharing to make operational sense.</p>
+<p>The hive mind structure is implemented: <code>/50-skills/published/</code>, <code>/proposed/</code>, <code>/deprecated/</code>, <code>INDEX.md</code> and the publication protocol via inbox. The <code>promote-skills.mjs</code> and <code>update-index.mjs</code> scripts automate TTL promotion and index updates. What is still roadmap: integration with Graphiti for relations between skills, semantic search in the index, and a local worker that indexes automatically once the ecosystem of specialized agents grows enough for sharing to make operational sense.</p>
+
+<h3>6. Write enforcement does not exist in the simple setup</h3>
+
+<p>This is the limitation a field test exposed and that honesty requires us to declare. In the recommended setup (Markdown vault + Git + contract), write governance is contract, not a lock. An agent that cooperates deposits suggestions in <code>/90-inbox/</code> and respects protected folders because <code>AGENT.md</code> asks it to. An agent that decides to ignore the contract writes wherever it wants, because the folders are writable by whoever runs the agent. No component on the agent's side prevents this. Whoever needs real enforcement, against a potentially hostile agent, climbs to the adversarial mode described in section 05: control comes from the operating system, below the agent (a container with a read-only mount except for the inbox, or a separate user with no write access to protected folders). Climbing a step on the maturity ladder buys scale and search, never write discipline for free.</p>
 
 <!-- SECTION 9 — Principles and Limits -->
 <h2><span class="section-num">09 · Principles and Limits</span>What this architecture refuses.</h2>

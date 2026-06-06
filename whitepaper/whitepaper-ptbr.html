@@ -643,39 +643,37 @@ sup {
 <!-- SECTION 8 — Limitações conhecidas -->
 <h2><span class="section-num">08 · Limitações Conhecidas</span>O que esta arquitetura ainda não resolve.</h2>
 
-<p>Adotar memória federada não compra todos os problemas resolvidos. Cinco limitações merecem ser reconhecidas explicitamente — não para justificar a arquitetura, mas para deixar claro onde ela termina e onde o usuário precisa preencher a lacuna.</p>
+<p>Adotar memória federada não compra todos os problemas resolvidos. Seis limitações merecem ser reconhecidas explicitamente, não para justificar a arquitetura, mas para deixar claro onde ela termina e onde o usuário precisa preencher a lacuna.</p>
 
 <h3>1. Rollback de ação não existe</h3>
 
-<p>O núcleo aplica política sobre o que entra no contexto e sobre o que pode ser escrito. Ele não desfaz a ação que o agente já executou. Se um agente, ao receber um Context Pack, produz código ruim, manda e-mail errado ou aplica uma mudança em sistema externo, a arquitetura federada não tem como reverter isso. Rollback continua sendo problema do sistema-alvo (Git para código, sent-folder para e-mail, transações para banco). A memória federada melhora a chance de o agente fazer a coisa certa; não garante que a ação seja reversível quando ele falha.</p>
+<p>A arquitetura governa o que entra no contexto e organiza o que pode ser escrito, mas não desfaz a ação que o agente já executou. Se um agente, ao receber um Context Pack, produz código ruim, manda e-mail errado ou aplica uma mudança em sistema externo, a memória federada não tem como reverter isso. Rollback continua sendo problema do sistema-alvo (Git para código, sent-folder para e-mail, transações para banco). A memória federada melhora a chance de o agente fazer a coisa certa; não garante que a ação seja reversível quando ele falha.</p>
 
-<p>Esta limitação é parcialmente mitigada pelo pre-action logging: antes de executar ações de alto risco, o agente registra em <code>/99-archive/pre-action-log.md</code> o contexto ativo, o pack carregado, o agente executor e o recurso alvo. Não é rollback — é rastreabilidade. Se algo der errado, você sabe exatamente o que estava ativo quando o erro aconteceu. Para ações reversíveis como código, o Git cobre o rollback; o pre-action log cobre a auditoria.</p>
+<p>Esta limitação é parcialmente mitigada por duas coisas. Primeiro, o pre-action logging: antes de executar ações de alto risco, o agente registra em <code>/99-archive/pre-action-log.md</code> o contexto ativo, o pack carregado, o agente executor e o recurso alvo. Não é rollback, é rastreabilidade. Segundo, como o vault é um repositório Git, toda escrita na própria memória é um commit reversível. Para a memória, o Git cobre o rollback; para a ação externa, o sistema-alvo é que precisa cobrir.</p>
 
-<h3>2. Temporal validity é aviso, não garantia</h3>
+<h3>2. Validade temporal é aviso, não garantia</h3>
 
-<p>A inspeção automática de <code>mtime</code> avisa quando arquivos do Context Pack passaram do limite de idade configurado. O aviso é informativo, não bloqueante por padrão. Conteúdo antigo pode continuar válido; conteúdo recém-atualizado pode estar errado. A arquitetura não substitui revisão de conteúdo — torna mais visível o ponto onde a revisão é necessária. Confundir <em>aviso de validade</em> com <em>garantia de correção</em> é uma falha de interpretação que o sistema não previne.</p>
+<p>A inspeção de <code>mtime</code> avisa quando arquivos do Context Pack passaram do limite de idade configurado. O aviso é informativo, não bloqueante por padrão. Conteúdo antigo pode continuar válido; conteúdo recém-atualizado pode estar errado. A arquitetura não substitui revisão de conteúdo, torna mais visível o ponto onde a revisão é necessária. Confundir <em>aviso de validade</em> com <em>garantia de correção</em> é uma falha de interpretação que o sistema não previne.</p>
 
-<p>Esta limitação é mitigada pelo campo <code>review_date</code> nos Context Packs e Decisions. Em vez de depender apenas do <code>mtime</code> do arquivo, o Hermes verifica se <code>next_review</code> venceu — independente de o arquivo ter sido modificado. O humano que revisa o conteúdo e confirma que ainda é válido atualiza o <code>review_date</code> sem alterar o arquivo. O sistema distingue conteúdo não modificado de conteúdo revisado.</p>
+<p>Esta limitação é mitigada pelo campo <code>review_date</code> nos Context Packs e Decisions. Em vez de depender apenas do <code>mtime</code> do arquivo, o agente cliente, ou um hook, verifica se <code>next_review</code> venceu, independente de o arquivo ter sido modificado. O humano que revisa o conteúdo e confirma que ainda é válido atualiza o <code>review_date</code> sem alterar o arquivo. O sistema distingue conteúdo não modificado de conteúdo revisado.</p>
 
-<h3>3. Governança depende de disciplina humana</h3>
+<h3>3. Curadoria depende de revisão humana periódica</h3>
 
-<p>Com a classificação automática por <code>confidence</code> + <code>risk</code>, o inbox acumula apenas hipóteses e decisões de alto risco. Tudo que é <code>verified</code> + <code>low</code> promove-se automaticamente em 7 dias. O humano não precisa revisar o que é rotineiro — só o que é incerto ou consequente. A limitação real é mais precisa: se você não revisar o inbox, hipóteses e decisões de alto risco não viram memória. O fluxo automático continua operando para o restante. Os hooks de captura (<code>sync_turn</code>, <code>prefetch</code>, <code>shutdown</code>) reduzem ainda mais a dependência de ação manual.</p>
+<p>Com a classificação automática por <code>confidence</code> + <code>risk</code>, o que é <code>verified</code> + <code>low</code> promove-se sozinho com TTL, e o inbox acumula apenas hipóteses e decisões de alto risco. A dependência humana fica restrita a isso: se você nunca revisar o inbox, hipóteses e itens de alto risco não viram memória, enquanto o fluxo automático segue operando para o resto. Os hooks de captura (ver o guia, seção 09c) reduzem a dependência de ação manual, mas não eliminam a revisão dos casos consequentes. Isto é uma premissa de operação assumida, não uma falha escondida: o modo cooperativo pressupõe um humano que faz curadoria de qualidade no que importa.</p>
 
-<h3>4. Escala não foi testada — e não precisa ser teto</h3>
+<h3>4. Escala não foi testada, e não precisa ser teto</h3>
 
-<p>A implementação de referência foi exercitada em escala pequena (uma pessoa, poucos domínios, alguns projetos). Comportamento em escala média ou grande é projeção arquitetural, não dado de campo. Mas escala não é um teto — é uma progressão documentada com passos concretos:</p>
+<p>A implementação de referência foi exercitada em escala pequena (uma pessoa, poucos domínios, alguns projetos). Comportamento em escala média ou grande é projeção arquitetural, não dado de campo. Mas escala não é um teto, é a escada de maturidade descrita na seção 05: o piso é vault Markdown + Git; sob dor de tempo real, soma-se sincronização contínua; sob dor de volume, entram um MCP server como acesso comum e o Graphiti como índice derivado dos Markdown; e o isolamento físico em múltiplos vaults aparece quando NDA ou dados sensíveis de cliente o exigem. Cada degrau entra sob dor concreta, não por antecipação.</p>
 
-<ul>
-  <li><strong>Escala pequena</strong> — vault único, Markdown, Hermes como núcleo, MCP como interface. Funciona bem para uma pessoa ou time pequeno com domínios bem separados.</li>
-  <li><strong>Escala média</strong> — quando aparecem perguntas temporais ("o que mudou?", "qual decisão é mais recente?", "quem decidiu o quê?"), o Graphiti entra como camada de relações e histórico sobre o vault existente. Não substitui o Obsidian — complementa, indexando o que o Markdown já contém.</li>
-  <li><strong>Escala grande</strong> — múltiplos vaults físicos por cliente, equipe ou projeto, cada um com seu próprio Hermes e MCP. O Graphiti vira o único componente com visão cross-vault, indexando decisões e relações que atravessam fronteiras de isolamento.</li>
-</ul>
+<div class="pull">A limitação de escala não é um teto arquitetural. É um ponto de entrada deliberado. A arquitetura cresce com a dor, não antes dela.</div>
 
-<div class="pull">A limitação de escala não é um teto arquitetural. É um ponto de entrada deliberado. Graphiti entra quando o vault precisa de memória temporal. Múltiplos vaults entram quando o isolamento físico se torna necessário. A arquitetura cresce com a dor, não antes dela.</div>
+<h3>5. Mente de colmeia: estrutura implementada, escala é roadmap</h3>
 
-<h3>5. Mente de colmeia: estrutura implementada, escala é v3.0</h3>
+<p>A estrutura da mente de colmeia está implementada: <code>/50-skills/published/</code>, <code>/proposed/</code>, <code>/deprecated/</code>, <code>INDEX.md</code> e protocolo de publicação via inbox. Os scripts <code>promote-skills.mjs</code> e <code>update-index.mjs</code> automatizam a promoção por TTL e a atualização do índice. O que ainda é roadmap: integração com Graphiti para relações entre skills, busca semântica no índice, e worker local que indexa automaticamente quando o ecossistema de agentes especializados crescer o suficiente para o compartilhamento fazer sentido operacional.</p>
 
-<p>A estrutura da mente de colmeia está implementada: <code>/50-skills/published/</code>, <code>/proposed/</code>, <code>/deprecated/</code>, <code>INDEX.md</code> e protocolo de publicação via inbox. Os scripts <code>promote-skills.mjs</code> e <code>update-index.mjs</code> automatizam a promoção por TTL e a atualização do índice. O que ainda é v3.0: integração com Graphiti para relações entre skills, busca semântica no índice, e worker local que indexa automaticamente quando o ecossistema de agentes especializados crescer o suficiente para o compartilhamento fazer sentido operacional.</p>
+<h3>6. Enforcement de escrita não existe no setup simples</h3>
+
+<p>Esta é a limitação que um teste de campo expôs e que a honestidade exige declarar. No setup recomendado (vault Markdown + Git + contrato), a governança de escrita é contrato, não trava. Um agente que coopera deposita sugestões no <code>/90-inbox/</code> e respeita as pastas protegidas porque o <code>AGENT.md</code> pede. Um agente que decida ignorar o contrato escreve onde quiser, porque as pastas são graváveis por quem roda o agente. Nenhum componente do lado do agente impede isso. Quem precisa de enforcement real, contra um agente potencialmente hostil, sobe ao modo adversarial descrito na seção 05: o controle vem do sistema operacional, abaixo do agente (container com mount read-only exceto no inbox, ou usuário separado sem escrita nas pastas protegidas). Subir de degrau na escada de maturidade dá escala e busca, nunca disciplina de escrita de graça.</p>
 
 <!-- SECTION 9 — Princípios e Limites -->
 <h2><span class="section-num">09 · Princípios e Limites</span>O que esta arquitetura recusa.</h2>
