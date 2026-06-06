@@ -622,13 +622,17 @@ sup {
 
 <h3>Onde memória federada vence</h3>
 
-<p>Para usuários que trabalham com múltiplos agentes em paralelo, múltiplos domínios de trabalho, e que precisam de portabilidade real — onde a memória deve sobreviver à troca de ferramenta — a federada é a única abordagem que resolve o problema estruturalmente. Também é a única que devolve soberania ao usuário: a memória é legível por humanos, versionável em Git, e não requer ferramenta específica para ser acessada.</p>
+<p>Para usuários que trabalham com múltiplos agentes em paralelo, múltiplos domínios de trabalho, e que precisam de portabilidade real, onde a memória deve sobreviver à troca de ferramenta, a federada é a única abordagem que resolve o problema estruturalmente. O diferencial não é um componente esperto, é a soma de quatro propriedades que nenhuma das outras entrega junto: soberania (a memória é legível por humanos e pertence ao usuário), portabilidade (não requer ferramenta específica para ser acessada), auditoria (versionada em Git, com autoria e histórico) e isolamento por domínio. Tudo isso com mecanismos abertos, sem amarrar a um fornecedor.</p>
 
 <h3>DecisionNode: convergência independente</h3>
 
 <p>O projeto DecisionNode<sup>1</sup>, desenvolvido independentemente, chegou a conclusões parcialmente sobrepostas: decisões como unidade estruturada, acesso via MCP por múltiplos agentes, histórico auditável, padrão blackboard implícito. Resolve especificamente o sub-módulo de decisões com busca semântica por embeddings — uma implementação concreta de parte dos princípios propostos aqui. A convergência independente de projetos distintos para conclusões similares é evidência de que o problema é real e a direção arquitetural é válida.</p>
 
 <p>À medida que múltiplos agentes especializados coexistem no mesmo ecossistema, o padrão blackboard evolui para o que chamamos de <em>mente de colmeia</em>: cada agente mantém sua memória privada, mas conhecimento reutilizável é publicado numa área compartilhada do vault que qualquer agente pode consultar. Leitura federada, escrita controlada. Nenhum agente altera diretamente a memória de outro. Melhorias são propostas, não impostas.</p>
+
+<h3>ACE: validação acadêmica do padrão</h3>
+
+<p>O paper Agentic Context Engineering (ACE), publicado em 2025 por pesquisadores de Stanford, SambaNova Systems e UC Berkeley (arXiv:2510.04618), chegou de forma independente a uma formulação que valida a arquitetura proposta aqui. O ACE trata o contexto como um "playbook" que evolui ao longo do tempo, mantido por três papéis: Generator (executa a tarefa e produz a trajetória), Reflector (analisa acertos e erros e extrai lições) e Curator (consolida as lições em atualizações incrementais do playbook). O paralelo com a arquitetura federada é direto: o agente executor (Claude Code, Cursor, etc.) é o Generator; a captura por hooks com classificação <code>confidence</code> + <code>risk</code> é o Reflector; o review-inbox com promote-skills e a regra approved/superseded é o Curator; e o vault federado é o playbook. A diferença é filosófica e é o diferencial desta arquitetura: no ACE, os três papéis são totalmente automáticos, executados por LLMs. Na memória federada, o Curator mantém o humano como auditor de última instância. Baixo risco consolida automaticamente; hipóteses e alto risco exigem decisão humana. Em uma frase: esta arquitetura é ACE com governança proporcional ao risco. O ACE reporta ganhos de +10,6% em tarefas de agente e +8,6% em raciocínio de domínio sem fine-tuning, evidência de que a direção (contexto como playbook que evolui, não prompt estático) é tecnicamente sólida.</p>
 
 <h3>Camadas complementares: memória e orquestração</h3>
 
