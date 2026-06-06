@@ -2164,11 +2164,11 @@ Decision date: YYYY-MM-DD</code></pre>
 <li>Os domínios estão separados de verdade, com vocabulário próprio?</li>
 <li>Há pelo menos três Context Packs úteis, com objetivo, listas Use/Avoid e validade temporal?</li>
 <li>O primeiro adaptador (<code>CLAUDE.md</code>, <code>codex.md</code>, etc) está funcionando?</li>
-<li>O Hermes carrega o <code>AGENTS.md</code> da raiz do vault automaticamente?</li>
-<li>O Hermes só roteia e sugere, sem gravar memória permanente sozinho?</li>
+<li>O primeiro agente cliente lê o contrato (<code>AGENT.md</code> ou adaptador) automaticamente ao iniciar?</li>
+<li>O agente cliente só deposita sugestões em <code>/90-inbox/</code>, sem gravar memória permanente sozinho?</li>
 <li>Existe <code>/90-inbox/suggested-memory.md</code> recebendo sugestões dos agentes?</li>
 <li>Há regra explícita de aprovação humana antes de qualquer escrita em <code>/00-global/</code> ou <code>/20-domains/</code>?</li>
-<li>O MCP server foi configurado com escrita restrita a <code>/90-inbox/</code>?</li>
+<li>Se MCP está em uso, a escrita está restrita a <code>/90-inbox/</code>? (item opcional, o piso não exige MCP)</li>
 <li>O sistema foi testado com pelo menos dois agentes diferentes consumindo a mesma base?</li>
 <li>Existe plano de quando adicionar Graphiti, e ele inclui "apenas quando a dor temporal aparecer"?</li>
 </ul>

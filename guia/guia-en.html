@@ -2164,11 +2164,11 @@ Decision date: YYYY-MM-DD</code></pre>
 <li>Are domains truly separated, with their own vocabulary?</li>
 <li>Are there at least three useful Context Packs, with goal, Use/Avoid lists and temporal validity?</li>
 <li>Is the first adapter (<code>CLAUDE.md</code>, <code>codex.md</code>, etc.) working?</li>
-<li>Does Hermes load the <code>AGENTS.md</code> from the vault root automatically?</li>
-<li>Does Hermes only route and suggest, without writing permanent memory on its own?</li>
+<li>Does the first client agent read the contract (<code>AGENT.md</code> or adapter) automatically on startup?</li>
+<li>Does the client agent only drop suggestions to <code>/90-inbox/</code>, without writing permanent memory on its own?</li>
 <li>Does <code>/90-inbox/suggested-memory.md</code> exist, receiving agent suggestions?</li>
 <li>Is there an explicit human approval rule before any writing to <code>/00-global/</code> or <code>/20-domains/</code>?</li>
-<li>Was the MCP server configured with write access restricted to <code>/90-inbox/</code>?</li>
+<li>If MCP is in use, is writing restricted to <code>/90-inbox/</code>? (optional item, the floor does not require MCP)</li>
 <li>Was the system tested with at least two different agents consuming the same base?</li>
 <li>Is there a plan for when to add Graphiti, and does it include "only when the temporal pain appears"?</li>
 </ul>
