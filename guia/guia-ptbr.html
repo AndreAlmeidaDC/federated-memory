@@ -548,17 +548,19 @@ td strong { color: var(--ink); }
 
 <h2><span class="num">03 / Fundação</span>Princípios arquiteturais</h2>
 
-<p><strong>Memória soberana.</strong> A base pertence ao usuário. Agentes entram e saem; o contexto continua portátil.</p>
+<p>Antes dos princípios, separe três camadas, porque confundi-las é o erro mais comum: o <strong>modelo</strong> (o LLM que raciocina), o <strong>agente de código</strong> (Claude Code, Cursor, Codex, Hermes, que roda o loop e mexe nos arquivos) e a <strong>memória</strong> (a base persistente e soberana, que não pertence a nenhum dos dois). A arquitetura federada existe para manter a memória fora do agente.</p>
 
-<p><strong>Domínios isolados.</strong> Marketing, programação, clientes, produtos e pesquisa não devem viver no mesmo caldo semântico.</p>
+<p><strong>Memória soberana.</strong> A base pertence ao usuário. Agentes entram e saem; o contexto continua portátil. O Git é a espinha: o vault é um repositório, o que entrega versão, autoria, diff e sincronização entre máquinas numa peça só.</p>
 
-<p><strong>Contrato neutro.</strong> O <code>AGENT.md</code> descreve como qualquer agente deve consumir a memória. Adaptadores apenas traduzem para ferramentas específicas.</p>
+<p><strong>Domínios isolados.</strong> Marketing, programação, clientes, produtos e pesquisa não devem viver no mesmo caldo semântico. O isolamento é estrutural, por pastas, não uma instrução que o agente pode ignorar.</p>
+
+<p><strong>Contrato neutro.</strong> O <code>AGENT.md</code> descreve como qualquer agente deve consumir a memória. Adaptadores apenas traduzem para ferramentas específicas. Nenhum agente é o núcleo; todos são clientes intercambiáveis.</p>
 
 <p><strong>Contexto mínimo suficiente.</strong> O agente deve receber o necessário para a tarefa, não a história inteira da sua vida digital.</p>
 
-<p><strong>Humano aprova memória permanente.</strong> Conversa bruta, hipótese e rascunho não viram verdade automática.</p>
+<p><strong>Humano como auditor proporcional ao risco.</strong> A captura é automática; a aprovação não é obrigatória para tudo. Entradas verificadas de baixo risco promovem sozinhas com TTL; hipóteses e alto risco exigem decisão humana. O humano é filtro de qualidade, não gargalo de captura.</p>
 
-<p><strong>Orquestração sem sequestro.</strong> Hermes pode rotear e sugerir, mas não deve alterar tudo sozinho nem criar automações invisíveis.</p>
+<p><strong>Governança em dois modos.</strong> No modo cooperativo, que é o padrão, a regra vive no contrato e na estrutura, e basta. Contra um agente que pode ser hostil, contrato não basta: o enforcement vem do sistema operacional, abaixo do agente (container read-only exceto no inbox, ou usuário separado). Nunca de um núcleo do lado do agente.</p>
 
 <!-- ============================================== -->
 <!-- 04 - BLACKBOARD PATTERN (NEW) -->

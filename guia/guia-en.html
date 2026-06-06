@@ -548,17 +548,19 @@ td strong { color: var(--ink); }
 
 <h2><span class="num">03 / Foundation</span>Architectural principles</h2>
 
-<p><strong>Sovereign memory.</strong> The base belongs to the user. Agents come and go; context stays portable.</p>
+<p>Before the principles, separate three layers, because confusing them is the most common mistake: the <strong>model</strong> (the LLM that reasons), the <strong>code agent</strong> (Claude Code, Cursor, Codex, Hermes, which runs the loop and touches the files) and <strong>memory</strong> (the persistent, sovereign base that belongs to neither). The federated architecture exists to keep memory outside the agent.</p>
 
-<p><strong>Isolated domains.</strong> Marketing, programming, clients, products and research should not live in the same semantic soup.</p>
+<p><strong>Sovereign memory.</strong> The base belongs to the user. Agents come and go; context stays portable. Git is the spine: the vault is a repository, which delivers versioning, authorship, diff and cross-machine synchronization in a single piece.</p>
 
-<p><strong>Neutral contract.</strong> <code>AGENT.md</code> describes how any agent should consume the memory. Adapters only translate for specific tools.</p>
+<p><strong>Isolated domains.</strong> Marketing, programming, clients, products and research should not live in the same semantic soup. Isolation is structural, by folders, not an instruction the agent can ignore.</p>
+
+<p><strong>Neutral contract.</strong> <code>AGENT.md</code> describes how any agent should consume the memory. Adapters only translate for specific tools. No agent is the core; all are interchangeable clients.</p>
 
 <p><strong>Minimum sufficient context.</strong> The agent should receive what is needed for the task, not the entire history of your digital life.</p>
 
-<p><strong>Human approves permanent memory.</strong> Raw conversation, hypothesis and draft do not become automatic truth.</p>
+<p><strong>Human as risk-proportional auditor.</strong> Capture is automatic; approval is not mandatory for everything. Verified low-risk entries promote on their own with TTL; hypotheses and high risk require human decision. The human is a quality filter, not a capture bottleneck.</p>
 
-<p><strong>Orchestration without hijacking.</strong> Hermes can route and suggest, but should not alter everything alone or create invisible automations.</p>
+<p><strong>Governance in two modes.</strong> In cooperative mode, the default, the rule lives in the contract and in the structure, and that is enough. Against an agent that may be hostile, the contract is not enough: enforcement comes from the operating system, below the agent (a read-only container except for the inbox, or a separate user). Never from a core on the agent's side.</p>
 
 <!-- ============================================== -->
 <!-- 04 - BLACKBOARD PATTERN (NEW) -->
