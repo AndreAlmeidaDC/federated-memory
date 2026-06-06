@@ -1666,23 +1666,23 @@ ufw allow 22  # SSH stays open</code></pre>
 <table>
 <thead><tr><th>Level</th><th>Where</th><th>Who accesses</th><th>What it contains</th></tr></thead>
 <tbody>
-<tr><td><strong>Private memory</strong></td><td><code>~/.hermes/</code> ou equivalente interno</td><td>Only the agent itself</td><td>Session learnings, operational preferences, internal history</td></tr>
+<tr><td><strong>Private memory</strong></td><td><code>~/.hermes/</code> or internal equivalent</td><td>Only the agent itself</td><td>Session learnings, operational preferences, internal history</td></tr>
 <tr><td><strong>Published knowledge</strong></td><td><code>/50-skills/published/</code></td><td>Any agent via MCP (read)</td><td>Skills, playbooks, templates, patterns approved or promoted by TTL</td></tr>
-<tr><td><strong>Approved knowledge</strong></td><td><code>/70-decisions/</code> e <code>/20-domains/</code></td><td>Any agent via MCP (read)</td><td>Formal decisions, domain principles, global rules</td></tr>
+<tr><td><strong>Approved knowledge</strong></td><td><code>/70-decisions/</code> and <code>/20-domains/</code></td><td>Any agent via MCP (read)</td><td>Formal decisions, domain principles, global rules</td></tr>
 </tbody>
 </table>
 
 <h3>Publication protocol</h3>
 
 <ol>
-<li><strong>Before creating:</strong> consulte <code>/50-skills/INDEX.md</code> — busque por tag ou domínio para evitar duplicação</li>
-<li><strong>Proposal:</strong> vai para <code>/90-inbox/</code> com <code>type: skill</code> e metadados completos (<code>author_agent</code>, <code>domain</code>, <code>confidence</code>, <code>risk</code>, <code>tags</code>)</li>
-<li><strong>Automatic classification</strong> por <code>confidence</code> + <code>risk</code>:
+<li><strong>Before creating:</strong> consult <code>/50-skills/INDEX.md</code>, search by tag or domain to avoid duplication</li>
+<li><strong>Proposal:</strong> goes to <code>/90-inbox/</code> with <code>type: skill</code> and complete metadata (<code>author_agent</code>, <code>domain</code>, <code>confidence</code>, <code>risk</code>, <code>tags</code>)</li>
+<li><strong>Automatic classification</strong> by <code>confidence</code> + <code>risk</code>:
   <ul>
-    <li><code>verified</code> + <code>low</code> → promovido automaticamente para <code>/published/</code> em 7 dias</li>
-    <li><code>verified</code> + <code>medium</code> → aprovação lazy do humano</li>
-    <li><code>hypothesis</code> → fica em <code>/proposed/</code> aguardando decisão humana</li>
-    <li><code>high</code> risk → aprovação explícita obrigatória</li>
+    <li><code>verified</code> + <code>low</code> → automatically promoted to <code>/published/</code> in 7 days</li>
+    <li><code>verified</code> + <code>medium</code> → lazy human approval</li>
+    <li><code>hypothesis</code> → stays in <code>/proposed/</code> awaiting human decision</li>
+    <li><code>high</code> risk → explicit approval required</li>
   </ul>
 </li>
 </ol>
@@ -1694,7 +1694,7 @@ ufw allow 22  # SSH stays open</code></pre>
 <li><strong>Controlled writing:</strong> agent only writes to <code>/90-inbox/</code></li>
 <li>No agent directly alters another's memory</li>
 <li>Improvements become proposals, forks or new versions with <code>supersedes</code></li>
-<li><code>INDEX.md</code> é consultado antes de qualquer criação nova</li>
+<li><code>INDEX.md</code> is consulted before any new creation</li>
 </ul>
 
 <h3>Structure of /50-skills/</h3>
