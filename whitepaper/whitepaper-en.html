@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<title>Federated Memory — Whitepaper</title>
+<title>Federated Memory, Whitepaper</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Spectral:ital,wght@0,300;0,400;0,500;0,600;1,300;1,400;1,500&family=DM+Sans:ital,wght@0,300;0,400;0,500;0,600;1,300&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
@@ -387,9 +387,9 @@ sup {
 
 <div class="pull">The problem is not that agents forget. The problem is that current architecture does not distinguish between remembering and contaminating.</div>
 
-<p>The field still has no established answer for this. Memory tools exist — Mem0, Zep, Letta, native systems like Claude Code and Cursor — but they all start from the same assumption: memory is an internal component of the agency system. The agent manages the memory. The agent decides what to store. The agent decides what to bring into context.</p>
+<p>The field still has no established answer for this. Memory tools exist, Mem0, Zep, Letta, native systems like Claude Code and Cursor, but they all start from the same assumption: memory is an internal component of the agency system. The agent manages the memory. The agent decides what to store. The agent decides what to bring into context.</p>
 
-<p>This paper argues that this assumption is the problem, not the solution. And that separating storage from routing requires a dedicated active component — not a passive agent, not a configuration layer, but a core that makes decisions about what enters context on every call.</p>
+<p>This paper argues that this assumption is the problem, not the solution. And that separating storage from routing requires a dedicated active component, not a passive agent, not a configuration layer, but a core that makes decisions about what enters context on every call.</p>
 
 <!-- SECTION 2 -->
 <h2><span class="section-num">02 · Why Current Solutions Fail</span>The right tools for the wrong problem.</h2>
@@ -402,7 +402,7 @@ sup {
 
 <h3>Memory-as-a-service systems</h3>
 
-<p>Mem0, Zep and similar systems solve portability partially: memory lives in an external service that multiple tools query. But they introduce three new problems. First, dependency on external infrastructure — the memory is now in another company's cloud. Second, absence of explicit governance — what enters is decided automatically, without human approval, and hypotheses become permanent facts. Third, absence of semantic isolation — all memory lives in a single vector space, and distinct projects contaminate each other through semantic proximity.</p>
+<p>Mem0, Zep and similar systems solve portability partially: memory lives in an external service that multiple tools query. But they introduce three new problems. First, dependency on external infrastructure, the memory is now in another company's cloud. Second, absence of explicit governance, what enters is decided automatically, without human approval, and hypotheses become permanent facts. Third, absence of semantic isolation, all memory lives in a single vector space, and distinct projects contaminate each other through semantic proximity.</p>
 
 <h3>Temporal knowledge graphs</h3>
 
@@ -492,14 +492,14 @@ sup {
 <!-- SECTION 4 -->
 <h2><span class="section-num">04 · The Proposal</span>Federated memory and the three closed gaps.</h2>
 
-<p>Federated memory is an architecture where context belongs to the user, domains are semantically isolated, routing is explicit and governed, and agents are temporary consumers of context — not its owners.</p>
+<p>Federated memory is an architecture where context belongs to the user, domains are semantically isolated, routing is explicit and governed, and agents are temporary consumers of context, not its owners.</p>
 
 <ol class="principles">
   <li>
     <p><strong>User sovereignty.</strong> The base belongs to the user. Agents come and go; context stays portable, human-readable and versionable. No tool should be a prerequisite for accessing one's own memory.</p>
   </li>
   <li>
-    <p><strong>Domain isolation.</strong> Context from distinct domains — marketing, engineering, writing, research — should not share the same semantic space. Cross-domain contamination is prevented by structure, not by instruction to the agent.</p>
+    <p><strong>Domain isolation.</strong> Context from distinct domains, marketing, engineering, writing, research, should not share the same semantic space. Cross-domain contamination is prevented by structure, not by instruction to the agent.</p>
   </li>
   <li>
     <p><strong>Neutral consumption contract.</strong> A central contract file describes how any agent should consume the memory. Tool-specific adapters translate this contract but do not replace it. The contract is hierarchical: company and dev rules live in <code>00-global/RULES.md</code> and apply across all projects; when a project needs to deviate from a rule, it registers an override in <code>70-decisions/</code> with the reason, responsible party, and date. An approved override takes precedence, and the deviation remains traceable.</p>
@@ -514,15 +514,15 @@ sup {
 
 <p>v1.0 stated these five principles and stopped. Practice revealed three gaps that needed to be closed before the architecture was robust enough to be adopted by third parties.</p>
 
-<h3>Gap 1 — Context quality feedback</h3>
+<h3>Gap 1, Context quality feedback</h3>
 
 <p>Context Packs were delivered, agents consumed them, and no one measured whether the package had been useful. Bad packs remained in use indefinitely because there was no rejection mechanism. The solution is structural, not cultural: each pack gets a <code>Validation:</code> field documenting how usage is logged, what the automatic review trigger is (three consecutive bad marks) and how the human marks a pack as obsolete. Without feedback, there is no improvement cycle. With structured feedback, bad packs have a finite half-life.</p>
 
-<h3>Gap 2 — Memory conflict resolution</h3>
+<h3>Gap 2, Memory conflict resolution</h3>
 
-<p>When two notes state conflicting things, which wins? In v1.0 the answer was implicit ("whoever revised most recently"), and therefore non-deterministic — different agents reached different answers. v2.0 establishes the explicit rule: the most recent entry with <code>status: approved</code> wins. Entries with <code>status: superseded</code> remain in history but are ignored at runtime. Timestamp alone does not decide — status is mandatory. In the absence of status, the agent must ask the human, not guess. This structure — discrete entries with status and frontmatter, rather than a monolithic context file rewritten on every update — prevents by construction what the ACE paper calls <em>context collapse</em>: the degradation that occurs when full rewrites of context erase hard-won strategies. In federated memory, each decision is a discrete versioned entry; new information enters as incremental deltas via the inbox, never as a destructive rewrite. History is preserved by design.</p>
+<p>When two notes state conflicting things, which wins? In v1.0 the answer was implicit ("whoever revised most recently"), and therefore non-deterministic, different agents reached different answers. v2.0 establishes the explicit rule: the most recent entry with <code>status: approved</code> wins. Entries with <code>status: superseded</code> remain in history but are ignored at runtime. Timestamp alone does not decide, status is mandatory. In the absence of status, the agent must ask the human, not guess. This structure, discrete entries with status and frontmatter, rather than a monolithic context file rewritten on every update, prevents by construction what the ACE paper calls <em>context collapse</em>: the degradation that occurs when full rewrites of context erase hard-won strategies. In federated memory, each decision is a discrete versioned entry; new information enters as incremental deltas via the inbox, never as a destructive rewrite. History is preserved by design.</p>
 
-<h3>Gap 3 — Writing with no human present</h3>
+<h3>Gap 3, Writing with no human present</h3>
 
 <p>The principle of human approval works when the human is in front of the screen. The problem begins when the agent runs in automatic mode: scheduled, headless, in CI. The v3 answer is not a core that mediates calls, because that core does not exist. It is two declared modes. In cooperative mode, the default, the rule lives in the contract and in the structure: reading is open across the vault, permanent writing outside <code>/90-inbox/</code> is turned into a suggestion. The agent cooperates because the contract asks it to, and capture via hooks records what matters. In adversarial mode, against an agent that decides to ignore the contract, no component on the agent's side holds back the write. Enforcement comes from below: operating system isolation (section 05).</p>
 
@@ -586,15 +586,15 @@ sup {
 <!-- SECTION 6 -->
 <h2><span class="section-num">06 · The Differentiator</span>Temporal validity through file inspection.</h2>
 
-<p>Centralizing systems treat all memory content as valid until a human explicitly marks it obsolete. In practice, this means outdated content stays in circulation for months or years — no one reviews what is not visibly broken.</p>
+<p>Centralizing systems treat all memory content as valid until a human explicitly marks it obsolete. In practice, this means outdated content stays in circulation for months or years, no one reviews what is not visibly broken.</p>
 
 <p>Federated memory has a structural advantage over centralizing systems on this point: content lives as files in the user's operating system. Files have an <em>mtime</em>. Guided by the contract, the client agent, or a capture hook, inspects the <em>mtime</em> of each file listed under <code>Use:</code> when assembling a Context Pack. If any file has gone more than ninety days without an update, the pack carries a warning attached to the output.</p>
 
-<p>The choice to warn — and not block — is deliberate. Old content is not necessarily wrong. Engineering principles may have been written a year ago and still hold. But old content deserves a moment of checking before being used as the basis for a new decision. The warning serves that purpose without becoming friction.</p>
+<p>The choice to warn, and not block, is deliberate. Old content is not necessarily wrong. Engineering principles may have been written a year ago and still hold. But old content deserves a moment of checking before being used as the basis for a new decision. The warning serves that purpose without becoming friction.</p>
 
 <div class="callout">
   <div class="label">Why this is a differentiator</div>
-  <p>Centralizing systems have no equivalent. Memory lives as opaque objects inside the application, with no exposed <em>mtime</em>, no inspection possible by an external component. Federated memory inherits this capability from the file system — it was not invented, it was recognized.</p>
+  <p>Centralizing systems have no equivalent. Memory lives as opaque objects inside the application, with no exposed <em>mtime</em>, no inspection possible by an external component. Federated memory inherits this capability from the file system, it was not invented, it was recognized.</p>
 </div>
 
 <h3>When the warning becomes action</h3>
@@ -602,13 +602,13 @@ sup {
 <p>The default behavior is informative. The human can escalate by configuring a hook, or instructing the agent via the contract, to block packs with content older than a threshold (for example, six months). For packs from volatile domains (regulatory, ML, market), the threshold can be lower; for stable domains (principles, fundamentals), higher. Configuration is per pack, not global, because aging speed is content-specific.</p>
 
 <!-- SECTION 7 -->
-<h2><span class="section-num">07 · Honest Comparison</span>Where each approach wins — and where federated loses.</h2>
+<h2><span class="section-num">07 · Honest Comparison</span>Where each approach wins, and where federated loses.</h2>
 
 <p>Federated memory is not superior in every scenario. An honest comparison requires acknowledging where other approaches have the advantage.</p>
 
 <h3>Where native tool memory wins</h3>
 
-<p>For users with a single tool, a single project and low need for portability, native memory is the right choice. Zero setup friction, perfect integration with the tool's flow, no additional infrastructure. The cost — tool dependency, lack of portability — only appears when context grows beyond what the tool can hold.</p>
+<p>For users with a single tool, a single project and low need for portability, native memory is the right choice. Zero setup friction, perfect integration with the tool's flow, no additional infrastructure. The cost, tool dependency, lack of portability, only appears when context grows beyond what the tool can hold.</p>
 
 <h3>Where systems like Mem0 and Zep win</h3>
 
@@ -616,9 +616,9 @@ sup {
 
 <h3>Where centralizing systems / Life OS win</h3>
 
-<p>There is a category of projects that takes the opposite approach to federated: concentrating memory, automation, integrations and agents in a single monolithic application — often called "Personal AI", "Life OS" or "productivity super-app". They win on surface usability: ready-made UI, packaged integrations, visible community, near-zero adoption curve. The user installs, connects services and has something working in minutes.</p>
+<p>There is a category of projects that takes the opposite approach to federated: concentrating memory, automation, integrations and agents in a single monolithic application, often called "Personal AI", "Life OS" or "productivity super-app". They win on surface usability: ready-made UI, packaged integrations, visible community, near-zero adoption curve. The user installs, connects services and has something working in minutes.</p>
 
-<p>The cost shows up later. Memory lives inside the application, in the application's format. Switching tools means starting from scratch. The architecture is, by design, centralizing — exactly the anti-pattern that motivated this paper. For those who prioritize adoption speed over sovereignty, it is the right choice; for those who prioritize portability and governance, it is a problem dressed up as a solution.</p>
+<p>The cost shows up later. Memory lives inside the application, in the application's format. Switching tools means starting from scratch. The architecture is, by design, centralizing, exactly the anti-pattern that motivated this paper. For those who prioritize adoption speed over sovereignty, it is the right choice; for those who prioritize portability and governance, it is a problem dressed up as a solution.</p>
 
 <h3>Where federated memory wins</h3>
 
@@ -626,21 +626,21 @@ sup {
 
 <h3>DecisionNode: independent convergence</h3>
 
-<p>The DecisionNode project<sup>1</sup>, developed independently, reached partially overlapping conclusions: decisions as a structured unit, access via MCP by multiple agents, auditable history, an implicit blackboard pattern. It specifically solves the decision sub-module with semantic search via embeddings — a concrete implementation of part of the principles proposed here. The independent convergence of distinct projects toward similar conclusions is evidence that the problem is real and the architectural direction is valid.</p>
+<p>The DecisionNode project<sup>1</sup>, developed independently, reached partially overlapping conclusions: decisions as a structured unit, access via MCP by multiple agents, auditable history, an implicit blackboard pattern. It specifically solves the decision sub-module with semantic search via embeddings, a concrete implementation of part of the principles proposed here. The independent convergence of distinct projects toward similar conclusions is evidence that the problem is real and the architectural direction is valid.</p>
 
 <p>As multiple specialized agents coexist in the same ecosystem, the blackboard pattern evolves into what we call the <em>hive mind</em>: each agent keeps its private memory, but reusable knowledge is published to a shared area of the vault that any agent can consult. Federated reading, controlled writing. No agent directly alters another's memory. Improvements are proposed, not imposed.</p>
 
 <h3>ACE: academic validation of the pattern</h3>
 
-<p>The Agentic Context Engineering (ACE) paper, published in 2025 by researchers from Stanford, SambaNova Systems and UC Berkeley (arXiv:2510.04618), arrived independently at a formulation that validates the architecture proposed here. ACE treats context as a "playbook" that evolves over time, maintained by three roles: Generator (executes the task and produces the trajectory), Reflector (analyzes successes and errors and extracts lessons) and Curator (consolidates the lessons into incremental updates of the playbook). The parallel with the federated architecture is direct: the executing agent (Claude Code, Cursor, etc.) is the Generator; capture via hooks with <code>confidence</code> + <code>risk</code> classification is the Reflector; the review-inbox with promote-skills and the approved/superseded rule is the Curator; and the federated vault is the playbook. The difference is philosophical and is the differentiator of this architecture: in ACE, the three roles are fully automatic, executed by LLMs. In federated memory, the Curator keeps the human as the last-instance auditor. Low risk consolidates automatically; hypotheses and high risk require human decision. In one phrase: this architecture is ACE with risk-proportional governance. ACE reports gains of +10.6% on agent tasks and +8.6% on domain reasoning with no fine-tuning — evidence that the direction (context as an evolving playbook, not a static prompt) is technically sound.</p>
+<p>The Agentic Context Engineering (ACE) paper, published in 2025 by researchers from Stanford, SambaNova Systems and UC Berkeley (arXiv:2510.04618), arrived independently at a formulation that validates the architecture proposed here. ACE treats context as a "playbook" that evolves over time, maintained by three roles: Generator (executes the task and produces the trajectory), Reflector (analyzes successes and errors and extracts lessons) and Curator (consolidates the lessons into incremental updates of the playbook). The parallel with the federated architecture is direct: the executing agent (Claude Code, Cursor, etc.) is the Generator; capture via hooks with <code>confidence</code> + <code>risk</code> classification is the Reflector; the review-inbox with promote-skills and the approved/superseded rule is the Curator; and the federated vault is the playbook. The difference is philosophical and is the differentiator of this architecture: in ACE, the three roles are fully automatic, executed by LLMs. In federated memory, the Curator keeps the human as the last-instance auditor. Low risk consolidates automatically; hypotheses and high risk require human decision. In one phrase: this architecture is ACE with risk-proportional governance. ACE reports gains of +10.6% on agent tasks and +8.6% on domain reasoning with no fine-tuning, evidence that the direction (context as an evolving playbook, not a static prompt) is technically sound.</p>
 
 <h3>Complementary layers: memory and orchestration</h3>
 
-<p>Systems like Paperclip (paperclip.ing) solve an adjacent but distinct problem. They are not memory systems — they are agent-team orchestration platforms, with org charts, per-agent budgets, scheduled heartbeats and hierarchical governance. The distinction matters: federated memory is context infrastructure <em>per agent</em>. Orchestration is coordination infrastructure <em>between agents</em>. Whoever uses both layers together has the most complete solution: persistent and governed context on one side, structured coordination on the other. Paperclip even uses its own <code>SKILLS.md</code> for runtime context injection — convergence with the <code>/50-skills/</code> folder of this architecture. They are complementary projects, not competitors.</p>
+<p>Systems like Paperclip (paperclip.ing) solve an adjacent but distinct problem. They are not memory systems, they are agent-team orchestration platforms, with org charts, per-agent budgets, scheduled heartbeats and hierarchical governance. The distinction matters: federated memory is context infrastructure <em>per agent</em>. Orchestration is coordination infrastructure <em>between agents</em>. Whoever uses both layers together has the most complete solution: persistent and governed context on one side, structured coordination on the other. Paperclip even uses its own <code>SKILLS.md</code> for runtime context injection, convergence with the <code>/50-skills/</code> folder of this architecture. They are complementary projects, not competitors.</p>
 
-<p>At the other end of the spectrum, Pi (pi.dev) is minimalist by design and <em>has no native MCP</em>. It has its own <code>AGENTS.md</code>, skills and automatic compaction. Integration with the federated vault happens via direct filesystem — running Pi inside the vault already loads the <code>AGENTS.md</code> automatically, with no need to configure an MCP server. Federated memory adds what Pi does not offer on its own: portability across machines, domain isolation and governance with human approval.</p>
+<p>At the other end of the spectrum, Pi (pi.dev) is minimalist by design and <em>has no native MCP</em>. It has its own <code>AGENTS.md</code>, skills and automatic compaction. Integration with the federated vault happens via direct filesystem, running Pi inside the vault already loads the <code>AGENTS.md</code> automatically, with no need to configure an MCP server. Federated memory adds what Pi does not offer on its own: portability across machines, domain isolation and governance with human approval.</p>
 
-<!-- SECTION 8 — Known limitations -->
+<!-- SECTION 8, Known limitations -->
 <h2><span class="section-num">08 · Known Limitations</span>What this architecture does not yet solve.</h2>
 
 <p>Adopting federated memory does not buy you every problem solved. Six limitations deserve to be acknowledged explicitly, not to justify the architecture, but to make clear where it ends and where the user needs to fill the gap.</p>
@@ -675,18 +675,18 @@ sup {
 
 <p>This is the limitation a field test exposed and that honesty requires us to declare. In the recommended setup (Markdown vault + Git + contract), write governance is contract, not a lock. An agent that cooperates deposits suggestions in <code>/90-inbox/</code> and respects protected folders because <code>AGENT.md</code> asks it to. An agent that decides to ignore the contract writes wherever it wants, because the folders are writable by whoever runs the agent. No component on the agent's side prevents this. Whoever needs real enforcement, against a potentially hostile agent, climbs to the adversarial mode described in section 05: control comes from the operating system, below the agent (a container with a read-only mount except for the inbox, or a separate user with no write access to protected folders). Climbing a step on the maturity ladder buys scale and search, never write discipline for free.</p>
 
-<!-- SECTION 9 — Principles and Limits -->
+<!-- SECTION 9, Principles and Limits -->
 <h2><span class="section-num">09 · Principles and Limits</span>What this architecture refuses.</h2>
 
-<p>The AI agent field matured quickly on the capability layer — reasoning, code generation, document analysis. The memory layer fell behind, and the gap is becoming the main limiter of continuous use. It is not a lack of agent intelligence. It is a lack of context continuity across sessions, projects and tools.</p>
+<p>The AI agent field matured quickly on the capability layer, reasoning, code generation, document analysis. The memory layer fell behind, and the gap is becoming the main limiter of continuous use. It is not a lack of agent intelligence. It is a lack of context continuity across sessions, projects and tools.</p>
 
 <p>Current solutions treat memory as a product feature: something each tool implements internally, in a proprietary way, with the user as a passive beneficiary. This paper's proposal inverts that relationship: memory is the user's infrastructure, not the product's. Agents are temporary consumers of a context that belongs to whoever does the work, not to whoever provides the tool.</p>
 
-<p>Adopting this architecture does not depend on changes to AI agents. It depends on a shift of assumption about where memory lives. When memory belongs to the user — readable, versionable, portable, governed — switching tools stops being a loss.</p>
+<p>Adopting this architecture does not depend on changes to AI agents. It depends on a shift of assumption about where memory lives. When memory belongs to the user, readable, versionable, portable, governed, switching tools stops being a loss.</p>
 
 <div class="pull">When memory belongs to the user, the tool becomes disposable. This is, precisely, what the AI agent market needs in order to mature.</div>
 
-<p>This architecture refuses four paths. It refuses a <em>hosted backend as a service</em> — it breaks sovereignty. It refuses <em>automatic memory without review</em> — it is the central anti-pattern. It refuses a <em>single universal adapter</em> — each agent has its own conventions, and a generic adapter becomes the worst common denominator. It refuses <em>RAG on the critical path</em> — embeddings help with search, but never replace Markdown as the source.</p>
+<p>This architecture refuses four paths. It refuses a <em>hosted backend as a service</em>, it breaks sovereignty. It refuses <em>automatic memory without review</em>, it is the central anti-pattern. It refuses a <em>single universal adapter</em>, each agent has its own conventions, and a generic adapter becomes the worst common denominator. It refuses <em>RAG on the critical path</em>, embeddings help with search, but never replace Markdown as the source.</p>
 
 <p>What this architecture accepts: being slower to adopt than a monolithic application; requiring curation discipline that automatic tools do not; asking the user to learn the contract before delegating; and operating, by default, in cooperative mode, where write governance is contract and not a lock. Enforcement against a hostile agent is not the contract's job: it is operating system hardening, outside the default scope and available to whoever needs it (section 08). The price of sovereignty is active participation.</p>
 
@@ -696,11 +696,11 @@ sup {
 
 <!-- FOOTNOTES -->
 <div class="footnotes">
-  <p><sup>1</sup> DecisionNode — github.com/decisionnode/DecisionNode. Reference implementation for the decision sub-module with vector embeddings and access via MCP.</p>
-  <p><sup>2</sup> Hermes Agent — NousResearch. github.com/NousResearch/hermes-agent</p>
-  <p><sup>3</sup> Graphiti — Zep. help.getzep.com/graphiti/graphiti/overview</p>
-  <p><sup>4</sup> Model Context Protocol — modelcontextprotocol.io</p>
-  <p><sup>5</sup> ACE (Agentic Context Engineering) — Stanford University, SambaNova Systems, UC Berkeley. arXiv:2510.04618. Evolving-context framework with Generator, Reflector and Curator roles.</p>
+  <p><sup>1</sup> DecisionNode, github.com/decisionnode/DecisionNode. Reference implementation for the decision sub-module with vector embeddings and access via MCP.</p>
+  <p><sup>2</sup> Hermes Agent, NousResearch. github.com/NousResearch/hermes-agent</p>
+  <p><sup>3</sup> Graphiti, Zep. help.getzep.com/graphiti/graphiti/overview</p>
+  <p><sup>4</sup> Model Context Protocol, modelcontextprotocol.io</p>
+  <p><sup>5</sup> ACE (Agentic Context Engineering), Stanford University, SambaNova Systems, UC Berkeley. arXiv:2510.04618. Evolving-context framework with Generator, Reflector and Curator roles.</p>
   <p><sup>6</sup> For the full implementation with step-by-step, templates and vault structure: see the Implementation Guide available in the repository.</p>
 </div>
 

@@ -481,12 +481,12 @@ td strong { color: var(--ink); }
 <li><span class="num">04</span> O padrão blackboard</li>
 <li><span class="num">05</span> Componentes da implementação</li>
 <li><span class="num">06</span> Estrutura no Obsidian</li>
-<li><span class="num">06b</span> Multimodal — assets no vault</li>
+<li><span class="num">06b</span> Multimodal, assets no vault</li>
 <li><span class="num">07</span> AGENT.md: o contrato neutro</li>
 <li><span class="num">08</span> Adaptadores por ferramenta</li>
 <li><span class="num">09</span> Context Packs com exemplo real</li>
 <li><span class="num">09b</span> O agente como cliente</li>
-<li><span class="num">09c</span> Captura automática — inbox sem intervenção manual</li>
+<li><span class="num">09c</span> Captura automática, inbox sem intervenção manual</li>
 <li><span class="num">10</span> Hermes: instalação e configuração</li>
 <li><span class="num">11</span> Obsidian via MCP na prática</li>
 <li><span class="num">12</span> Fluxo operacional</li>
@@ -626,7 +626,7 @@ td strong { color: var(--ink); }
   <!-- Bottom caption -->
   <text x="380" y="440" text-anchor="middle" font-family="Manrope, sans-serif" font-size="12" fill="#6B6258" font-style="italic">Cada agente acessa em seu próprio tempo. O quadro é a única fonte de verdade compartilhada.</text>
 </svg>
-<figcaption>Figura 1 — Coordenação assíncrona via blackboard</figcaption>
+<figcaption>Figura 1, Coordenação assíncrona via blackboard</figcaption>
 </figure>
 
 <p>Implicações práticas dessa escolha:</p>
@@ -700,7 +700,7 @@ td strong { color: var(--ink); }
   <!-- Caption -->
   <text x="380" y="510" text-anchor="middle" font-family="Manrope, sans-serif" font-size="12" fill="#6B6258" font-style="italic">Cada camada tem uma responsabilidade clara. Nenhuma é dona da memória.</text>
 </svg>
-<figcaption>Figura 2 — Camadas da arquitetura de referência</figcaption>
+<figcaption>Figura 2, Camadas da arquitetura de referência</figcaption>
 </figure>
 
 <table>
@@ -744,7 +744,7 @@ td strong { color: var(--ink); }
 │   ├── writing/
 │   └── research/
 │
-├── 30-clients/          # clientes — candidato a vault físico separado
+├── 30-clients/          # clientes, candidato a vault físico separado
 │   └── &lt;cliente&gt;/
 │
 ├── 40-workflows/        # fluxos repetíveis (release, incident, review...)
@@ -796,7 +796,7 @@ td strong { color: var(--ink); }
 
 <h2><span class="num">06b / Multimodal</span>Assets no vault</h2>
 
-<p>O vault é Markdown por padrão. Mas o suporte multimodal não exige mudar a arquitetura — exige apenas uma convenção de onde os assets ficam e como são referenciados.</p>
+<p>O vault é Markdown por padrão. Mas o suporte multimodal não exige mudar a arquitetura, exige apenas uma convenção de onde os assets ficam e como são referenciados.</p>
 
 <p>Suporte multimodal é uma capacidade do LLM configurado no agente, não do agente em si. O agente passa o arquivo, o LLM processa. Verifique a documentação atualizada do provider:</p>
 
@@ -899,7 +899,7 @@ Decision frontmatter (in /70-decisions/):
 <p>Crie <code>00-global/RULES.md</code> com dois blocos:</p>
 
 <pre><code># RULES.md
-# Regras globais — valem para todos os projetos.
+# Regras globais, valem para todos os projetos.
 # Para sobrescrever uma regra em projeto específico,
 # registre um override em 70-decisions/ do projeto.
 
@@ -940,7 +940,7 @@ review_date: 2026-12-01</code></pre>
 
 <div class="callout tip">
 <div class="label">Hierarquia de contexto</div>
-<p>O agente aplica as regras nesta ordem: <strong>Company Rules</strong> (mais amplas, mais estáveis) &gt; <strong>Dev Rules</strong> &gt; <strong>Regras do projeto</strong>. Um override aprovado em <code>70-decisions/</code> tem precedência sobre o <code>RULES.md</code>. O agente executa sem questionar — o desvio já foi decidido e está documentado.</p>
+<p>O agente aplica as regras nesta ordem: <strong>Company Rules</strong> (mais amplas, mais estáveis) &gt; <strong>Dev Rules</strong> &gt; <strong>Regras do projeto</strong>. Um override aprovado em <code>70-decisions/</code> tem precedência sobre o <code>RULES.md</code>. O agente executa sem questionar, o desvio já foi decidido e está documentado.</p>
 </div>
 
 <!-- ============================================== -->
@@ -986,7 +986,7 @@ review_date: 2026-12-01</code></pre>
 
   <text x="380" y="340" text-anchor="middle" font-family="Manrope, sans-serif" font-size="12" fill="#6B6258" font-style="italic">Regra: adaptadores só traduzem. O AGENT.md é sempre a fonte.</text>
 </svg>
-<figcaption>Figura 3 — Adaptadores por agente</figcaption>
+<figcaption>Figura 3, Adaptadores por agente</figcaption>
 </figure>
 
 <p>Exemplo de adaptador para Claude Code:</p>
@@ -1069,7 +1069,7 @@ If a new memory seems useful, write a suggestion to:
 
   <text x="380" y="365" text-anchor="middle" font-family="Manrope, sans-serif" font-size="12" fill="#6B6258" font-style="italic">O Context Pack não copia o vault. Aponta, resume e limita.</text>
 </svg>
-<figcaption>Figura 4 — Anatomia de um Context Pack</figcaption>
+<figcaption>Figura 4, Anatomia de um Context Pack</figcaption>
 </figure>
 
 <h3>Exemplo preenchido: <code>linkedin-writing.md</code></h3>
@@ -1114,7 +1114,7 @@ Source notes:
 
 <div class="callout">
 <div class="label">Validation: o feedback que faltava na v1</div>
-<p>Cada Context Pack v2 inclui o campo <code>Validation:</code>. O Hermes loga cada uso em <code>/99-archive/pack-usage.log</code> com resultado classificado (útil / parcial / ruim); três marcações ruins consecutivas flaggam o pack pra revisão. Adicionalmente, ao entregar o pack o Hermes inspeciona o <code>mtime</code> dos arquivos listados em <code>Use:</code> — se algum estiver com mais de 90 dias (default, configurável por pack), o output ganha um aviso de validade temporal. Pacote ruim tem meia-vida finita; conteúdo antigo merece checagem antes de virar base de decisão nova.</p>
+<p>Cada Context Pack v2 inclui o campo <code>Validation:</code>. O Hermes loga cada uso em <code>/99-archive/pack-usage.log</code> com resultado classificado (útil / parcial / ruim); três marcações ruins consecutivas flaggam o pack pra revisão. Adicionalmente, ao entregar o pack o Hermes inspeciona o <code>mtime</code> dos arquivos listados em <code>Use:</code>, se algum estiver com mais de 90 dias (default, configurável por pack), o output ganha um aviso de validade temporal. Pacote ruim tem meia-vida finita; conteúdo antigo merece checagem antes de virar base de decisão nova.</p>
 </div>
 
 <!-- ============================================== -->
@@ -1273,21 +1273,21 @@ Before responding to any task:
 
 <p>O MCP server é opcional. O agente cliente já lê os Markdown direto pelo filesystem, e o piso recomendado (seção 05 do whitepaper) não exige MCP. Ele entra quando vários agentes externos (Claude Desktop, Cursor, outros clientes MCP) precisam consultar a mesma base sem cada um implementar seu próprio leitor, expondo o vault via uma camada padronizada. Existem duas abordagens prontas pela comunidade.</p>
 
-<h3>Opção A — Via Local REST API plugin</h3>
+<h3>Opção A, Via Local REST API plugin</h3>
 
 <p>Instala o plugin "Local REST API" no Obsidian. O plugin sobe um endpoint HTTP local. Um MCP server se conecta a esse endpoint e expõe ferramentas padronizadas.</p>
 
 <p>Ferramentas típicas expostas:</p>
 <ul>
-<li><code>list_vault_files</code> — lista arquivos do vault</li>
-<li><code>search_vault</code> — busca por conteúdo</li>
-<li><code>create_vault_file</code> — cria arquivo (use com restrição em <code>/90-inbox/</code>)</li>
-<li><code>read_vault_file</code> — lê um arquivo específico</li>
+<li><code>list_vault_files</code>, lista arquivos do vault</li>
+<li><code>search_vault</code>, busca por conteúdo</li>
+<li><code>create_vault_file</code>, cria arquivo (use com restrição em <code>/90-inbox/</code>)</li>
+<li><code>read_vault_file</code>, lê um arquivo específico</li>
 </ul>
 
 <p><strong>Vantagem.</strong> Mais confiável que apontar o agente direto pra um diretório, porque as ferramentas são pré-definidas. <strong>Desvantagem.</strong> Exige Obsidian aberto.</p>
 
-<h3>Opção B — MCP server com filesystem direto</h3>
+<h3>Opção B, MCP server com filesystem direto</h3>
 
 <p>Implementações como <code>obsidian-mcp-server</code> acessam o vault direto no filesystem, sem precisar do Obsidian rodando. Funciona com o app fechado, em servidor, ou via SSH.</p>
 
@@ -1401,7 +1401,7 @@ Before responding to any task:
 
   <path d="M 280 405 Q 50 405 50 200 L 95 175" stroke="#0A4F4A" stroke-width="1.5" stroke-dasharray="4 3" fill="none"/>
 </svg>
-<figcaption>Figura 5 — Fluxo operacional completo com loop de governança</figcaption>
+<figcaption>Figura 5, Fluxo operacional completo com loop de governança</figcaption>
 </figure>
 
 <p>O agente nunca grava memória permanente. Quando identifica algo que merece virar verdade, escreve uma sugestão no inbox. O humano revisa, aprova, edita ou rejeita. Só depois disso a memória entra na base estável.</p>
@@ -1412,9 +1412,9 @@ Before responding to any task:
 
 <h2><span class="num">12b / Remoto</span>Deployment remoto: acessando a memória de qualquer lugar</h2>
 
-<p>Até aqui tudo roda local. Isso funciona bem para uma máquina. Quando você precisa que dois ou mais agentes — em máquinas diferentes — acessem o mesmo vault, a arquitetura precisa de um ponto central. Esse ponto é uma VPS.</p>
+<p>Até aqui tudo roda local. Isso funciona bem para uma máquina. Quando você precisa que dois ou mais agentes, em máquinas diferentes, acessem o mesmo vault, a arquitetura precisa de um ponto central. Esse ponto é uma VPS.</p>
 
-<p>A boa notícia: a separação de responsabilidades da memória federada já resolve metade do problema. O vault é só arquivos. O MCP server é só um processo. Mover para um servidor remoto não muda os contratos — só muda onde os processos rodam.</p>
+<p>A boa notícia: a separação de responsabilidades da memória federada já resolve metade do problema. O vault é só arquivos. O MCP server é só um processo. Mover para um servidor remoto não muda os contratos, só muda onde os processos rodam.</p>
 
 <h3>Onde cada componente fica</h3>
 
@@ -1441,7 +1441,7 @@ Before responding to any task:
   <!-- Obsidian vault -->
   <rect x="285" y="90" width="190" height="50" fill="#0A4F4A" stroke="#14110F" stroke-width="1.5"/>
   <text x="380" y="111" text-anchor="middle" font-family="Manrope, sans-serif" font-size="13" font-weight="700" fill="#F4EFE6">Vault (Obsidian)</text>
-  <text x="380" y="128" text-anchor="middle" font-family="JetBrains Mono, monospace" font-size="9" fill="#B89455">/vault/ — arquivos markdown</text>
+  <text x="380" y="128" text-anchor="middle" font-family="JetBrains Mono, monospace" font-size="9" fill="#B89455">/vault/, arquivos markdown</text>
 
   <!-- MCP server -->
   <rect x="285" y="165" width="190" height="50" fill="#6B7A4F" stroke="#14110F" stroke-width="1.5"/>
@@ -1451,7 +1451,7 @@ Before responding to any task:
   <!-- Hermes -->
   <rect x="285" y="240" width="190" height="50" fill="#B89455" stroke="#14110F" stroke-width="1.5"/>
   <text x="380" y="261" text-anchor="middle" font-family="Manrope, sans-serif" font-size="13" font-weight="700" fill="#14110F">Hermes Agent</text>
-  <text x="380" y="278" text-anchor="middle" font-family="JetBrains Mono, monospace" font-size="9" fill="#14110F">opcional — se rodar na VPS</text>
+  <text x="380" y="278" text-anchor="middle" font-family="JetBrains Mono, monospace" font-size="9" fill="#14110F">opcional, se rodar na VPS</text>
 
   <!-- Git sync -->
   <rect x="285" y="315" width="190" height="40" fill="#F4EFE6" stroke="#6B7A4F" stroke-width="1.5" stroke-dasharray="4 3"/>
@@ -1489,7 +1489,7 @@ Before responding to any task:
   <!-- sync arrows -->
   <path d="M 380 355 L 380 390" stroke="#6B7A4F" stroke-width="1" stroke-dasharray="3 3" marker-end="url(#arr-r)"/>
 </svg>
-<figcaption>Figura 5b — Arquitetura remota: vault e MCP na VPS, agentes acessando de fora</figcaption>
+<figcaption>Figura 5b, Arquitetura remota: vault e MCP na VPS, agentes acessando de fora</figcaption>
 </figure>
 
 <table>
@@ -1507,14 +1507,14 @@ Before responding to any task:
 
 <p>O vault é um repositório Git normal. Cada máquina que precisa de uma cópia local faz clone e pull. A VPS é o origin.</p>
 
-<pre><code># Na VPS — configuração inicial
+<pre><code># Na VPS, configuração inicial
 git init --bare /vault-remote.git
 
-# No vault local — apontar para a VPS como origin
+# No vault local, apontar para a VPS como origin
 git remote add origin ssh://usuario@sua-vps:/vault-remote.git
 git push -u origin main
 
-# Em outra máquina — clonar o vault
+# Em outra máquina, clonar o vault
 git clone ssh://usuario@sua-vps:/vault-remote.git ~/vault
 
 # Rotina de sincronização (antes de trabalhar)
@@ -1522,19 +1522,19 @@ git pull origin main
 
 # Depois de aprovações no inbox
 git add 00-global/ 10-projects/ 20-domains/ 60-context-packs/
-git commit -m "feat: memória aprovada — [domínio]"
+git commit -m "feat: memória aprovada, [domínio]"
 git push origin main</code></pre>
 
 <div class="callout tip">
 <div class="label">Critério de conclusão</div>
-<p>Rode <code>git log --oneline -5</code> na VPS e em outra máquina. Os hashes devem ser idênticos. Se não forem, tem divergência — resolva antes de continuar.</p>
+<p>Rode <code>git log --oneline -5</code> na VPS e em outra máquina. Os hashes devem ser idênticos. Se não forem, tem divergência, resolva antes de continuar.</p>
 </div>
 
 <h3>Acesso remoto ao MCP server</h3>
 
 <p>O MCP server não deve ser exposto diretamente na internet. Duas opções:</p>
 
-<h4>Opção A — SSH tunnel (recomendado para uso pessoal)</h4>
+<h4>Opção A, SSH tunnel (recomendado para uso pessoal)</h4>
 
 <p>O MCP roda em localhost na VPS. Você cria um tunnel que mapeia a porta local para a sua máquina.</p>
 
@@ -1549,11 +1549,11 @@ kill $(lsof -t -i:3000)</code></pre>
 
 <p>Com o tunnel ativo, o Claude Code enxerga o MCP remoto como se fosse local. Nenhuma configuração adicional.</p>
 
-<h4>Opção B — HTTPS com autenticação (para múltiplos agentes)</h4>
+<h4>Opção B, HTTPS com autenticação (para múltiplos agentes)</h4>
 
 <p>Se mais de uma máquina precisa acessar o MCP simultaneamente, coloque um reverse proxy (nginx ou Caddy) na frente com TLS e autenticação básica.</p>
 
-<pre><code># Caddy — configuração mínima (~/.caddy/Caddyfile)
+<pre><code># Caddy, configuração mínima (~/.caddy/Caddyfile)
 mcp.seudominio.com {
     basicauth /* {
         agente $2a$14$HASH_GERADO_COM_caddy_hash
@@ -1602,7 +1602,7 @@ mcp.seudominio.com {
 <pre><code># Verificar que a porta 3000 NÃO está exposta publicamente
 # Na VPS:
 ss -tlnp | grep 3000
-# Deve mostrar: 127.0.0.1:3000 — se mostrar 0.0.0.0:3000, feche no firewall
+# Deve mostrar: 127.0.0.1:3000, se mostrar 0.0.0.0:3000, feche no firewall
 
 # UFW (Ubuntu)
 ufw deny 3000
@@ -1612,7 +1612,7 @@ ufw allow 22  # SSH continua aberto</code></pre>
 <!-- 12c - HARNESS ENGINEERING -->
 <!-- ============================================== -->
 
-<h2><span class="num">12c / Harness</span>Harness Engineering — a camada entre o agente e o mundo</h2>
+<h2><span class="num">12c / Harness</span>Harness Engineering, a camada entre o agente e o mundo</h2>
 
 <p>Harness Engineering é a disciplina de conectar o agente ao ambiente de forma controlada: quais ferramentas ele pode usar, como o output é capturado, como falhas são tratadas. Na memória federada, o harness não é uma peça separada. Está distribuído pela arquitetura.</p>
 
@@ -1622,11 +1622,11 @@ ufw allow 22  # SSH continua aberto</code></pre>
 <thead><tr><th>Componente</th><th>Função de harness</th></tr></thead>
 <tbody>
 <tr><td><code>MCP server</code> (opcional)</td><td>Quando presente, expõe ferramentas ao agente de forma padronizada. Sem ele, o agente lê os arquivos direto e o contrato mais os hooks fazem o trabalho</td></tr>
-<tr><td><code>AGENT.md</code></td><td>Define regras de comportamento (harness declarativo) — o agente lê e aplica antes de qualquer ação</td></tr>
+<tr><td><code>AGENT.md</code></td><td>Define regras de comportamento (harness declarativo), o agente lê e aplica antes de qualquer ação</td></tr>
 <tr><td>Adaptadores</td><td>Traduzem o contrato neutro do <code>AGENT.md</code> para cada agente específico (Claude, Cursor, Windsurf...)</td></tr>
-<tr><td><code>capture-to-inbox.mjs</code></td><td>Captura output do agente via PostToolUse hook — preenche o inbox automaticamente sem intervenção manual</td></tr>
-<tr><td><code>SESSION.lock</code></td><td>Controla acesso concorrente por projeto — identifica agente, máquina e usuário em cada sessão</td></tr>
-<tr><td><code>review-inbox</code></td><td>Processa o que o agente produziu e decide o destino — audit trail completo em <code>/99-archive/review-log.md</code></td></tr>
+<tr><td><code>capture-to-inbox.mjs</code></td><td>Captura output do agente via PostToolUse hook, preenche o inbox automaticamente sem intervenção manual</td></tr>
+<tr><td><code>SESSION.lock</code></td><td>Controla acesso concorrente por projeto, identifica agente, máquina e usuário em cada sessão</td></tr>
+<tr><td><code>review-inbox</code></td><td>Processa o que o agente produziu e decide o destino, audit trail completo em <code>/99-archive/review-log.md</code></td></tr>
 </tbody>
 </table>
 
@@ -1634,7 +1634,7 @@ ufw allow 22  # SSH continua aberto</code></pre>
 
 <ul>
 <li><strong>Permissões de escrita pelo contrato:</strong> restritas a <code>/90-inbox/</code>, com hardening por OS no modo adversarial (seção 09b)</li>
-<li><strong>Captura automática via hooks</strong> (PostToolUse → inbox) — o inbox se alimenta sem depender de memória do operador</li>
+<li><strong>Captura automática via hooks</strong> (PostToolUse → inbox), o inbox se alimenta sem depender de memória do operador</li>
 <li><strong>Lock de sessão por projeto</strong> com identificação de agente, máquina e usuário (<code>SESSION.lock</code>)</li>
 <li><strong>Observabilidade básica</strong> via <code>session-log.md</code> (quem fez o quê, quando) e <code>review-log.md</code> (o que foi promovido ou rejeitado)</li>
 </ul>
@@ -1643,23 +1643,23 @@ ufw allow 22  # SSH continua aberto</code></pre>
 
 <ul>
 <li><strong>Toolset por domínio:</strong> agente em <code>/30-clients/</code> acessa apenas ferramentas de cliente; agente em <code>/20-domains/engineering/</code> acessa apenas ferramentas de código. A camada de acesso (filesystem direto ou MCP, se em uso) expõe conjuntos diferentes dependendo do contexto de entrada.</li>
-<li><strong>Observabilidade completa:</strong> tokens consumidos por sessão, tempo de execução, ferramentas mais usadas, taxa de sucesso de captura de memória. Métricas que mostram se o harness está funcionando — não só se o agente respondeu.</li>
+<li><strong>Observabilidade completa:</strong> tokens consumidos por sessão, tempo de execução, ferramentas mais usadas, taxa de sucesso de captura de memória. Métricas que mostram se o harness está funcionando, não só se o agente respondeu.</li>
 </ul>
 
 <div class="callout tip">
 <div class="label">Harness Engineering não é sobre controlar o agente</div>
-<p>É sobre tornar o ambiente previsível o suficiente para que o agente seja confiável. Regras claras produzem comportamento consistente. Um agente num ambiente ambíguo não é mais capaz do que um agente num ambiente bem definido — só é menos previsível.</p>
+<p>É sobre tornar o ambiente previsível o suficiente para que o agente seja confiável. Regras claras produzem comportamento consistente. Um agente num ambiente ambíguo não é mais capaz do que um agente num ambiente bem definido, só é menos previsível.</p>
 </div>
 
 <!-- ============================================== -->
 <!-- 12d - MENTE DE COLMEIA -->
 <!-- ============================================== -->
 
-<h2><span class="num">12d / Colmeia</span>Mente de Colmeia — conhecimento compartilhado entre agentes</h2>
+<h2><span class="num">12d / Colmeia</span>Mente de Colmeia, conhecimento compartilhado entre agentes</h2>
 
 <p>À medida que você adiciona agentes especializados ao ecossistema, surge um novo problema: cada agente aprende coisas úteis, cria skills, escreve playbooks, toma decisões técnicas. Se esse conhecimento fica isolado na memória privada de cada agente, os outros redescobrirão a roda indefinidamente.</p>
 
-<p>A mente de colmeia resolve isso com uma camada federada de leitura e descoberta de conhecimento entre agentes. Cada agente pode consultar o que outros publicaram — sem ter acesso à memória privada de ninguém.</p>
+<p>A mente de colmeia resolve isso com uma camada federada de leitura e descoberta de conhecimento entre agentes. Cada agente pode consultar o que outros publicaram, sem ter acesso à memória privada de ninguém.</p>
 
 <h3>Três níveis de memória</h3>
 
@@ -1675,7 +1675,7 @@ ufw allow 22  # SSH continua aberto</code></pre>
 <h3>Protocolo de publicação</h3>
 
 <ol>
-<li><strong>Antes de criar:</strong> consulte <code>/50-skills/INDEX.md</code> — busque por tag ou domínio para evitar duplicação</li>
+<li><strong>Antes de criar:</strong> consulte <code>/50-skills/INDEX.md</code>, busque por tag ou domínio para evitar duplicação</li>
 <li><strong>Proposta:</strong> vai para <code>/90-inbox/</code> com <code>type: skill</code> e metadados completos (<code>author_agent</code>, <code>domain</code>, <code>confidence</code>, <code>risk</code>, <code>tags</code>)</li>
 <li><strong>Classificação automática</strong> por <code>confidence</code> + <code>risk</code>:
   <ul>
@@ -1702,13 +1702,13 @@ ufw allow 22  # SSH continua aberto</code></pre>
 <pre><code>50-skills/
   INDEX.md              # índice navegável por domínio e agente
   README.md             # protocolo, metadados obrigatórios, regras
-  published/            # skills aprovadas — read-only para agentes
+  published/            # skills aprovadas, read-only para agentes
   proposed/             # skills pendentes de revisão
-  deprecated/           # skills antigas — nunca deletar, manter rastreabilidade</code></pre>
+  deprecated/           # skills antigas, nunca deletar, manter rastreabilidade</code></pre>
 
 <div class="callout tip">
 <div class="label">Mente de colmeia não é comunicação entre agentes</div>
-<p>É conhecimento acumulado que qualquer agente pode descobrir e reutilizar. O vault federado é o quadro compartilhado. O blackboard pattern em escala — não como memória em tempo real, mas como repositório de aprendizado persistente.</p>
+<p>É conhecimento acumulado que qualquer agente pode descobrir e reutilizar. O vault federado é o quadro compartilhado. O blackboard pattern em escala, não como memória em tempo real, mas como repositório de aprendizado persistente.</p>
 </div>
 
 <!-- ============================================== -->
@@ -1717,7 +1717,7 @@ ufw allow 22  # SSH continua aberto</code></pre>
 
 <h2><span class="num">12e / Padrões</span>Memória de padrões recorrentes por ferramenta</h2>
 
-<p>Toda ferramenta tem comportamentos não-documentados, bugs conhecidos e workarounds que você descobre na prática. Sem memória estruturada, o agente repete o mesmo diagnóstico a cada sessão — e você paga o custo em tempo e frustração. Pior: o workaround que você descobriu num projeto não chega ao próximo.</p>
+<p>Toda ferramenta tem comportamentos não-documentados, bugs conhecidos e workarounds que você descobre na prática. Sem memória estruturada, o agente repete o mesmo diagnóstico a cada sessão, e você paga o custo em tempo e frustração. Pior: o workaround que você descobriu num projeto não chega ao próximo.</p>
 
 <p>A solução: um ledger de padrões por ferramenta em <code>/50-skills/tool-patterns/</code>, separado do contexto de projeto e de cliente. O que o agente aprende sobre o Brandcraft num projeto vale para todos os outros.</p>
 
@@ -1753,7 +1753,7 @@ ufw allow 22  # SSH continua aberto</code></pre>
 
 <h3>Escopo: ferramenta, não projeto</h3>
 
-<p>Essa é a distinção que torna o mecanismo útil. Memória de projeto fica em <code>/10-projects/</code>. Memória de cliente em <code>/30-clients/</code>. Padrões de ferramenta ficam em <code>/50-skills/tool-patterns/</code> — disponíveis para qualquer projeto, sem contaminar nenhum contexto específico.</p>
+<p>Essa é a distinção que torna o mecanismo útil. Memória de projeto fica em <code>/10-projects/</code>. Memória de cliente em <code>/30-clients/</code>. Padrões de ferramenta ficam em <code>/50-skills/tool-patterns/</code>, disponíveis para qualquer projeto, sem contaminar nenhum contexto específico.</p>
 
 <pre><code>50-skills/
 ├── published/          ← skills aprovadas (procedimentos)
@@ -1780,16 +1780,16 @@ risk: low
 </li>
 <li><strong>Processa o padrão:</strong> <code>node scripts/escalate-patterns.mjs</code> cria <code>tool-patterns/brandcraft.md</code> com <code>status: observed</code>.</li>
 <li><strong>2ª ocorrência (outro projeto):</strong> agente consulta <code>tool-patterns/brandcraft.md</code>, encontra <code>status: auto_fix</code> e aplica o fix documentado sem diagnóstico.</li>
-<li><strong>3ª ocorrência:</strong> script escala para <code>root_cause_pending</code> e alerta que o problema precisa ser resolvido na fonte — não só contornado.</li>
+<li><strong>3ª ocorrência:</strong> script escala para <code>root_cause_pending</code> e alerta que o problema precisa ser resolvido na fonte, não só contornado.</li>
 </ol>
 
 <h3>O que NÃO é um tool_pattern</h3>
 
-<p>Não confundir com preferências do usuário (<code>preference</code>), fatos de projeto (<code>fact</code>) ou decisões formais (<code>decision</code>). Tool patterns são específicos de comportamentos de ferramentas externas — não de escolhas do usuário, não de contexto de negócio.</p>
+<p>Não confundir com preferências do usuário (<code>preference</code>), fatos de projeto (<code>fact</code>) ou decisões formais (<code>decision</code>). Tool patterns são específicos de comportamentos de ferramentas externas, não de escolhas do usuário, não de contexto de negócio.</p>
 
 <div class="callout tip">
 <div class="label">Por que 3 tiers e não só "registra e resolve"?</div>
-<p>Porque o custo de intervenção deve escalar com a frequência. Na 1ª vez, o contexto ainda é raro — documentar é suficiente. Na 2ª vez, já é recorrente — automação é justificada. Na 3ª vez, é um padrão sistêmico — exige investigação da causa raiz, não mais um workaround.</p>
+<p>Porque o custo de intervenção deve escalar com a frequência. Na 1ª vez, o contexto ainda é raro, documentar é suficiente. Na 2ª vez, já é recorrente, automação é justificada. Na 3ª vez, é um padrão sistêmico, exige investigação da causa raiz, não mais um workaround.</p>
 </div>
 
 <!-- ============================================== -->
@@ -1842,7 +1842,7 @@ risk: low
   <rect x="80" y="270" width="600" height="36" fill="#6B7A4F"/>
   <text x="380" y="293" text-anchor="middle" font-family="JetBrains Mono, monospace" font-size="11" fill="#F4EFE6" letter-spacing="1">O QUE O GRAPHITI ADICIONA: ENTIDADES · RELAÇÕES · EVENTOS · VALIDADE TEMPORAL · HISTÓRICO</text>
 </svg>
-<figcaption>Figura 6 — Graphiti como camada temporal opcional</figcaption>
+<figcaption>Figura 6, Graphiti como camada temporal opcional</figcaption>
 </figure>
 
 <p>Casos em que Graphiti justifica o esforço:</p>
@@ -1879,7 +1879,7 @@ risk: low
 
 <p>Os passos abaixo são sequenciais. Cada um tem critério de conclusão objetivo.</p>
 
-<h3>Passo 1 — Criar o vault</h3>
+<h3>Passo 1, Criar o vault</h3>
 
 <pre><code>mkdir federated-memory
 cd federated-memory
@@ -1890,51 +1890,51 @@ git init</code></pre>
 
 <p><strong>Concluído quando:</strong> a estrutura de pastas existe e o repositório git está inicializado.</p>
 
-<h3>Passo 2 — Escrever o AGENT.md</h3>
+<h3>Passo 2, Escrever o AGENT.md</h3>
 
 <p>Copie o template da seção 07 para <code>00-global/AGENT.md</code> e ajuste a lista de domínios para os seus.</p>
 
 <p><strong>Concluído quando:</strong> o arquivo existe, lista seus domínios reais, e você consegue explicar cada regra em voz alta.</p>
 
-<h3>Passo 3 — Definir domínios reais</h3>
+<h3>Passo 3, Definir domínios reais</h3>
 
 <p>Crie uma pasta para cada domínio em <code>20-domains/</code>. Use o critério da seção 06: vocabulário próprio + saídas que não devem se misturar com outros.</p>
 
 <p><strong>Concluído quando:</strong> você tem entre 3 e 6 domínios. Mais que 8 é overhead. Menos que 3 quase nunca justifica memória federada.</p>
 
-<h3>Passo 4 — Três Context Packs iniciais</h3>
+<h3>Passo 4, Três Context Packs iniciais</h3>
 
 <p>Crie em <code>60-context-packs/</code>:</p>
 
 <ul>
-<li><code>writing-style.md</code> — tarefas de escrita no seu estilo</li>
-<li><code>code-work.md</code> — tarefas de código com convenções suas</li>
-<li><code>architecture-review.md</code> — análise de arquitetura</li>
+<li><code>writing-style.md</code>, tarefas de escrita no seu estilo</li>
+<li><code>code-work.md</code>, tarefas de código com convenções suas</li>
+<li><code>architecture-review.md</code>, análise de arquitetura</li>
 </ul>
 
 <p>Use o exemplo preenchido da seção 09 como modelo. Cada um deve caber em uma tela.</p>
 
 <p><strong>Concluído quando:</strong> os três packs existem, cada um tem objetivo, listas <em>Use</em> e <em>Avoid</em>, e o campo de validade temporal.</p>
 
-<h3>Passo 5 — Adaptador e hook de captura para o primeiro agente</h3>
+<h3>Passo 5, Adaptador e hook de captura para o primeiro agente</h3>
 
 <p>Se for Claude Code, crie <code>80-agent-adapters/claude/CLAUDE.md</code> apontando para o <code>AGENT.md</code> e para um Context Pack default. Use o template da seção 08. Configure também o hook de captura em <code>.claude/settings.json</code> (PostToolUse rodando <code>scripts/capture-to-inbox.mjs</code>, conforme a seção 09c). Para outros clientes, o adaptador segue o mesmo princípio: apontar para o contrato e ligar um hook de captura agnóstico.</p>
 
 <p><strong>Concluído quando:</strong> você consegue rodar o agente no diretório do vault, ele lê o adaptador automaticamente, e ações relevantes geram sugestões em <code>/90-inbox/suggested-memory.md</code> sem intervenção manual.</p>
 
-<h3>Passo 6 (opcional) — Conectar o Hermes como cliente adicional</h3>
+<h3>Passo 6 (opcional), Conectar o Hermes como cliente adicional</h3>
 
 <p>Pule este passo se você não vai usar o Hermes. O piso dos passos 1 a 5 já é suficiente para um cliente único. Para conectar o Hermes como cliente adicional, use as instruções da seção 10 e adicione um <code>AGENTS.md</code> na raiz do vault que referencia o <code>00-global/AGENT.md</code>.</p>
 
 <p><strong>Concluído quando:</strong> ao rodar <code>hermes</code> dentro do diretório, ele responde respeitando a regra "não carregar tudo" e usando os Context Packs.</p>
 
-<h3>Passo 7 (opcional) — Expor via MCP</h3>
+<h3>Passo 7 (opcional), Expor via MCP</h3>
 
 <p>Pule este passo se você não tem múltiplos agentes externos consumindo a mesma base. Caso precise, escolha entre Opção A (Local REST API) ou Opção B (filesystem direto) da seção 11. Configure no seu cliente MCP de preferência. Restrinja escrita a <code>/90-inbox/</code>.</p>
 
 <p><strong>Concluído quando:</strong> um agente externo (Claude Desktop, Cursor, ChatGPT com MCP) consulta seu vault e respeita os limites de escrita.</p>
 
-<h3>Passo 8 — Validar com dois agentes diferentes</h3>
+<h3>Passo 8, Validar com dois agentes diferentes</h3>
 
 <p>Faça a mesma tarefa em dois agentes diferentes consumindo a mesma memória. Verifique três coisas:</p>
 
@@ -1946,7 +1946,7 @@ git init</code></pre>
 
 <p><strong>Concluído quando:</strong> as três respostas são "sim". Se uma delas for "não", o problema está no Context Pack, não no agente.</p>
 
-<h3>Passo 9 (opcional) — Adicionar Graphiti</h3>
+<h3>Passo 9 (opcional), Adicionar Graphiti</h3>
 
 <p>Só execute este passo quando você sentir dor temporal: decisões substituindo decisões, perguntas sobre histórico, validade de informação. Antes disso, é over-engineering.</p>
 
@@ -2010,7 +2010,7 @@ git init</code></pre>
     <marker id="g5" markerWidth="8" markerHeight="8" refX="6" refY="2.5" orient="auto"><polygon points="0 0, 6 2.5, 0 5" fill="#14110F"/></marker>
   </defs>
 </svg>
-<figcaption>Figura 7 — Loop de governança em cinco estágios</figcaption>
+<figcaption>Figura 7, Loop de governança em cinco estágios</figcaption>
 </figure>
 
 <ul>
@@ -2023,7 +2023,7 @@ git init</code></pre>
 
 <h3>Ritual semanal de revisão do inbox</h3>
 
-<p>Aprovação humana só funciona se houver um momento marcado para fazê-la. Sem ritual fixo, o <code>/90-inbox/</code> vira lixeira: sugestões acumulam, nada vira memória, e os agentes seguem repetindo as mesmas perguntas. Reserve um bloco curto por semana — 20 a 40 minutos costuma bastar — para processar o inbox até zerar.</p>
+<p>Aprovação humana só funciona se houver um momento marcado para fazê-la. Sem ritual fixo, o <code>/90-inbox/</code> vira lixeira: sugestões acumulam, nada vira memória, e os agentes seguem repetindo as mesmas perguntas. Reserve um bloco curto por semana, 20 a 40 minutos costuma bastar, para processar o inbox até zerar.</p>
 
 <p>O repositório traz dois scripts equivalentes em <code>/scripts/</code> que conduzem a revisão entrada a entrada:</p>
 
@@ -2043,7 +2043,7 @@ $env:VAULT_PATH = 'C:\caminho\do\vault'
 <li><strong>Adiar (d):</strong> mantém no inbox para a próxima revisão. Útil quando falta contexto para decidir.</li>
 </ul>
 
-<p>Toda decisão — inclusive rejeições e adiamentos — é registrada em <code>/99-archive/review-log.md</code> com data, domínio, destino e resumo. Esse log é o que permite, semanas depois, ver quantas sugestões viraram memória, quantas foram descartadas e onde os agentes erram com mais frequência. Se a taxa de rejeição estiver alta, o problema não é o inbox: é a regra de captura do agente.</p>
+<p>Toda decisão, inclusive rejeições e adiamentos, é registrada em <code>/99-archive/review-log.md</code> com data, domínio, destino e resumo. Esse log é o que permite, semanas depois, ver quantas sugestões viraram memória, quantas foram descartadas e onde os agentes erram com mais frequência. Se a taxa de rejeição estiver alta, o problema não é o inbox: é a regra de captura do agente.</p>
 
 <!-- ============================================== -->
 <!-- 16 - ANTI-PATTERNS -->
@@ -2081,16 +2081,16 @@ $env:VAULT_PATH = 'C:\caminho\do\vault'
 
 <p><strong>Para o sub-módulo de decisões: DecisionNode.</strong> Se você quiser trocar os arquivos de <code>/70-decisions/</code> por algo com busca semântica e histórico automático, o <strong>DecisionNode</strong> (<a href="https://github.com/decisionnode/DecisionNode">github.com/decisionnode/DecisionNode</a>) faz exatamente isso: decisões em JSON, embeddings via Gemini, busca por cosine similarity, MCP server pronto para Claude Code, Cursor e Windsurf, conflict detection, soft-delete reversível. O requisito para usar como substituto permanece o mesmo: não pode gravar memória permanente sem aprovação humana, e a regra de <code>status: approved/superseded</code> precisa ser respeitada. No DecisionNode, isso se traduz em configurar o agente em modo "strict" e revisar o que entra antes de ativar.</p>
 
-<h3>Sistemas centralizadores / Life OS — o caminho oposto</h3>
+<h3>Sistemas centralizadores / Life OS, o caminho oposto</h3>
 
 <p>Existe uma categoria de projetos que adota a abordagem inversa da federada: concentrar memória, automação, integrações e agentes em um único aplicativo monolítico. São frequentemente chamados de "Personal AI", "Life OS" ou "super-app de produtividade". Eles vencem em superfície de uso: UI pronta, integrações empacotadas, comunidade visível, curva de adoção quase nula.</p>
 
-<p>O custo aparece depois. A memória vive dentro do aplicativo, no formato do aplicativo. Trocar de ferramenta significa começar do zero. A arquitetura é, por design, centralizadora — exatamente o anti-pattern que motivou este guia. Não há contrato neutro; o adaptador é o produto. Não há <code>mtime</code> exposto; a verificação de validade temporal exige inspeção manual de mtime — o agente cliente, ou um hook, faz aqui o que o aplicativo não expõe. A regra de conflito é definida pela UI, não por arquivo auditável.</p>
+<p>O custo aparece depois. A memória vive dentro do aplicativo, no formato do aplicativo. Trocar de ferramenta significa começar do zero. A arquitetura é, por design, centralizadora, exatamente o anti-pattern que motivou este guia. Não há contrato neutro; o adaptador é o produto. Não há <code>mtime</code> exposto; a verificação de validade temporal exige inspeção manual de mtime, o agente cliente, ou um hook, faz aqui o que o aplicativo não expõe. A regra de conflito é definida pela UI, não por arquivo auditável.</p>
 
 <table>
 <thead><tr><th>Critério</th><th>Memória federada</th><th>Sistemas centralizadores / Life OS</th></tr></thead>
 <tbody>
-<tr><td>Velocidade de adoção</td><td>Lenta — exige aprender o contrato</td><td>Rápida — instalou, conectou, usou</td></tr>
+<tr><td>Velocidade de adoção</td><td>Lenta, exige aprender o contrato</td><td>Rápida, instalou, conectou, usou</td></tr>
 <tr><td>Portabilidade</td><td>Total (Markdown + Git)</td><td>Presa ao aplicativo</td></tr>
 <tr><td>Soberania</td><td>Do usuário</td><td>Do produto</td></tr>
 <tr><td>Validade temporal por inspeção</td><td>Sim (mtime de arquivo)</td><td>Não disponível</td></tr>
@@ -2182,13 +2182,13 @@ Decision date: YYYY-MM-DD</code></pre>
 <p>As referências abaixo ancoram os componentes técnicos. O guia não depende de uma ferramenta específica, mas usa conceitos e padrões desses ecossistemas.</p>
 
 <ul>
-<li><strong>Hermes Agent — NousResearch.</strong> <a href="https://github.com/NousResearch/hermes-agent">github.com/NousResearch/hermes-agent</a> e <a href="https://hermes-agent.nousresearch.com/docs/">hermes-agent.nousresearch.com/docs</a></li>
+<li><strong>Hermes Agent, NousResearch.</strong> <a href="https://github.com/NousResearch/hermes-agent">github.com/NousResearch/hermes-agent</a> e <a href="https://hermes-agent.nousresearch.com/docs/">hermes-agent.nousresearch.com/docs</a></li>
 <li><strong>Model Context Protocol.</strong> <a href="https://modelcontextprotocol.io">modelcontextprotocol.io</a></li>
 <li><strong>Obsidian MCP servers (comunidade).</strong> Implementações via Local REST API plugin ou via filesystem direto.</li>
 <li><strong>Claude Code Memory.</strong> <a href="https://docs.claude.com/en/docs/claude-code/memory">docs.claude.com/en/docs/claude-code/memory</a></li>
-<li><strong>Graphiti — Zep.</strong> <a href="https://help.getzep.com/graphiti/graphiti/overview">help.getzep.com/graphiti</a></li>
-<li><strong>DecisionNode.</strong> <a href="https://github.com/decisionnode/DecisionNode">github.com/decisionnode/DecisionNode</a> — implementação de referência para o sub-módulo de decisões com embeddings e busca semântica via MCP.</li>
-<li><strong>Letta — Stateful agents.</strong> <a href="https://docs.letta.com/guides/core-concepts/stateful-agents/">docs.letta.com</a></li>
+<li><strong>Graphiti, Zep.</strong> <a href="https://help.getzep.com/graphiti/graphiti/overview">help.getzep.com/graphiti</a></li>
+<li><strong>DecisionNode.</strong> <a href="https://github.com/decisionnode/DecisionNode">github.com/decisionnode/DecisionNode</a>, implementação de referência para o sub-módulo de decisões com embeddings e busca semântica via MCP.</li>
+<li><strong>Letta, Stateful agents.</strong> <a href="https://docs.letta.com/guides/core-concepts/stateful-agents/">docs.letta.com</a></li>
 <li><strong>CrewAI.</strong> <a href="https://docs.crewai.com">docs.crewai.com</a></li>
 <li><strong>Microsoft Agent Framework.</strong> <a href="https://learn.microsoft.com/en-us/agent-framework/">learn.microsoft.com/agent-framework</a></li>
 </ul>
