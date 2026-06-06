@@ -2025,13 +2025,13 @@ git init</code></pre>
 
 <p>Human approval only works if there is a set time to do it. Without a fixed ritual, <code>/90-inbox/</code> becomes a trash bin: suggestions pile up, nothing becomes memory, and agents keep repeating the same questions. Set aside a short weekly block — 20 to 40 minutes usually suffices — to process the inbox to zero.</p>
 
-<p>O repositório traz dois scripts equivalentes em <code>/scripts/</code> que conduzem a revisão entrada a entrada:</p>
+<p>The repository ships two equivalent scripts in <code>/scripts/</code> that walk through the review entry by entry:</p>
 
 <pre><code># Linux / macOS
-VAULT_PATH=/caminho/do/vault ./scripts/review-inbox.sh
+VAULT_PATH=/path/to/vault ./scripts/review-inbox.sh
 
 # Windows (PowerShell)
-$env:VAULT_PATH = 'C:\caminho\do\vault'
+$env:VAULT_PATH = 'C:\path\to\vault'
 ./scripts/review-inbox.ps1</code></pre>
 
 <p>For each pending suggestion the script shows the block and offers four decisions:</p>
@@ -2049,7 +2049,7 @@ $env:VAULT_PATH = 'C:\caminho\do\vault'
 <!-- 16 - ANTI-PATTERNS -->
 <!-- ============================================== -->
 
-<h2><span class="num">16 / Common mistakes</span>Anti-patterns a evitar</h2>
+<h2><span class="num">16 / Common mistakes</span>Anti-patterns to avoid</h2>
 
 <table>
 <thead><tr><th>Anti-pattern</th><th>Symptom</th><th>Antidote</th></tr></thead>
