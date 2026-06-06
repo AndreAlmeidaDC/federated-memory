@@ -1271,7 +1271,7 @@ Before responding to any task:
 
 <h2><span class="num">11 / Acesso</span>Obsidian via MCP na prática</h2>
 
-<p>Para que agentes externos (Claude Desktop, Cursor, outros clientes MCP) consultem a mesma base sem cada um implementar seu próprio leitor, expomos o vault via MCP server. Existem duas abordagens prontas pela comunidade.</p>
+<p>O MCP server é opcional. O agente cliente já lê os Markdown direto pelo filesystem, e o piso recomendado (seção 05 do whitepaper) não exige MCP. Ele entra quando vários agentes externos (Claude Desktop, Cursor, outros clientes MCP) precisam consultar a mesma base sem cada um implementar seu próprio leitor, expondo o vault via uma camada padronizada. Existem duas abordagens prontas pela comunidade.</p>
 
 <h3>Opção A — Via Local REST API plugin</h3>
 
