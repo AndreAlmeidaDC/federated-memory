@@ -464,9 +464,6 @@ td strong { color: var(--ink); }
 
 <div class="page">
 
-<h3 style="margin-top: 0;">Agradecimentos</h3>
-<p>Ao Jean Duarte pela ideia geral, ao Gabriel Menegat pela ideia de orquestração com o Hermes, ao Francisco Brasil pela provocação sobre banco de dados, e à comunidade do Miners pelas discussões que ajudaram a amadurecer este guia. A v2.0 incorpora correções técnicas, exemplos concretos de implementação e o reconhecimento do padrão blackboard como espinha dorsal arquitetural.</p>
-
 <div class="callout">
 <div class="label">O que mudou na v3.0</div>
 <p>A v2 vendia o Hermes como núcleo ativo com quatro papéis (roteador, gerenciador de memória, controlador de escopo, policy engine). O teste de campo e a documentação oficial do Hermes mostraram que aquele desenho não existia: o Hermes nunca foi orquestrador, é cliente. A v3 reposiciona. <strong>Memória é arquivo passivo</strong>, agente cliente é peça intercambiável, Git é a espinha que unifica versionamento e sincronização. <strong>Governança em dois modos declarados:</strong> cooperativo (contrato, o piso recomendado) e adversarial (enforcement por isolamento de sistema operacional, abaixo do agente). <strong>Captura por hooks do próprio agente</strong> (PostToolUse rodando <code>scripts/capture-to-inbox.mjs</code>), depositando em <code>/90-inbox/</code>. <strong>Auditoria risk-proportional:</strong> <code>verified</code> + <code>low</code> promove sozinho por TTL; hipóteses e <code>high</code> risk exigem decisão humana. MCP e Graphiti viram camadas opcionais sob dor de volume, não componentes do piso.</p>
