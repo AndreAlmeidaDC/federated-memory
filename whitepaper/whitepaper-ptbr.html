@@ -389,7 +389,7 @@ sup {
 
 <p>O campo ainda não tem uma resposta estabelecida para isso. Ferramentas de memória existem, Mem0, Zep, Letta, sistemas nativos como Claude Code e Cursor, mas todas partem do mesmo pressuposto: a memória é um componente interno do sistema de agência. O agente gerencia a memória. O agente decide o que guardar. O agente decide o que trazer para o contexto.</p>
 
-<p>Este paper argumenta que esse pressuposto é o problema, não a solução. E que a separação entre armazenamento e roteamento exige um componente ativo dedicado, não um agente passivo, não uma camada de configuração, mas um núcleo que toma decisões sobre o que entra no contexto a cada chamada.</p>
+<p>Este paper argumenta que esse pressuposto é o problema, não a solução. E que a saída não é um componente ativo que decide pelo agente: é separar a memória do executor. O contexto vive em arquivos passivos, versionados e auditáveis, fora de qualquer ferramenta. O agente puxa o que precisa, guiado por um contrato explícito. As seções 03 e 05 desenvolvem essa separação.</p>
 
 <!-- SECTION 2 -->
 <h2><span class="section-num">02 · Por que as Soluções Atuais Falham</span>Ferramentas certas para o problema errado.</h2>
