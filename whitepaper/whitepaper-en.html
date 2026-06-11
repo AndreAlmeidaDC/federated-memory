@@ -610,6 +610,10 @@ sup {
 
 <p>For users with a single tool, a single project and low need for portability, native memory is the right choice. Zero setup friction, perfect integration with the tool's flow, no additional infrastructure. The cost, tool dependency, lack of portability, only appears when context grows beyond what the tool can hold.</p>
 
+<h3>Where a simple contract file wins</h3>
+
+<p>There is a step below this architecture, and it is legitimate. A single agent, few projects, little accumulated context: a global contract file with rules and preferences, plus one per project with local context, versioned in Git, work well. In Claude Code that file is CLAUDE.md; in the neutral convention adopted by several agents, it is AGENTS.md. But that is contract, not memory: it does not accumulate reviewed knowledge, does not isolate domains and has no review cycle. This architecture starts paying off when context grows, when a second agent comes in, or when memory needs to be reviewed and auditable. Before that, the simple step is the right choice, and whoever starts with AGENTS.md is already, without realizing it, at the embryo of the neutral contract this architecture formalizes.</p>
+
 <h3>Where systems like Mem0 and Zep win</h3>
 
 <p>For teams that need shared memory across multiple users, with automatic semantic retrieval and no manual curation, Mem0 and Zep are a better fit. Federated requires curation discipline that does not scale automatically to large teams without additional processes.</p>

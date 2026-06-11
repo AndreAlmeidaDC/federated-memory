@@ -610,6 +610,10 @@ sup {
 
 <p>Para usuários com uma única ferramenta, um único projeto e baixa necessidade de portabilidade, a memória nativa é a escolha certa. Fricção de setup zero, integração perfeita com o fluxo da ferramenta, nenhuma infraestrutura adicional. O custo, dependência de ferramenta, ausência de portabilidade, só aparece quando o contexto cresce além do que a ferramenta comporta.</p>
 
+<h3>Onde um arquivo de contrato simples vence</h3>
+
+<p>Há um degrau abaixo desta arquitetura, e ele é legítimo. Um agente só, poucos projetos, pouco contexto acumulado: um arquivo de contrato global com regras e preferências, mais um por projeto com o contexto local, versionados em Git, resolvem bem. No Claude Code esse arquivo é o CLAUDE.md; na convenção neutra adotada por vários agentes, é o AGENTS.md. Mas isso é contrato, não memória: não acumula conhecimento revisado, não isola domínios e não tem ciclo de revisão. Esta arquitetura começa a se pagar quando o contexto cresce, quando entra um segundo agente, ou quando a memória precisa ser revisada e auditável. Antes disso, o degrau simples é a escolha certa, e quem começa pelo AGENTS.md já está, sem perceber, no embrião do contrato neutro que esta arquitetura formaliza.</p>
+
 <h3>Onde sistemas como Mem0 e Zep vencem</h3>
 
 <p>Para times que precisam de memória compartilhada entre múltiplos usuários, com retrieval semântico automático e sem curadoria manual, Mem0 e Zep são mais adequados. A federada exige disciplina de curadoria que não escala automaticamente para equipes grandes sem processos adicionais.</p>
