@@ -63,7 +63,7 @@ Além disso, o repositório distribui um **template clonável** de vault e adapt
 99-archive/        logs e arquivados (+ session-log.md)
 ```
 
-### Adaptadores (10 agentes em `/template/80-agent-adapters/`)
+### Adaptadores (11 agentes em `/template/80-agent-adapters/`)
 
 | Agente | Arquivo |
 |---|---|
@@ -77,6 +77,7 @@ Além disso, o repositório distribui um **template clonável** de vault e adapt
 | Grok Build | `grok/AGENTS.md` (xAI, beta maio/2026) |
 | Pi | `pi/AGENTS.md` (pi.dev, filesystem direto sem MCP) |
 | Command Code | `commandcode/AGENTS.md` (commandcode.ai, taste + skills nativas) |
+| MiMo Code | `mimocode/AGENTS.md` (Xiaomi, fork do OpenCode, AGENTS.md nativo) |
 
 ### Context Packs (`/template/60-context-packs/`)
 
