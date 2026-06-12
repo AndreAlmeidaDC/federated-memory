@@ -1111,7 +1111,7 @@ Source notes:
 
 <div class="callout">
 <div class="label">Validation: the feedback v1 was missing</div>
-<p>Each v2 Context Pack includes the <code>Validation:</code> field. Hermes logs each use in <code>/99-archive/pack-usage.log</code> with a classified result (useful / partial / bad); three consecutive bad marks flag the pack for review. Additionally, when delivering the pack, Hermes inspects the <code>mtime</code> of files listed under <code>Use:</code>, if any is older than 90 days (default, configurable per pack), the output gets a temporal validity warning. Bad packs have a finite half-life; old content deserves checking before becoming the basis for new decisions.</p>
+<p>Each v2 Context Pack includes the <code>Validation:</code> field. The client agent records each use in <code>/99-archive/pack-usage.log</code> via a post-execution hook with a classified result (useful / partial / bad); three consecutive bad marks flag the pack for review. Additionally, when assembling the pack, a hook inspects the <code>mtime</code> of files listed under <code>Use:</code>, if any is older than 90 days (default, configurable per pack), the output gets a temporal validity warning. Bad packs have a finite half-life; old content deserves checking before becoming the basis for new decisions.</p>
 </div>
 
 <!-- ============================================== -->

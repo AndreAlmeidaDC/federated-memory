@@ -1111,7 +1111,7 @@ Source notes:
 
 <div class="callout">
 <div class="label">Validation: o feedback que faltava na v1</div>
-<p>Cada Context Pack v2 inclui o campo <code>Validation:</code>. O Hermes loga cada uso em <code>/99-archive/pack-usage.log</code> com resultado classificado (útil / parcial / ruim); três marcações ruins consecutivas flaggam o pack pra revisão. Adicionalmente, ao entregar o pack o Hermes inspeciona o <code>mtime</code> dos arquivos listados em <code>Use:</code>, se algum estiver com mais de 90 dias (default, configurável por pack), o output ganha um aviso de validade temporal. Pacote ruim tem meia-vida finita; conteúdo antigo merece checagem antes de virar base de decisão nova.</p>
+<p>Cada Context Pack v2 inclui o campo <code>Validation:</code>. O agente cliente registra cada uso em <code>/99-archive/pack-usage.log</code> via hook de pós-execução com resultado classificado (útil / parcial / ruim); três marcações ruins consecutivas flaggam o pack pra revisão. Adicionalmente, ao montar o pack, um hook inspeciona o <code>mtime</code> dos arquivos listados em <code>Use:</code>, se algum estiver com mais de 90 dias (default, configurável por pack), o output ganha um aviso de validade temporal. Pacote ruim tem meia-vida finita; conteúdo antigo merece checagem antes de virar base de decisão nova.</p>
 </div>
 
 <!-- ============================================== -->
