@@ -1,7 +1,11 @@
-# QUICKSTART — Memória Federada para Agentes de IA
+# QUICKSTART - Memória Federada para Agentes de IA
 
-Do zero ao primeiro agente com memória federada funcionando.  
-Tempo estimado: 30 a 60 minutos.
+Do zero ao primeiro agente lendo memória federada, usando só o piso.
+Tempo estimado: 20 a 40 minutos.
+
+O piso é: vault Markdown + Git + contrato + um agente cliente. Não precisa
+de Hermes nem de MCP para funcionar. Os dois são evolução opcional e estão
+no fim deste documento, claramente marcados.
 
 ---
 
@@ -9,16 +13,19 @@ Tempo estimado: 30 a 60 minutos.
 
 Antes de começar, confirme que você tem:
 
-- **Node.js** v18+ instalado (`node --version`)
-- **Python** 3.11+ instalado (`python --version`)
 - **Git** instalado (`git --version`)
-- **Obsidian** instalado ([obsidian.md](https://obsidian.md))
-- **Claude Code** ou outro agente MCP instalado
+- **Node.js** v18+ instalado (`node --version`), para rodar o agente cliente
+- **Um agente cliente** instalado: Claude Code, Cursor, Codex, Windsurf ou outro
 - Uma chave de API de algum provider (Anthropic, OpenRouter, etc.)
+
+Opcional, não necessário para o piso:
+
+- **Obsidian** ([obsidian.md](https://obsidian.md)), se quiser editar o vault com conforto visual. O agente lê o filesystem direto, não depende do app.
+- **Python** 3.11+, apenas se mais tarde você optar por Graphiti ou por rodar o Hermes.
 
 ---
 
-## Etapa 1 — Criar o vault
+## Etapa 1 - Criar o vault
 
 ```bash
 # Cria a pasta do vault
@@ -35,40 +42,62 @@ mkdir -p 00-global \
          60-context-packs \
          70-decisions \
          80-agent-adapters/claude \
-         80-agent-adapters/cursor \
-         80-agent-adapters/codex \
-         80-agent-adapters/windsurf \
          90-inbox \
          99-archive
-
-# Inicializa o repositório Git
-git init
-git add .
-git commit -m "init: estrutura do vault federado"
 ```
 
 **Critério de conclusão:** rode `ls` e veja as 11 pastas criadas.
 
 ---
 
-## Etapa 2 — Criar o AGENT.md
+## Etapa 2 - Versionar com Git desde o início
 
-Crie o arquivo `00-global/AGENT.md` com este conteúdo:
+Git é a espinha da arquitetura, não um passo posterior. Ele versiona e
+sincroniza a memória. Inicialize agora, antes de qualquer conteúdo.
+
+```bash
+git init -b master
+git add .
+git commit -m "chore: estrutura inicial do vault federado"
+```
+
+Se você já tem um repositório remoto para o vault, conecte e suba:
+
+```bash
+git remote add origin <URL_DO_SEU_REPO>
+git push -u origin master
+```
+
+O remoto é o que vai te dar sincronização entre máquinas mais adiante, sem
+depender de sync proprietário. Se ainda não tem remoto, siga sem ele; o
+versionamento local já está ativo.
+
+**Critério de conclusão:** `git log` mostra o commit inicial.
+
+---
+
+## Etapa 3 - Criar o AGENT.md (o contrato)
+
+Crie o arquivo `00-global/AGENT.md` com este conteúdo. Este é o contrato de
+consumo. No modo cooperativo, que é o padrão, o agente respeita estas regras
+porque o contrato pede, não porque algum componente as força. A seção
+"Modos de governança", no fim deste documento, explica o limite disso.
 
 ```markdown
 # AGENT.md
 
 Purpose:
 This repository contains the federated memory used by AI agents.
-The memory is owned by the human user. Agents are consumers,
-not owners.
+The memory is owned by the human user. Agents are interchangeable
+clients, not owners. Git is the spine for versioning and sync.
 
 Rules:
 1. Do not load the entire memory base.
 2. Start from the relevant Context Pack in /60-context-packs/.
 3. If no Context Pack exists, ask which domain is relevant.
-4. Permanent writes are forbidden outside /90-inbox/ in any
-   execution mode (interactive, headless, scheduled).
+4. Permanent writes go only to /90-inbox/, in any execution mode
+   (interactive, headless, scheduled). Everything else is read-only
+   by contract.
 5. Memory conflicts: the most recent entry with status: approved
    wins. Entries with status: superseded stay in history but are
    ignored at runtime.
@@ -85,9 +114,9 @@ Folders:
 
 ---
 
-## Etapa 3 — Criar o primeiro Context Pack
+## Etapa 4 - Criar o primeiro Context Pack
 
-Crie o arquivo `60-context-packs/writing-style.md` com este conteúdo (adapte para seu estilo):
+Crie o arquivo `60-context-packs/writing-style.md` (adapte para seu estilo):
 
 ```markdown
 # Context Pack: writing-style
@@ -132,20 +161,25 @@ Source notes:
 
 ---
 
-## Etapa 4 — Criar o adaptador para Claude Code
+## Etapa 5 - Criar o adaptador do seu agente
+
+O adaptador é o arquivo que o agente lê automaticamente ao abrir a pasta.
+Ele aponta para o contrato. Cada agente tem o seu nome de arquivo; o
+exemplo abaixo é o Claude Code. Para outros agentes, troque o nome do
+arquivo conforme a tabela no fim desta etapa, mantendo o conteúdo.
 
 Crie `80-agent-adapters/claude/CLAUDE.md`:
 
 ```markdown
 # CLAUDE.md
 
-Read the shared memory protocol at:
+Read the shared memory contract at:
 ../../00-global/AGENT.md
 
 Before starting any task:
 1. Read the relevant Context Pack from /60-context-packs/
 2. Do not load files outside the relevant domain
-3. Do not write anywhere except /90-inbox/
+3. Write only to /90-inbox/ - never to other folders directly
 
 If a new memory seems useful, write a suggestion to:
 ../../90-inbox/suggested-memory.md
@@ -154,165 +188,156 @@ Default Context Pack for writing tasks:
 ../../60-context-packs/writing-style.md
 ```
 
-Crie também `80-agent-adapters/claude/AGENTS.md` (para o Hermes):
+Para o agente funcionar lendo o contrato a partir da raiz do vault, copie
+ou referencie esse adaptador na raiz com o nome que o seu agente espera:
 
-```markdown
-# AGENTS.md
+| Agente | Arquivo na raiz do vault |
+|---|---|
+| Claude Code | `CLAUDE.md` |
+| Cursor | `.cursorrules` |
+| Codex, OpenCode, Antigravity, Kimi, Grok, MiMo Code | `AGENTS.md` |
+| Windsurf | `.windsurfrules` |
+| Pi | `AGENTS.md` (filesystem direto, sem MCP) |
 
-This is a federated memory base. Read the consumption protocol
-before doing anything:
+O conteúdo é o mesmo do CLAUDE.md acima: leia `00-global/AGENT.md`, carregue
+o Context Pack relevante, escreva só em `/90-inbox/`.
 
-  ../../00-global/AGENT.md
-
-Before responding to any task:
-1. Identify the domain (writing, engineering, clients, etc.)
-2. Load the corresponding Context Pack from /60-context-packs/
-3. Write only to /90-inbox/ — never to other folders directly
-4. Suggest memory updates; never apply them permanently alone
-```
-
-**Critério de conclusão:** abra o Claude Code na pasta do vault e confirme que ele carrega o CLAUDE.md automaticamente.
+**Critério de conclusão:** abra o agente na pasta do vault e confirme que ele carrega o adaptador automaticamente.
 
 ---
 
-## Etapa 5 — Instalar o Hermes
+## Etapa 6 - Rodar a primeira tarefa (só com o piso)
 
-**Linux / macOS / WSL2:**
+Este é o teste que prova que o caminho mínimo funciona. Sem Hermes, sem MCP.
 
-```bash
-curl -fsSL https://raw.githubusercontent.com/NousResearch/hermes-agent/main/scripts/install.sh | bash
-source ~/.bashrc   # ou source ~/.zshrc
+Abra seu agente cliente na pasta do vault e faça uma pergunta que exige o
+contrato:
+
+```
+Qual é o contrato de consumo de memória deste vault e em qual pasta você pode escrever?
 ```
 
-**Windows (PowerShell):**
+O agente deve ler o adaptador e o `AGENT.md`, e responder que só pode
+escrever em `/90-inbox/`, sem você ter explicado nada na conversa.
+
+Depois, peça uma tarefa real de escrita e veja se ele puxa o Context Pack
+`writing-style` em vez de carregar o vault inteiro.
+
+**Critério de conclusão:** o agente cita as regras do contrato e usa o Context Pack correto, operando só com o piso.
+
+Neste ponto você tem memória federada funcionando. As etapas seguintes são
+opcionais e só fazem sentido sob uma dor concreta.
+
+---
+
+## Etapa 7 - Validar com dois agentes (opcional, recomendado)
+
+Faça a mesma tarefa em dois agentes diferentes (ex: Claude Code e Cursor).
+Verifique:
+
+1. O resultado tem voz consistente entre os dois?
+2. Ambos usaram o Context Pack correto?
+3. Ambos depositaram sugestões em `/90-inbox/` em vez de escrever espalhado?
+
+**Critério de conclusão:** as três respostas são "sim". Se alguma for "não",
+o problema está no Context Pack ou no adaptador, não no agente. A
+portabilidade entre agentes é a prova de que a memória não está acoplada a
+nenhuma ferramenta.
+
+Observação honesta: este teste mede cooperação, não enforcement. Que os dois
+agentes tenham escrito só no inbox significa que cooperaram com o contrato
+naquele teste, não que o sistema os impeça de escrever fora. Essa distinção
+é o assunto da próxima seção.
+
+---
+
+## Modos de governança (leia antes de confiar no contrato)
+
+A governança de escrita opera em dois modos declarados. Saber em qual você
+está evita uma falsa sensação de segurança.
+
+**Modo cooperativo (padrão).** A regra vive no contrato e na estrutura de
+pastas. Leitura liberada em todo o vault; escrita permanente fora de
+`/90-inbox/` é convertida em sugestão. O agente coopera porque o contrato
+pede. Para uso solo, em time que confia nas suas ferramentas, e em CI
+controlado, isto basta. A auditoria fica no histórico do Git: tudo que
+entrou na memória é rastreável por commit.
+
+**Modo adversarial.** Contra um agente que decida ignorar o contrato,
+nenhum componente do lado do agente segura a escrita. Isto não é uma falha
+da arquitetura; é um fato que ela declara. Enforcement real vem de baixo,
+do sistema operacional: permissões de filesystem, container com a maior
+parte do vault montada como read-only, hooks de pre/post tool call no nível
+do shell. Nunca do próprio agente, e nunca de um "policy engine" embutido,
+porque esse componente não existe.
+
+Regra prática: comece no modo cooperativo. Só passe para hardening de OS
+quando tiver uma ameaça real de agente hostil ou um requisito de
+conformidade que exija a trava. Não pague o custo do modo adversarial sem a
+dor que o justifique.
+
+---
+
+## Evolução opcional (só sob dor concreta)
+
+Nada abaixo é necessário para o piso. Some um item de cada vez, quando uma
+dor específica aparecer. Esta é a escada de maturidade.
+
+### Hermes (um adaptador entre vários)
+
+O Hermes é um agente de código completo, com memória própria. Na v3 ele é
+um cliente como qualquer outro, não o núcleo. Use-o se já trabalha com ele,
+não como passo obrigatório.
+
+```bash
+# Linux / macOS / WSL2
+curl -fsSL https://raw.githubusercontent.com/NousResearch/hermes-agent/main/scripts/install.sh | bash
+```
 
 ```powershell
+# Windows
 irm https://raw.githubusercontent.com/NousResearch/hermes-agent/main/scripts/install.ps1 | iex
 ```
 
-Após a instalação, configure o provider:
+Ressalva de soberania: a memória nativa do Hermes compete com o vault.
+Trate-a como cache de sessão descartável. O vault é a fonte única de
+verdade; conhecimento durável vai para `/90-inbox/`, nunca só para a
+memória interna do Hermes.
+
+### MCP (acesso, não controle)
+
+MCP expõe o vault a um agente via servidor. É conveniência de acesso, não
+governança.
 
 ```bash
-hermes model
+npm install -g @modelcontextprotocol/server-filesystem
 ```
 
-Siga o wizard interativo. Escolha seu provider (Anthropic, OpenRouter, etc.) e insira a chave de API.
-
-**Verificar se funcionou:**
-
-```bash
-hermes doctor
-hermes
-```
-
-Se o Hermes responder normalmente, a instalação está correta.
-
-**Critério de conclusão:** `hermes doctor` sem erros e uma conversa normal funcionando.
-
----
-
-## Etapa 6 — Conectar o Hermes ao vault
-
-Na raiz do vault, crie o `AGENTS.md` principal:
-
-```markdown
-# AGENTS.md
-
-This is a federated memory base.
-
-Before doing anything, read:
-  00-global/AGENT.md
-
-Rules:
-- Read: allowed anywhere in the vault
-- Write: ONLY to /90-inbox/suggested-memory.md
-- Never modify 00-global/, 20-domains/, or 70-decisions/ directly
-- Always load a Context Pack from /60-context-packs/ before tasks
-```
-
-Rode o Hermes a partir da pasta do vault:
-
-```bash
-cd /caminho/para/federated-memory
-hermes
-```
-
-Teste com uma pergunta que exige contexto:
-
-```
-Qual é o contrato de consumo de memória deste vault?
-```
-
-O Hermes deve ler o `AGENTS.md` e responder com base nas regras.
-
-**Critério de conclusão:** Hermes responde citando as regras do AGENT.md sem você ter explicado nada na conversa.
-
----
-
-## Etapa 7 — Configurar o MCP server para Obsidian
-
-Abra o vault no Obsidian. Depois instale o MCP server:
-
-```bash
-npm install -g obsidian-mcp-server
-```
-
-**Claude Desktop** — adicione em `~/.claude/claude_desktop_config.json` (Mac/Linux) ou `%APPDATA%\Claude\claude_desktop_config.json` (Windows):
+Configuração no Claude Code, em `.claude/settings.json` na pasta do projeto:
 
 ```json
 {
   "mcpServers": {
     "federated-memory": {
-      "command": "node",
-      "args": [
-        "/caminho/para/node_modules/obsidian-mcp-server/build/index.js",
-        "/caminho/para/federated-memory"
-      ]
+      "command": "npx",
+      "args": ["-y", "@modelcontextprotocol/server-filesystem", "/caminho/para/federated-memory"]
     }
   }
 }
 ```
 
-**Claude Code** — adicione em `.claude/settings.json` na pasta do projeto:
+Ressalva: o acesso via MCP é all-or-nothing. Ele não governa escrita; quem
+tem acesso de escrita escreve em qualquer lugar. MCP é uma porta, não uma
+trava. A governança continua sendo o contrato (modo cooperativo) ou o OS
+(modo adversarial).
 
-```json
-{
-  "mcpServers": {
-    "federated-memory": {
-      "command": "node",
-      "args": [
-        "/caminho/para/node_modules/obsidian-mcp-server/build/index.js",
-        "/caminho/para/federated-memory"
-      ]
-    }
-  }
-}
-```
+### Graphiti (índice derivado, opcional)
 
-Reinicie o cliente. Teste:
-
-```
-Liste os arquivos do vault.
-```
-
-O agente deve listar as pastas do `federated-memory` via MCP.
-
-**Critério de conclusão:** agente lista arquivos do vault sem você apontar o caminho manualmente.
-
----
-
-## Etapa 8 — Validar com dois agentes
-
-Faça a mesma tarefa em Claude Code e em outro agente (Cursor, Windsurf).
-
-Verifique três coisas:
-
-1. O resultado tem voz consistente entre os dois?
-2. Nenhum dos dois escreveu fora de `/90-inbox/`?
-3. Ambos usaram o Context Pack correto?
-
-**Critério de conclusão:** as três respostas são "sim".  
-Se alguma for "não", o problema está no Context Pack ou no adaptador — não no agente.
+Se precisar de consultas temporais sobre a memória, Graphiti pode indexar o
+conteúdo. Trate-o como índice derivado dos arquivos Markdown, gerado a
+partir deles, nunca como substituto da fonte. Os Markdown versionados
+continuam sendo a verdade; o grafo é uma camada de leitura por cima.
+Comece pequeno antes de adotar.
 
 ---
 
@@ -320,31 +345,31 @@ Se alguma for "não", o problema está no Context Pack ou no adaptador — não 
 
 | Sintoma | Causa provável | Como resolver |
 |---|---|---|
-| Hermes não carrega AGENTS.md | Não está rodando na pasta certa | `cd /caminho/para/vault && hermes` |
-| MCP server não conecta | Caminho errado no config | Verifique o path absoluto do vault |
-| Agente ignora AGENT.md | Adaptador não aponta para o arquivo | Verifique se CLAUDE.md referencia `../../00-global/AGENT.md` |
-| Agente escreve fora do inbox | Regra ausente no adaptador | Adicione a regra de escrita no CLAUDE.md e AGENTS.md |
+| Agente ignora o AGENT.md | Adaptador não aponta para o arquivo | Verifique se o adaptador referencia `../../00-global/AGENT.md` ou se a raiz tem o arquivo com o nome certo |
+| Agente carrega o vault inteiro | Falta Context Pack ou regra 1 do contrato | Confirme a regra "do not load the entire memory base" e crie o pack do domínio |
 | Context Pack não carrega | Caminho relativo errado | Use caminhos relativos à raiz do vault |
-| `hermes doctor` com erros | Config incompleta | Rode `hermes setup` novamente |
+| Agente escreve fora do inbox | Regra de escrita ausente no adaptador, ou modo adversarial | Adicione a regra de escrita no adaptador. Se for agente hostil, isso é caso de hardening de OS, não de contrato |
+| Sincronização entre máquinas não acontece | Falta remoto no Git | `git remote add origin <URL>` e `git push -u origin master` |
+| MCP não conecta (se optou por MCP) | Caminho errado no config | Verifique o path absoluto do vault no settings.json |
 
 ---
 
 ## Próximos passos
 
-Depois que tudo estiver funcionando:
+Depois que o piso estiver validado:
 
 1. **Criar domínios reais** em `/20-domains/` com vocabulário próprio
 2. **Criar mais Context Packs** (code-review, research, planning)
-3. **Usar o script review-inbox** semanalmente para processar sugestões
-4. **Versionar o vault no Git** para rollback de memória
-5. **Configurar deployment remoto** via VPS se precisar de acesso multi-máquina
+3. **Revisar o /90-inbox/** periodicamente para promover sugestões a memória
+4. **Conectar um remoto** se ainda não conectou, para sincronizar entre máquinas
+5. **Avaliar a escada de maturidade** (Hermes, MCP, Graphiti, hardening) só sob dor concreta
 
-Para o guia completo com todos os detalhes arquiteturais:  
-`/guia/guia-implementacao-v2.html`
+Para o argumento por trás da arquitetura:
+[whitepaper](https://raw.githack.com/AndreAlmeidaDC/federated-memory/master/whitepaper/whitepaper-ptbr.html)
 
-Para o argumento por trás da arquitetura:  
-`/whitepaper/whitepaper-ptbr.html`
+Para o passo a passo completo com diagramas:
+[guia de implementação](https://raw.githack.com/AndreAlmeidaDC/federated-memory/master/guia/guia-ptbr.html)
 
 ---
 
-*Memória Federada para Agentes de IA · André Almeida · andrealmeidadc.com*
+*Memória Federada para Agentes de IA · André Almeida · andrealmeidadc.com · v3.0*

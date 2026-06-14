@@ -11,53 +11,51 @@ Além disso, o repositório distribui um **template clonável** de vault e adapt
 
 ---
 
-## Estado atual
+## Tese central (v3)
+
+O problema de memória em agentes de IA não é falta de ferramentas. É ausência de separação entre **quem guarda** o contexto e **quem o executa**. Memória federada resolve isso devolvendo o contexto a quem ele pertence: o usuário. A memória é passiva, soberana, versionada em Git. Os agentes são clientes intercambiáveis. Não existe um terceiro componente ativo no meio.
+
+**Importante para quem edita este repo:** a v2 deste projeto descreveu o Hermes como "núcleo ativo" com quatro papéis (roteador, gerenciador de memória, controlador de escopo, policy engine declarativo). Esse desenho foi refutado por teste de campo e pela documentação oficial do Hermes: o `hermes.policy.yml` e os gatilhos semânticos descritos na v2 não existem. O Hermes é um agente de código completo, com memória própria, não um porteiro. A v3 corrigiu isso. Ao editar qualquer documento, **nunca reintroduza a linguagem de núcleo ativo, roteador central ou policy engine como capacidade real.** Onde esses termos aparecem nos HTMLs, é sempre na refutação histórica, e deve permanecer só nesse contexto.
+
+---
+
+## Estado atual (v3.0)
 
 ### Whitepaper
 
-- `whitepaper/whitepaper-ptbr.html` — **v2.1** (PT-BR)
-- `whitepaper/whitepaper-en.html` — **v2.1** (EN) — tradução externa, mesma pasta que o original
-- Princípio 5 reformulado: humano como auditor de última instância (não aprovação obrigatória)
-- Inclui seção de limitações conhecidas com 5 limitações e mitigações documentadas:
-  - Lim 1 (rollback): mitigada pelo pre-action logging
-  - Lim 2 (temporal validity): mitigada pelo campo review_date + next_review
-  - Lim 3 (governança): texto atualizado — classificação automática reduz dependência humana ao essencial
-  - Lim 4 (escala): progressão documentada (pequena → Graphiti → multi-vault)
-  - Lim 5 (mente de colmeia): estrutura e scripts implementados; v3.0 é Graphiti + busca semântica
-- Inclui comparação honesta com Paperclip (orquestração complementar) e Pi (agente minimalista, caso de uso ideal)
-- Tabela de comparação com coluna **Compartilhamento entre agentes**
-- Parágrafo sobre mente de colmeia como evolução do blackboard pattern (seção 7, após DecisionNode)
-- PDF distribuído via release v2.3.0 no GitHub
+- `whitepaper/whitepaper-ptbr.html` — v3.0 (PT-BR)
+- `whitepaper/whitepaper-en.html` — v3.0 (EN)
+- Seção 05 reescrita: "O Agente como Cliente" (a antiga "O Núcleo Ativo" foi demolida)
+- Governança em dois modos declarados: cooperativo (contrato) e adversarial (hardening de OS)
+- Escada de maturidade: piso (vault + Git + contrato) → sync contínuo → MCP → Graphiti → hardening, sempre sob dor
+- Degrau zero na seção 07: quando um arquivo de contrato simples (CLAUDE.md / AGENTS.md) já basta
+- Governança proporcional ao risco: `verified` + `low` promove por TTL; hipóteses e alto risco exigem decisão humana
+- Mapeamento ACE: agente cliente (Generator), captura/classificação confidence-risk + review (Reflector), promoção por TTL (Curator). "ACE com governança proporcional ao risco"
 
 ### Guia de implementação
 
-- `guia/guia-ptbr.html` — **v2.3 com 20+ seções incluindo 06b (multimodal/assets), 09c (captura automática via hooks Hermes + Claude Code), 12c (Harness Engineering) e 12d (Mente de Colmeia)** (PT-BR)
-- `guia/guia-en.html` — **v2.5** (EN) — tradução externa, mesma pasta que o original
+- `guia/guia-ptbr.html` — v3.0 (PT-BR)
+- `guia/guia-en.html` — v3.0 (EN)
 - Diagramas SVG inline (sem dependência de imagens externas)
-- Hermes como **núcleo ativo** com 4 papéis: roteador, gerenciador de memória com feedback, controlador de escopo, policy engine declarativo
-- Inclui seção 12b de **deployment remoto** (VPS, SSH tunnel, MCP via Caddy)
-- Inclui seção 12c de **Harness Engineering** — mapeamento dos componentes de controle (MCP, AGENT.md, adaptadores, hooks, SESSION.lock, review-inbox) e roadmap v3.0
-- Inclui seção 12d de **Mente de Colmeia** — três níveis de memória, protocolo de publicação via inbox, regras fundamentais de leitura federada e escrita controlada
-- Inclui Graphiti como camada temporal opcional (seção 13)
-- PDF distribuído via release v2.0.1
+- Seção 09b "Os quatro papéis do Hermes" demolida; substituída pela memória passiva e agente como cliente
+- Captura automática por hooks do próprio agente (PostToolUse rodando `scripts/capture-to-inbox.mjs`) como caminho principal, agnóstico de agente
+- Seção de deployment remoto com Git no centro (sincroniza e versiona); Obsidian Sync citado só como contraste (não versiona, amarra a vendor)
+- Harness real: shell hooks + approvals + permissões; enforcement forte é OS/container. Sem triggers semânticos inventados
+- Graphiti como índice derivado dos Markdown, não substituto da fonte
 
 ### Template de vault (`/template/`)
 
 11 pastas numeradas (00 a 99):
 
 ```
-00-global/         AGENT.md — contrato neutro (inclui protocolo de mente de colmeia)
+00-global/         AGENT.md — contrato neutro (governança risk-proportional, mente de colmeia)
 10-projects/       projetos ativos (+ SESSION.lock.example)
 20-domains/        domínios isolados
 30-clients/        contexto de clientes
 40-workflows/      fluxos de trabalho
-50-skills/         skills reutilizáveis com estrutura de mente de colmeia:
-                     published/  — aprovadas, disponíveis para qualquer agente
-                     proposed/   — aguardando classificação/aprovação
-                     deprecated/ — históricas, nunca deletar
-                     INDEX.md    — índice navegável por domínio e agente
+50-skills/         skills reutilizáveis (published/ proposed/ deprecated/ + INDEX.md)
 60-context-packs/  pacotes de contexto mínimo por tarefa
-70-decisions/      decisões formais com status
+70-decisions/      decisões formais com status approved/superseded
 80-agent-adapters/ adaptadores por agente
 90-inbox/          único destino de escrita do agente
 99-archive/        logs e arquivados (+ session-log.md)
@@ -79,6 +77,8 @@ Além disso, o repositório distribui um **template clonável** de vault e adapt
 | Command Code | `commandcode/AGENTS.md` (commandcode.ai, taste + skills nativas) |
 | MiMo Code | `mimocode/AGENTS.md` (Xiaomi, fork do OpenCode, AGENTS.md nativo) |
 
+Nenhum desses agentes é o núcleo. Quando o Hermes é usado, é um cliente entre vários.
+
 ### Context Packs (`/template/60-context-packs/`)
 
 5 packs prontos, todos com campo `Validation` para validade temporal:
@@ -91,89 +91,71 @@ Além disso, o repositório distribui um **template clonável** de vault e adapt
 
 ### Documentos auxiliares
 
-- `QUICKSTART.md` — ponto de entrada (30–60 min, 8 passos com critério de conclusão)
+- `QUICKSTART.md` — ponto de entrada v3 (piso primeiro: vault + Git + contrato + agente, sem Hermes e sem MCP)
+- `CHANGELOG.md` — histórico de versões (v3.0.0 no topo)
+- `GOVERNANCE.md` — fluxo, threat model, rastreamento de hipóteses
 - `ROADMAP.md` — o que vem a seguir
 - `CONTRIBUTING.md` — como contribuir
+- `docs/definitions.md` — glossário com âncoras da indústria
+- `docs/references.md` — fontes primárias
 - `LICENSE` — CC BY 4.0
+
+### Estrutura de evidências
+
+- `hypotheses/` — afirmações ainda não validadas empiricamente
+- `experiments/` — testes; `EXP-001-governanca-por-contrato.md` registra o teste de campo que derrubou o núcleo ativo
+- `cases/` — relatos de implementação real
 
 ### Scripts
 
-- `setup.sh` / `setup.ps1` — instala vault, Hermes, MCP server, gera settings.json
-- `scripts/review-inbox.sh` / `.ps1` — ritual de revisão do inbox, com TTL automático e filtro por risco (verified+low promove auto, verified+medium fica silencioso no inbox como pending_lazy, hypothesis/high/sem classificação vão para humano)
-- `scripts/build-pdfs.mjs` — gera PDFs do whitepaper e do guia via Puppeteer (script único multiplataforma; requer `npm install puppeteer`)
-- `scripts/capture-to-inbox.mjs` — hook PostToolUse do Claude Code que detecta decisões/preferências/bugs via regex e anexa sugestões classificadas no inbox
-- `scripts/pre-action-log.mjs` — hook PreToolUse que detecta ações de alto risco (delete, drop, rm, truncate, push --force, deploy, send, overwrite, format) e registra em `template/99-archive/pre-action-log.md` antes da execução. Não bloqueia — só audita.
-- `scripts/promote-skills.mjs` — processa `template/50-skills/proposed/`, aplica regras confidence+risk+TTL, move verified+low para `published/` quando TTL venceu, loga no `review-log.md`
-- `scripts/update-index.mjs` — regenera `template/50-skills/INDEX.md` a partir dos arquivos em `published/`, agrupado por domínio e por agente
-- `scripts/escalate-patterns.mjs` — processa entradas `type: tool_pattern` no inbox, mantém ledger em `50-skills/tool-patterns/` e aplica escalada de 3 tiers: observed → auto_fix → root_cause_pending
+- `setup.sh` / `setup.ps1` — provisionamento do piso (vault + Git na branch master + primeiro commit). Não instala Hermes nem MCP
+- `scripts/review-inbox.sh` / `.ps1` — ritual de revisão do inbox, com TTL automático e filtro por risco (verified+low promove auto, verified+medium fica como pending_lazy, hypothesis/high/sem classificação vão para humano)
+- `scripts/capture-to-inbox.mjs` — hook PostToolUse que detecta decisões/preferências/bugs via regex e anexa sugestões classificadas no inbox
+- `scripts/pre-action-log.mjs` — hook PreToolUse que detecta ações de alto risco e registra em `template/99-archive/pre-action-log.md`. Não bloqueia, só audita
+- `scripts/promote-skills.mjs` — processa `template/50-skills/proposed/`, aplica confidence+risk+TTL, move verified+low para `published/` quando TTL venceu
+- `scripts/update-index.mjs` — regenera `template/50-skills/INDEX.md` a partir de `published/`
+- `scripts/escalate-patterns.mjs` — processa `type: tool_pattern` no inbox, mantém ledger em `50-skills/tool-patterns/`, escalada 3 tiers: observed → auto_fix → root_cause_pending
 - `template/.claude/hooks.json` — configuração de hooks: PreToolUse (pre-action-log) + PostToolUse (capture-to-inbox)
 
-### Template de harness (`/template/`)
+> A geração de PDF não usa script no repo. Os PDFs são gerados via WeasyPrint, fora do repositório, e distribuídos como assets da release no GitHub.
 
-Arquivos adicionados ao template:
+### Releases
 
-- `template/10-projects/SESSION.lock.example` — exemplo de lock por projeto (agente, máquina, usuário, TTL)
-- `template/99-archive/session-log.md` — registro de sessões de agentes com audit trail
-- `template/99-archive/pre-action-log.md` — registro de ações de alto risco (auditoria, não rollback)
-- `template/00-global/AGENT.md` — inclui regras de lock, mente de colmeia, validade temporal explícita (review_date + next_review), protocolo de padrões recorrentes por ferramenta (3 tiers)
-- `template/50-skills/tool-patterns/README.md` — ledger de padrões recorrentes por ferramenta (observed → auto_fix → root_cause_pending)
-- `template/60-context-packs/*.md` — todos os packs com campo `Review` (review_date, review_by, next_review)
-- `template/70-decisions/README.md` — frontmatter de DECISION.md atualizado com review_date/next_review
-- `.gitignore` — entrada `**/SESSION.lock` para não versionar locks reais
-
-### Releases publicadas
-
-- **v2.5.0** (atual) — Memória de padrões recorrentes por ferramenta: escalate-patterns, tool-patterns/, protocolo 3 tiers, seção 12e no guia; versões em inglês do whitepaper e do guia (`whitepaper-en.html`, `guia-en.html`, PDFs em `releases/v2.5/`)
-- v2.4.0 — Pre-action log, review_date, promote-skills/update-index, whitepaper com mitigações
-- v2.3.0 — Mente de Colmeia: estrutura 50-skills, AGENT.md, seção 12d, whitepaper atualizado
-- v2.2.0 — SESSION.lock + Harness Engineering (seção 12c) + ROADMAP v3.0 expandido
-- v2.1.0 — Classificação automática confidence+risk+TTL, captura via hooks, princípio 5 reformulado
-- v2.0.1 — Limitações conhecidas + progressão Graphiti + comparação Paperclip/Pi
-- v2.0.0 — Hermes núcleo ativo
-- v1.0.0 — lançamento inicial
+Tags reais no repositório: `v1.0.0`, `v2.0.0`, `v2.0.1`, `v2.1.0`, `v2.3.0`, `v2.4.0`, `v3.0`. A release **v3.0** é a atual e traz os 4 PDFs (whitepaper e guia, PT e EN). As tags v2.x são histórico; o conteúdo v2 foi reposicionado pela v3.
 
 ---
 
-### Classificação automática (v2.0.2)
-
-- `AGENT.md` agora exige `confidence` + `risk` em toda sugestão de inbox
-- `verified + low` com TTL <=7 dias promove-se automaticamente para o domínio
-- `hypothesis`, `high risk` e entradas sem classificação vão para revisão humana
-- `verified + medium` fica no inbox como aprovação lazy
-- Scripts `review-inbox.{sh,ps1}` aplicam essas regras antes da revisão interativa
-- Whitepaper: princípio 5 reformulado de "aprovação humana obrigatória" para "humano como auditor de última instância"
-
 ## Backlog restante
 
-- ~~Versão em inglês do whitepaper~~ ✅ Entregue em v2.5.0 (`whitepaper/whitepaper-en.html` + `guia/guia-en.html`)
-- Validação real do QUICKSTART na máquina do André antes de divulgar amplamente
-- **v3.0**: Graphiti + FTS5 + embeddings + worker local quando vault escalar; Harness Engineering avançado com toolset por domínio e observabilidade completa; **implementação real da mente de colmeia** (automação de promoção entre published/proposed/deprecated com scripts equivalentes ao review-inbox)
-- Pack-usage logger no Hermes — implementação de referência do logging de uso
-- GitHub Action para validar estrutura do vault (presença de `AGENT.md`, formato de Context Packs, etc.)
-- Templates por área (escritor, dev, pesquisador) — perfis pré-configurados de domínios e packs
-- Plugin Obsidian dedicado para Context Packs (criação assistida, validação de campos)
+- Validação real do QUICKSTART v3 na máquina do André antes de divulgar amplamente
+- Vini valida o QUICKSTART v3 quando a documentação estiver finalizada
+- Pelo menos um relato de implementação real publicado em `/cases/`
+- Migração do setup pessoal do André para Git no centro (tirar Obsidian Sync), que vira o primeiro caso testado do caminho recomendado
+- GitHub Action para validar estrutura do vault (presença de `AGENT.md`, formato de Context Packs)
 - Avaliar integração com Sinapse Vault do Michel como camada de sessão
-- Avaliar integração do ai-memory (github.com/akitaonrails/ai-memory) após estabilização — hoje em beta com dependência Docker
+- Quando o vault escalar: Graphiti + FTS5 + busca semântica + worker local de indexação
 
 ---
 
 ## Decisões tomadas (não reabrir sem motivo)
 
-**Formato:** Whitepaper separado do guia de implementação. Whitepaper fala de princípios, guia fala de comandos.
+**Formato:** Whitepaper separado do guia. Whitepaper fala de princípios, guia fala de comandos.
 
-**Idioma:** Português primeiro, inglês depois. As duas versões existirão.
+**Idioma:** Português e inglês, as duas versões existem.
 
 **Título do whitepaper:** "Memória Federada: Por que Agentes de IA Não Devem Ser Donos do Contexto"
 
-**Tese central:** O problema de memória em agentes de IA não é falta de ferramentas. É ausência de separação entre quem guarda, quem roteia e quem executa. Memória federada resolve isso devolvendo o contexto a quem ele pertence: o usuário.
+**Tese central (v3):** separação entre quem guarda e quem executa; memória passiva e soberana; Git como espinha; agentes como clientes intercambiáveis; sem núcleo ativo.
 
-**Stack de referência:** Obsidian + Hermes Agent (NousResearch) + MCP server para Obsidian + Context Packs.
+**Governança:** dois modos declarados (cooperativo por contrato, adversarial por hardening de OS) e promoção proporcional ao risco.
 
-**Posicionamento do DecisionNode:** convergência independente que valida a arquitetura. Citado no whitepaper e no guia. Não integrado como backend.
+**Stack de referência:** vault Markdown + Git (piso). Obsidian, MCP e Graphiti são camadas opcionais sob dor. Hermes é um adaptador entre vários, não o núcleo.
+
+**Posicionamento do DecisionNode:** convergência independente que valida a arquitetura. Citado, não integrado como backend.
 
 **Posicionamento do Paperclip:** camada complementar (orquestração entre agentes), não concorrente.
 
-**Posicionamento do Pi:** agente minimalista sem memória própria — caso de uso ideal para memória federada.
+**Posicionamento do Pi:** agente minimalista sem memória própria, caso de uso ideal para memória federada.
 
 ---
 
@@ -183,7 +165,8 @@ Arquivos adicionados ao template:
 2. Isolamento por domínio — domínios distintos não compartilham espaço semântico
 3. Contrato neutro — `AGENT.md` descreve consumo para qualquer agente
 4. Contexto mínimo suficiente — Context Packs, não dump do vault inteiro
-5. Aprovação humana — nada vira memória permanente sem revisão
+5. Git como espinha — versionamento e sincronização vêm do Git
+6. Revisão proporcional ao risco — `verified` + `low` promove por TTL; hipóteses e alto risco exigem decisão humana. O humano é filtro de qualidade, não gargalo de captura
 
 ---
 
@@ -193,17 +176,18 @@ Arquivos adicionados ao template:
 - Contexto sempre ativo — agente carrega memória inteira
 - Memória automática sem revisão — hipótese vira fato
 - Adaptador como fonte principal — prende a uma ferramenta
-- MCP/API sem escopo de permissões — escrita restrita a `/90-inbox/`
+- MCP/API tratado como governança — acesso confundido com controle de escrita
+- Núcleo ativo / orquestrador cedo demais — componente central que ninguém entende; começar com leitura direta, adicionar orquestração só quando doer
 
 ---
 
 ## Tom e estilo
 
-**Whitepaper:** linguagem de paper técnico, sem comandos de terminal, argumentativo, comparações honestas incluindo onde a proposta perde. Sem elogios desnecessários à própria arquitetura.
+**Whitepaper:** linguagem de paper técnico, sem comandos de terminal, argumentativo, comparações honestas incluindo onde a proposta perde. Sem elogios à própria arquitetura.
 
 **Guia:** direto, executável, cada passo tem critério de conclusão objetivo. Sem passos vagos.
 
-**André como autor:** não suavizar realidade, não fazer elogios desnecessários, ser parceiro crítico.
+**André como autor:** não suavizar realidade, não fazer elogios desnecessários, ser parceiro crítico. Sem travessões nos textos em PT-BR.
 
 ---
 
@@ -216,3 +200,4 @@ Arquivos adicionados ao template:
 - Paperclip: https://paperclip.ing
 - Pi: https://pi.dev
 - Claude Code Memory: https://docs.claude.com/en/docs/claude-code/memory
+- ACE (Agentic Context Engineering): arXiv 2510.04618

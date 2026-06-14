@@ -4,27 +4,28 @@ Contribuições são bem-vindas. Este documento é curto de propósito.
 
 ## Antes de qualquer coisa
 
-Leia o whitepaper e o guia. Mudanças que vão contra os cinco princípios (soberania do usuário, isolamento por domínio, contrato neutro, contexto mínimo, aprovação humana) não serão aceitas.
+Leia o whitepaper e o guia. Mudanças que vão contra os princípios do projeto (soberania do usuário, isolamento por domínio, contrato neutro, contexto mínimo, Git como espinha, revisão proporcional ao risco) não serão aceitas.
 
 ## Contribuir com um novo Context Pack
 
 Context Packs são a peça mais útil que a comunidade pode contribuir. Cada pack resolve uma tarefa específica.
 
 1. Abra uma issue usando o template "Context Pack Suggestion"
-2. Se a sugestão fizer sentido, abra um PR adicionando o arquivo em `template/30-context-packs/`
+2. Se a sugestão fizer sentido, abra um PR adicionando o arquivo em `template/60-context-packs/`
 3. Use o formato do `exemplo-linkedin-writing.md` como referência
-4. Inclua os cinco campos: Goal, Use, Avoid, Sources of truth, Output expected, Confidence
+4. Inclua os campos: Goal, Use, Avoid, Sources of truth, Output expected, Confidence/validity e Validation
 
 Packs aceitos são exemplos genéricos que outras pessoas podem adaptar. Packs muito específicos a um indivíduo ou empresa devem ficar no vault pessoal, não aqui.
 
 ## Adicionar um adaptador para outro agente
 
-Cada agente tem sua convenção de arquivo de contexto. Para adicionar suporte a Cursor, Windsurf, Codex, Antigravity, Gemini ou outro:
+Cada agente tem sua convenção de arquivo de contexto. Para adicionar suporte a um agente ainda não coberto:
 
-1. Crie uma subpasta em `template/40-agent-adapters/[nome-do-agente]/`
-2. Adicione o arquivo no formato que o agente espera (ex: `cursor/.cursorrules`, `codex/codex.md`, `antigravity/AGENTS.md`)
+1. Crie uma subpasta em `template/80-agent-adapters/[nome-do-agente]/`
+2. Adicione o arquivo no formato que o agente espera (ex: `cursor/.cursorrules`, `codex/AGENTS.md`, `windsurf/.windsurfrules`)
 3. O adaptador deve apenas apontar para `00-global/AGENT.md`, não substituí-lo
-4. Atualize `template/40-agent-adapters/README.md` listando o novo adaptador
+4. O adaptador descreve a política de escrita como contrato no modo cooperativo. Não afirme que um núcleo, o Hermes ou o MCP "aplicam" a regra: na v3 não existe núcleo, e enforcement real é do sistema operacional
+5. Atualize `template/80-agent-adapters/README.md` listando o novo adaptador
 
 ## Propor mudanças no whitepaper ou no guia
 
@@ -34,6 +35,7 @@ Para mudanças no HTML:
 - Mantenha o tom (direto, sem suavizar, sem elogios à própria arquitetura)
 - Mantenha o estilo visual existente
 - Não adicione dependências externas além das fontes do Google Fonts já usadas
+- Não reintroduza linguagem de "núcleo ativo", roteador central ou policy engine como capacidade real. Esse desenho foi refutado na v3; onde os termos aparecem, é só na refutação histórica
 
 ## Pull requests
 
@@ -54,4 +56,4 @@ Crítica direta é bem-vinda. Crítica pessoal não.
 
 ## Dúvidas
 
-Abra uma issue com a tag `question`. Respostas vão para o próprio thread — assim outras pessoas com a mesma dúvida encontram.
+Abra uma issue com a tag `question`. Respostas vão para o próprio thread, assim outras pessoas com a mesma dúvida encontram.
