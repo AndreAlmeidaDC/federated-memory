@@ -5,14 +5,14 @@ Documenta a **política de escrita** do vault de forma neutra; o `CLAUDE.md` ao 
 
 Se houver conflito entre este arquivo e o `00-global/AGENT.md`, o `AGENT.md` prevalece.
 
-## Política de escrita (vale mesmo sem humano presente)
+## Política de escrita (modo cooperativo)
 
 - **Leitura:** liberada em todo o vault.
 - **Escrita permanente:** PROIBIDA fora de `/90-inbox/`.
-- Em modo headless, agendado ou auto-edit, a regra continua valendo — escrita só vai para `/90-inbox/suggested-memory.md`.
+- Em modo headless, agendado ou auto-edit, a regra continua valendo: escrita só vai para `/90-inbox/suggested-memory.md`.
 - Qualquer pedido de escrita fora desse escopo deve gerar uma sugestão no inbox, **nunca uma edição direta**.
 
-Quem aplica essa regra é o núcleo (Hermes ou equivalente) por meio do servidor MCP. O agente respeita a política como contrato — não como sugestão.
+Esta política vale por contrato, no modo cooperativo (o padrão). O agente a respeita porque o contrato pede, não porque um núcleo a force. Na v3 não existe núcleo nem policy engine, e o MCP, quando usado, é acesso ao filesystem, não governança: ele não bloqueia escrita. Contra um agente que decida ignorar o contrato, o enforcement vem do sistema operacional (permissões, container read-only), fora do escopo deste arquivo.
 
 ## Resolução de conflito de memória
 

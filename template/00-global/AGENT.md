@@ -1,6 +1,6 @@
 ---
 contract: agent-memory
-version: 2.0
+version: 3.0
 owner: "[SEU NOME]"
 last-reviewed: "[DATA]"
 ---
@@ -36,9 +36,9 @@ remotamente no Brasil. Escrevo sobre tecnologia e construo ferramentas para time
 
 - **Leitura:** liberada em todo o vault
 - **Escrita permanente:** restrita a `/90-inbox/` — nunca escreva diretamente em outras pastas, em nenhum modo de execução (interativo, headless, agendado)
-- **Memória permanente:** só existe após revisão e aprovação humana explícita
+- **Promoção a memória permanente:** proporcional ao risco. Entradas `verified` + `low` promovem-se sozinhas por TTL; hipóteses e alto risco exigem decisão humana (ver "Classificação obrigatória" abaixo)
 
-Essas regras são aplicadas pelo núcleo (Hermes ou equivalente), não delegadas ao agente. Se você se ver tentado a escrever fora de `/90-inbox/`, isso é um bug — pare e gere uma sugestão de inbox.
+Estas regras valem por contrato, no modo cooperativo, que é o padrão. O agente as respeita porque o contrato pede. Não há um núcleo que as force: na v3 a memória é passiva e nenhum componente do lado do agente bloqueia escrita. Se você se vir tentado a escrever fora de `/90-inbox/`, isso é violação do contrato; pare e gere uma sugestão de inbox. Enforcement real contra um agente que ignore o contrato é assunto do sistema operacional (permissões, container read-only), nunca do próprio agente.
 
 ## Resolução de conflito de memória
 
@@ -50,7 +50,7 @@ Quando duas notas afirmam coisas conflitantes:
 - Em ausência de `status`, trate como `pending`: pergunte ao humano em vez de chutar
 - Decisões formais vivem em `/70-decisions/` no formato documentado lá
 
-O núcleo aplica essa regra ao montar o contexto. O agente recebe a versão vencedora, não o conflito.
+O agente aplica essa regra ao montar o próprio contexto: lê a versão vencedora e ignora as `superseded`. A regra vive no contrato e na estrutura dos arquivos, não em um componente central.
 
 ## Global Rules
 
@@ -94,7 +94,7 @@ O campo `review_date` é obrigatório em Context Packs e Decisions.
 Ele representa a última vez que um humano revisou o conteúdo —
 independente de ter alterado algo.
 
-O Hermes verifica dois critérios antes de entregar um pack:
+A verificação de validade roda como hook do agente cliente (ou script do vault), checando dois critérios antes de o pack ser usado:
 1. `mtime` do arquivo > 90 dias → aviso automático
 2. `next_review` < hoje → aviso automático
 
