@@ -61,13 +61,14 @@ Review:
 - review_by: [nome]
 - next_review: YYYY-MM-DD  # quando deve ser revisado novamente
 - Nota: atualize review_date mesmo quando nenhum conteúdo mudar.
-  O Hermes usa este campo para avisos de validade, não só o mtime.
+  Esse campo alimenta os avisos de validade, junto com o mtime.
 
 Validation:
-- Após cada uso, Hermes registra em /99-archive/pack-usage.log: pack, tarefa, resultado (útil/parcial/ruim)
+- Após cada uso, registrar em /99-archive/pack-usage.log: pack, tarefa, resultado (útil/parcial/ruim)
 - Pack com 3 marcações "ruim" consecutivas é flaggeado para revisão
 - Temporal: pack de domínios voláteis (regulatório, ML, mercado) usa janela de 30 dias em vez do default 90; configurar em /99-archive/pack-status.md
 - Humano pode marcar pack como "stale" manualmente em /99-archive/pack-status.md
+- O registro e o aviso temporal podem ser automatizados via hook do agente; sem hook, valem como revisão manual
 
 Source notes:
 Caminhos hipotéticos. Antes de usar este pack, crie:
@@ -78,3 +79,4 @@ Caminhos hipotéticos. Antes de usar este pack, crie:
 
 Sem methodology.md o agente improvisa critério; sem sources-allowlist.md
 ele puxa qualquer link da web e trata como verdade. Os dois são pré-requisito.
+

@@ -1,6 +1,6 @@
 # 70-decisions — Decisões
 
-Resoluções tomadas: o que ficou decidido, quando e por quê. É o ponto único de verdade para resolver conflito de memória — o núcleo (Hermes) prioriza entradas com `status: approved` mais recentes e ignora as marcadas como `superseded`.
+Resoluções tomadas: o que ficou decidido, quando e por quê. É o ponto único de verdade para resolver conflito de memória: o agente, ao montar seu contexto, prioriza entradas com `status: approved` mais recentes e ignora as marcadas como `superseded`. A regra vive no contrato e na estrutura, não em um componente central.
 
 ## Formato obrigatório (frontmatter)
 
@@ -43,11 +43,12 @@ Quando duas decisões falam da mesma coisa:
 
 1. Vence a mais recente com `status: approved`.
 2. A anterior recebe `status: superseded` e o ID dela aparece em `supersedes` da nova.
-3. Decisões com `status: superseded` permanecem no histórico (auditoria), mas o núcleo as ignora ao montar contexto.
-4. Decisões sem `status` são tratadas como `pending` — o núcleo pergunta ao humano antes de usar.
+3. Decisões com `status: superseded` permanecem no histórico (auditoria), mas o agente as ignora ao montar contexto.
+4. Decisões sem `status` são tratadas como `pending`: o agente não as usa e pede decisão humana antes.
 
 Nunca infira a "vencedora" apenas pelo timestamp do arquivo: o status é obrigatório.
 
 ## Para implementações com busca semântica
 
 Decisões podem ser indexadas externamente (DecisionNode, embeddings) — desde que a regra de status seja preservada e o arquivo Markdown continue sendo a fonte de verdade.
+

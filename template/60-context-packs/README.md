@@ -37,10 +37,12 @@ Confidence / validity:
 [critério temporal: até quando vale, gatilho de revisão]
 
 Validation:
-- Hermes loga uso em /99-archive/pack-usage.log (útil/parcial/ruim)
+- Uso registrado em /99-archive/pack-usage.log (útil/parcial/ruim)
 - 3 marcações "ruim" consecutivas flagga o pack para revisão
-- Temporal: se algum arquivo em "Use:" tem mtime > 90 dias, Hermes inclui aviso no output
+- Temporal: se algum arquivo em "Use:" tem mtime > 90 dias, incluir aviso no output
 - Humano pode marcar como "stale" em /99-archive/pack-status.md
+
+O registro de uso e o aviso temporal podem ser automatizados via hook do agente cliente (ex: PostToolUse rodando um script do vault). No piso, sem hook, valem como rotina manual de revisão.
 
 Source notes:
 [liste os arquivos hipotéticos que o usuário precisa criar antes de usar este pack]
@@ -56,6 +58,8 @@ Source notes:
 ## Regra de expiração
 
 Todo Context Pack deve ter campo `Confidence / validity` (critério temporal explícito)
-e `Validation` (loop de feedback). Contexto desatualizado é pior que ausência de contexto —
-mas o aviso de validade temporal automática (via inspeção de `mtime` pelo Hermes) garante
-que ninguém usa contexto velho sem ser avisado.
+e `Validation` (loop de feedback). Contexto desatualizado é pior que ausência de contexto.
+O aviso de validade temporal pode ser automatizado via hook do agente que inspeciona o
+`mtime` dos arquivos, de modo que ninguém use contexto velho sem ser avisado. Sem hook,
+o aviso depende da rotina manual de revisão.
+
