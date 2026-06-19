@@ -1,5 +1,7 @@
 # Memória Federada: Por que Agentes de IA Não Devem Ser Donos do Contexto
 
+Na v2 deste projeto, o Hermes chegou a ser descrito como um “orquestrador leve” ou “núcleo ativo”. O EXP-001 mostrou que essa premissa não se sustenta como arquitetura real: não há um componente central soberano mediando a memória entre agentes. Na v3, o centro do desenho passa a ser o vault versionado e legível por humanos. Os agentes são clientes intercambiáveis, e qualquer MCP, script, provider, indexador ou runtime entra apenas como adaptador operacional, nunca como fonte soberana, policy engine central ou porteiro obrigatório.
+
 > O problema de memória em agentes de IA não é falta de ferramentas.
 > É ausência de separação entre quem guarda o contexto e quem o executa.
 > Memória federada resolve isso devolvendo o contexto a quem ele pertence: o usuário, com Git como espinha de versão e auditoria.
